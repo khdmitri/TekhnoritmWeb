@@ -1,0 +1,249 @@
+{% load static %}
+
+{% if success %}
+<p id="id_success" class="text-success">{{ success }}</p>
+{% endif %}
+
+  <input type="hidden" id="id_id" name="id" value="{{ source.id }}">
+  {{ form.kind_code }}
+  {{ form.kind_description }}
+  {{ form.ref_object }}
+
+  <div class="row">
+    <span class="text-warning font-weight-bold m-3">
+      {% if source %}
+      Редактирование выбранной записи
+      {% else %}
+      Создание новых записей: количество зависит от указанных секторов
+      {% endif %}
+    </span>
+  </div>
+  <div class="row small mb-2">
+    <div class="col-12">
+      <h6>Тип записи: <span class="text-success">{{ kind_description }}</span>
+      {% if no %}
+        (No.: {{ no }})
+      {% endif %}
+      </h6>
+    </div>
+  </div>
+  <div class="row small">
+    <div class="col-4">
+      <span class="d-block font-weight-bold">Мощность</span>
+      {{ form.power.errors }}
+      {{ form.power }}
+      {% if form.power.help_text %}
+      <p class="help font-italic small">*{{ form.power.help_text|safe }}</p>
+      {% endif %}
+    </div>
+    <div class="col-4">
+      <span class="d-block font-weight-bold">Количество</span>
+      {{ form.qty.errors }}
+      {{ form.qty }}
+      {% if form.qty.help_text %}
+      <p class="help font-italic small">*{{ form.qty.help_text|safe }}</p>
+      {% endif %}
+    </div>
+    <div class="col-4">
+      <span class="d-block font-weight-bold">Мощность факт.</span>
+      {{ form.power_fact.errors }}
+      {{ form.power_fact }}
+      {% if form.power_fact.help_text %}
+      <p class="help font-italic small">*{{ form.power_fact.help_text|safe }}</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="row small mt-3">
+    <div class="col-4">
+      <div class="row m-0">
+        <span class="d-block font-weight-bold">Тип передатчика</span>
+        <div class="input-group small">
+            <span class="text-danger">{{ form.row_type.errors }}</span>
+            <div class="input-group-prepend">
+                <button class="btn btn-sm btn-outline-primary" type="button" onclick="add_to_reference('row_types')">Add</button>
+            </div>
+            <input type="text" class="form-control form-control-sm" id="id_row_type" placeholder="" name="row_type" value="{{ source.row_type }}">
+            {% if form.row_type.help_text %}
+            <p class="help font-italic small">*{{ form.row_type.help_text|safe }}</p>
+            {% endif %}
+        </div>
+      </div>
+      <div class="row m-0 justify-content-end">
+        <ul class="list-group m-1 ml-5" id="rowTypesList">
+          {% for item in references.row_types %}
+          <li class="list-group-item"><a href="javascript:" onclick="document.getElementById('id_row_type').value = '{{ item.item }}'">{{ item.item }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-4">
+      <div class="row m-0">
+        <span class="d-block font-weight-bold">Антенна</span>
+        <div class="input-group small">
+          <span class="text-danger">{{ form.antenna.errors }}</span>
+          <div class="input-group-prepend">
+                <button class="btn btn-sm btn-outline-primary" type="button" onclick="add_to_reference('antennas')">Add</button>
+          </div>
+          <input type="text" class="form-control form-control-sm" id="id_antenna" name="antenna" placeholder="" value="{{ source.antenna }}">
+          {% if form.antenna.help_text %}
+          <p class="help font-italic small">*{{ form.antenna.help_text|safe }}</p>
+          {% endif %}
+        </div>
+      </div>
+      <div class="row m-0 justify-content-end">
+        <ul class="list-group m-1 ml-5" id="antennaList">
+          {% for item in references.antennas %}
+          <li><a href="javascript:" onclick="document.getElementById('id_antenna').value = '{{ item.item }}'">{{ item.item }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-4">
+      <div class="row m-0">
+        <span class="d-block font-weight-bold">Модуляция</span>
+        <div class="input-group small">
+          <span class="text-danger">{{ form.modulation.errors }}</span>
+          <div class="input-group-prepend">
+                <button class="btn btn-sm btn-outline-primary" type="button" onclick="add_to_reference('modulations')">Add</button>
+          </div>
+          <input type="text" class="form-control form-control-sm" id="id_modulation" name="modulation" placeholder="" value="{{ source.modulation }}">
+          {% if form.modulation.help_text %}
+          <p class="help font-italic small">*{{ form.modulation.help_text|safe }}</p>
+          {% endif %}
+        </div>
+      </div>
+      <div class="row m-0 justify-content-end" >
+        <ul class="list-group m-1 ml-5" id="modulationList">
+          {% for item in references.modulations %}
+          <li><a href="javascript:" onclick="document.getElementById('id_modulation').value = '{{ item.item }}'">{{ item.item }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-3 small">
+    <div class="col-3">
+      <span class="d-block font-weight-bold">Частота, МГц</span>
+      {{ form.freq.errors }}
+      <input type="text" class="form-control form-control-sm" id="id_freq" name="freq" placeholder="" value="{{ source.freq }}">
+      {% if form.freq.help_text %}
+      <p class="help font-italic small">*{{ form.freq.help_text|safe }}</p>
+      {% endif %}
+    </div>
+
+    <div class="col-3">
+      <span class="d-block font-weight-bold">КУ</span>
+      {{ form.gain.errors }}
+      <input type="text" class="form-control form-control-sm" id="id_gain" name="gain" placeholder="" value="{{ source.gain }}">
+      {% if form.gain.help_text %}
+      <p class="help font-italic small">*{{ form.gain.help_text|safe }}</p>
+      {% endif %}
+    </div>
+
+    <div class="col-3">
+      <span class="d-block font-weight-bold">Высота подвеса, м</span>
+      {{ form.high.errors }}
+      <input type="text" class="form-control form-control-sm" id="id_high" name="high" placeholder="" value="{{ source.high }}">
+      {% if form.high.help_text %}
+      <p class="help font-italic small">*{{ form.high.help_text|safe }}</p>
+      {% endif %}
+    </div>
+
+    <div class="col-3">
+      <span class="d-block font-weight-bold">Диаграмма (гор/верт)</span>
+      {{ form.dn.errors }}
+      <input type="text" class="form-control form-control-sm" id="id_dn" name="dn" placeholder="" value="{{ source.dn }}">
+      {% if form.dn.help_text %}
+      <p class="help font-italic small">*{{ form.dn.help_text|safe }}</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="row mt-3 mb-3 small">
+    <div class="col-4">
+      <span class="d-block font-weight-bold">Аз.горизонт/вертикаль<br />
+      <span class="text-primary">Сектор 1</span></span>
+      <div class="form-row">
+        <div class="col">
+          <span class="text-danger">{{ form.az_hor_sect_1.errors }}</span>
+          <input type="text" class="form-control form-control-sm" id="id_az_hor_sect_1" placeholder="азимут гор." name="az_hor_sect_1" value="{{ source.az_hor }}">
+        </div>
+        <div class="col">
+          <span class="text-danger">{{ form.az_vert_sect_1.errors }}</span>
+          <input type="text" class="form-control form-control-sm" id="id_az_vert_sect_1" placeholder="азимут верт." name="az_vert_sect_1" value="{{ source.az_vert }}">
+        </div>
+      </div>
+    </div>
+
+    <div class="col-4">
+      <span class="d-block font-weight-bold">Аз.горизонт/вертикаль<br />
+      <span class="text-primary">Сектор 2</span></span>
+      <div class="form-row">
+        <div class="col">
+          <span class="text-danger">{{ form.az_hor_sect_2.errors }}</span>
+          <input type="text" class="form-control form-control-sm" id="id_az_hor_sect_2" placeholder="азимут гор." name="az_hor_sect_2" value="">
+        </div>
+        <div class="col">
+          <span class="text-danger">{{ form.az_vert_sect_2.errors }}</span>
+          <input type="text" class="form-control form-control-sm" id="id_az_vert_sect_2" placeholder="азимут верт." name="az_vert_sect_2" value="">
+        </div>
+      </div>
+    </div>
+
+    <div class="col-4">
+      <span class="d-block font-weight-bold">Аз.горизонт/вертикаль<br />
+      <span class="text-primary">Сектор 3</span></span>
+      <div class="form-row">
+        <div class="col">
+          <span class="text-danger">{{ form.az_hor_sect_3.errors }}</span>
+          <input type="text" class="form-control form-control-sm" id="id_az_hor_sect_3" placeholder="азимут гор." name="az_hor_sect_3" value="">
+        </div>
+        <div class="col">
+          <span class="text-danger">{{ form.az_vert_sect_3.errors }}</span>
+          <input type="text" class="form-control form-control-sm" id="id_az_vert_sect_3" placeholder="азимут верт." name="az_vert_sect_3" value="">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    {% if kind == '3' %}
+      <input type="hidden" id="id_owner_id" name="owner_id" value="{{ source.ref_owner.id }}">
+      <h6>Начните поиск для обновления списка владельцев</h6>
+      <div class="form-group m-3 col-12">
+        <input type="text" class="form-control" id="id_owner_name" name="owner_name" placeholder="Наименование владельца" readonly required value="{{ source.ref_owner.short_name }}">
+        {% if form.owner_name.help_text %}
+        <p class="help font-italic small">*{{ form.owner_name.help_text|safe }}</p>
+        {% endif %}
+      </div>
+
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <!-- Topbar Search -->
+          <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+            <div class="input-group">
+              <input type="text" id="search_input_owner" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+              <div class="input-group-append">
+                <button class="btn btn-primary" type="button">
+                  <i class="fas fa-search fa-sm"></i>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div id="list_content">
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  <input class="btn btn-primary btn-user btn-block" type="submit" value="Сохранить" />
+  {% if source %}
+  <a class="btn btn-danger btn-user btn-block" href="{% url 'inspection:delete-source' source_id=source.id object_id=source.ref_object.id %}">Удалить</a>
+  {% endif %}
+
+  {% include 'inspection/script_source_data.html' %}

@@ -1,0 +1,41 @@
+mysql -u root -p
+CREATE DATABASE `tekhnoritm_db` DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+CREATE USER `tekhnoritm_admin`@'localhost' IDENTIFIED BY 'qwerty123';
+GRANT ALL PRIVILEGES ON `tekhnoritm_db`.* TO `tekhnoritm_admin`@'localhost';
+FLUSH PRIVILEGES;
+
+create table er_order
+(
+    o_id           int auto_increment
+        primary key,
+    o_row_no       int(2)        null,
+    o_ref_document varchar(255)  null,
+    o_description  varchar(1024) null,
+    o_count        int(2)        null,
+    o_price        float(9, 2)   null,
+    o_sum          float(9, 2)   null,
+    o_date         varchar(128)  null
+);
+
+create table ericsson_document
+(
+    ed_file     varchar(255) not null
+        primary key,
+    ed_order    varchar(120) null,
+    ed_date     varchar(120) null,
+    ed_deadline varchar(255) null,
+    ed_address  varchar(512) null,
+    ed_name     varchar(255) null
+);
+
+create table pre_order
+(
+    po_id           int auto_increment
+        primary key,
+    po_ref_document varchar(255)  null,
+    po_row_no       int(2)        null,
+    po_description  varchar(1024) null,
+    po_count        int(2)        null,
+    po_done_date    varchar(120)  null,
+    po_deadline     varchar(120)  null
+);

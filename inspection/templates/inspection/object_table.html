@@ -1,0 +1,50 @@
+{% load static %}
+
+<div class="table-responsive">
+    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Наименование</th>
+          <th>Адрес размещения</th>
+          <th>Документы</th>
+          <th>Генерация</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for instance in objects %}
+        <tr>
+            <td><a href="javascript:;" onclick="editObject('{{ instance.id }}')"><strong>{{ instance.name }}</strong></a></td>
+            <td>{{ instance.address }}</td>
+            <td>
+                {% if instance.has_source %}
+                <a class="text-success d-block" href="{% url 'inspection:source-data' ref_object=instance.id %}"><strong>Исх. данные</strong></a>
+                {% else %}
+                <a class="text-warning d-block" href="{% url 'inspection:source-data' ref_object=instance.id %}"><strong>Исх. данные</strong></a>
+                {% endif %}
+
+                {% if instance.has_see %}
+                <a class="text-success d-block" href="{% url 'inspection:see-data' ref_object=instance.id %}"><strong>СЭЭ (Р1)</strong></a>
+                {% else %}
+                <a class="text-warning d-block" href="{% url 'inspection:see-data' ref_object=instance.id %}"><strong>СЭЭ (Р1)</strong></a>
+                {% endif %}
+
+                {% if instance.has_protocol %}
+                <a class="text-success d-block" href="{% url 'inspection:protocol-data' ref_object=instance.id %}"><strong>Протокол измерений ЭМП (Р2, ПК)</strong></a>
+                {% else %}
+                <a class="text-warning d-block" href="{% url 'inspection:protocol-data' ref_object=instance.id %}"><strong>Протокол измерений ЭМП (Р2, ПК)</strong></a>
+                {% endif %}
+
+                {% if instance.has_ez %}
+                <a class="text-success d-block" href="{% url 'inspection:ez-data' ref_object=instance.id %}"><strong>Экспертное заключение по измерениям (Р2)</strong></a>
+                {% else %}
+                <a class="text-warning d-block" href="{% url 'inspection:ez-data' ref_object=instance.id %}"><strong>Экспертное заключение по измерениям (Р2)</strong></a>
+                {% endif %}
+            </td>
+            <td>
+                <a class="btn btn-primary btn-user btn-block" href="{% url 'inspection:doc-generation' ref_object=instance.id %}" target="_new">Генерация</a>
+            </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+</div>

@@ -1,0 +1,28 @@
+{% load static %}
+
+<div class="card-body">
+  <div class="table-responsive">
+    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Номер заявки</th>
+          <th>Клиент</th>
+          <th>Дата создания</th>
+          <th>Срок до</th>
+          <th>Описание</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for instance in orders %}
+        <tr>
+            <td><a href="{{ instance.get_absolute_url }}"><strong>{{ instance.order_id }}</strong></a></td>
+            <td>{{ instance.client.short_name }}</td>
+            <td>{{ instance.create_date }}</td>
+            <td>{{ instance.dead_line }}</td>
+            <td>{{ instance.description }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>

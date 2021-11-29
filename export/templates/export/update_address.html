@@ -1,0 +1,58 @@
+<!-- update_address.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Begin Page Content -->
+    <div class="container-fluid">
+
+      <!-- Page Heading -->
+      <h1 class="h1 mb-2 text-gray-800">Поиск адреса в базе ФИАС</h1>
+
+      {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">
+                {{ message|safe }}
+            </div>
+            {% endfor %}
+        </ul>
+      {% endif %}
+
+      <form class="user" name="main_form" id="id_main_form" method="POST">
+          {% csrf_token %}
+
+          {% if form.non_field_errors %}
+              <div class="alert alert-danger" role="alert">
+                {% for error in form.non_field_errors %}
+                  {{ error }}
+                {% endfor %}
+              </div>
+          {% endif %}
+
+          {{ form.protocol_id }}
+          {{ form.address_fias }}
+
+          <div class="form-group m-3 col-12">
+            <span class="text-danger">{{ form.address.errors }}</span>
+            <div id="fias_ok">
+            </div>
+            <input type="text" class="form-control" id="id_address" name="address" placeholder="Адреc размещения"
+                   value="{{ protocol.ref_object.address }}">
+            {% if form.address.help_text %}
+            <p class="help font-italic small">*{{ form.address.help_text|safe }}</p>
+            {% endif %}
+          </div>
+          <div class="form-group m-3 col-12">
+              <input type="submit" value="Обновить">
+          </div>
+      </form>
+
+    </div>
+    <!-- /.container-fluid -->
+
+    {% include 'inspection/dadata.html' %}
+
+{% endblock content %}

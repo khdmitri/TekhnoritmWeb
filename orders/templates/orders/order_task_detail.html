@@ -1,0 +1,166 @@
+<!-- order_task_detail.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+  <div class="container">
+      <div class="row">
+            <div class="col-xl-6 col-md-9 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                          ЗАЯВКА №{{ order_id }} -> Внутренняя заявка №{{ task_id }}
+                      </div>
+                      <div class="h6 mb-0 font-weight-bold text-gray-600">{{ department }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="card o-hidden border-0 shadow-lg my-5">
+              <div class="card-body p-0">
+
+                <!-- Nested Row within Card Body -->
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="p-5">
+                      <div class="text-center">
+                        <h1 class="h4 text-gray-900 mb-4">Редактирование внутренней заявки!</h1>
+                          {% if success %}
+                          <h6 class="text-success">{{ success }}</h6>
+                          {% endif %}
+                      </div>
+
+                      <form class="user" name="form" id="main_form" method="post" enctype="multipart/form-data">
+                          {% csrf_token %}
+
+                          <input type="hidden" name="task_id" value="{{ task_obj.task_id }}">
+                          <input type="hidden" name="task_type" value="{{ task_obj.task_type }}">
+                          <input type="hidden" name="ref_order" value="{{ task_obj.ref_order.order_id }}">
+
+                          <div class="form-group m-0 col-12">
+                              <div class="row align-items-center">
+                                <div class="col-3">
+                                    <span class="text-primary">Количество</span>
+                                </div>
+                                <div class="form-group col-3">
+                                    {{ form.qty.errors }}
+                                    <input type="number" class="form-control" id="id_qty" name="qty" placeholder="" value="{{ task_obj.qty }}">
+                                    {% if form.qty.help_text %}
+                                    <p class="help font-italic small">*{{ form.qty.help_text|safe }}</p>
+                                    {% endif %}
+                                </div>
+                              </div>
+                          </div>
+
+                            <div class="form-group m-0 col-12">
+                                <div class="row align-items-center">
+                                    <div class="col-3">
+                                        <span class="text-primary">Описание</span>
+                                    </div>
+                                    <div class="form-group col-9">
+                                        {{ form.description.errors }}
+                                        <textarea class="form-control" id="id_description" name="description" rows="3" placeholder="описание задачи">{{ task_obj.description }}</textarea>
+                                        {% if form.description.help_text %}
+                                        <p class="help font-italic small">*{{ form.description.help_text|safe }}</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                          <div class="form-group m-0 col-12">
+                              <div class="row align-items-center">
+                                    <div class="col-3">
+                                        <span class="text-primary">Срок до (deadline)</span>
+                                    </div>
+                                    <div class="form-group col-9">
+                                        {{ form.dead_line.errors }}
+                                        <input id="datepicker" width="276" class="form-control" name="dead_line" placeholder="Срок до" value="{{ task_obj.dead_line }}">
+                                        {% if form.dead_line.help_text %}
+                                        <p class="help font-italic small">*{{ form.dead_line.help_text|safe }}</p>
+                                        {% endif %}
+                                    </div>
+                              </div>
+                          </div>
+
+                          <div class="form-group m-0 col-12">
+                              <div class="row align-items-center">
+                                    <div class="col-3">
+                                        <span class="text-primary">Исх.данные</span>
+                                    </div>
+                                    <div class="form-group col-9">
+                                        {{ form.attach.errors }}
+                                        {{ form.attach }}
+                                        {% if form.attach.help_text %}
+                                        <p class="help font-italic small">*{{ form.attach.help_text|safe }}</p>
+                                        {% endif %}
+                                    </div>
+                              </div>
+                          </div>
+
+                            <a href="javascript:;" onclick="document.getElementById('main_form').submit();" class="btn btn-primary btn-user btn-block">
+                              Сохранить
+                            </a>
+
+                          <p class="mt-3">
+                            <a href="{% url 'orders:order-task-close' task_id=task_id %}" class="font-weight-bold text-warning">
+                            Закрыть внутреннюю заявку <span class="small">* - Внутренняя заявка закрывается, если все регламентные работы выполнены</span>
+                            </a>
+                          </p>
+                          <p>
+                            <a class="text-danger" href="{% url 'orders:order-task-delete' task_id=task_id %}" data-toggle="modal" data-target="#deleteModal">
+                                Удалить <span class="small">* - При удалении заявки история работ по заявке не сохраняется</span>
+                            </a>
+                          </p>
+                          <p>
+                            <a href="{% url 'orders:order-list' %}" class="font-weight-bold text-primary">
+                                Назад к списку
+                            </a>
+                          </p>
+                      </form>
+
+                  </div>
+                </div>
+
+              </div>
+            </div>
+        </div>
+  </div>
+
+  <!-- Delete Modal-->
+  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Удалить внутреннюю заявку?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Удаление заявки приведет к удалению всей истории работ по заявке. Удалить?</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Отмена</button>
+          <a class="btn btn-primary" href="{% url 'orders:order-task-delete' task_id=task_id %}">Удалить</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <script>
+        $('#datepicker').datepicker({
+            uiLibrary: 'bootstrap4',
+            format: 'dd.mm.yyyy'
+        });
+    </script>
+
+{% endblock content %}

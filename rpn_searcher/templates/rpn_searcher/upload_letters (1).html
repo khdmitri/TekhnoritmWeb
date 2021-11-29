@@ -1,0 +1,95 @@
+<!-- object_list.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+  <div class="container">
+      <div class="row">
+            <div class="col-xl-6 col-md-9 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                          Панель загрузки файлов в систему
+                      </div>
+                      <div class="h6 mb-0 font-weight-bold text-gray-600">Тип: Microsoft Word (письма-согласования)</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <form class="user" name="form" id="main_form" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+            <div class="row">
+                    <div class="form-group m-3 col-12">
+                        <p class="text-danger small">{{ form.file_field.errors }}</p>
+                        {{ form.file_field }}
+                        {% if form.file_field.help_text %}
+                        <p class="help font-italic small">*{{ form.file_field.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+            </div>
+            <input class="btn btn-primary btn-user btn-block mt-1" type="submit" value="Сохранить" />
+        </form>
+
+        <div class="row">
+            <div id="id_progress">
+
+            </div>
+        </div>
+  </div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+        $('#main_form').on('submit', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const my_data = new FormData(this);
+            $('#id_progress').html('<h4 class="text-warning m-4">Ждите окончания обработки...</h4>');
+
+            $.ajax({
+                url: "{% url 'rpn_searcher:upload-post' %}", // the endpoint
+                type: "POST", // http method
+                dataType: 'html',
+                processData: false,
+                contentType: false,
+                data: my_data, // data sent with the post request
+
+                // handle a successful response
+                success : function(data) {
+                    $('#id_progress').html(data); // remove the value from the input
+                },
+                error: function(data) {
+                    const res = JSON.stringify(data);
+                    $('#id_progress').html(res);
+                }
+            });
+        });
+    })
+</script>
+
+{% endblock content %}

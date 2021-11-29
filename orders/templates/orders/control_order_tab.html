@@ -1,0 +1,90 @@
+<!-- control_order_tab.html -->
+
+{% load static %}
+
+
+
+<div class="card-body">
+  <div class="table-responsive">
+    <table class="table table-bordered small" id="dataTable" width="100%" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Номер заявки</th>
+          <th>Дата создания</th>
+          <th>Дата закрытия</th>
+          <th>Срок до</th>
+          <th>Клиент</th>
+          <th>Описание</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for instance in orders %}
+        <tr>
+            <td class="text-nowrap"><a href="javascript:" onclick="expand_order('{{instance.order_id}}')"><strong>{{ instance.order_id }}</strong></a></td>
+            <td>{{ instance.create_date }}</td>
+            <td>
+              {% if instance.close_date %}
+              <strong>{{ instance.close_date }}</strong>
+              {% else %}
+              <span class="text-success">Открыта</span>
+              {% endif %}
+            </td>
+            <td class="{{ instance.get_date_class }}">{{ instance.dead_line }}</td>
+            <td>{{ instance.client.short_name }}</td>
+            <td>{{ instance.description|default_if_none:"---" }}</td>
+            <td>
+              <a href="{{ instance.get_absolute_url }}" target="_new"><strong class="text-primary">Редактировать</strong></a>
+              <a class="dropdown-item mt-0 text-warning" href="" data-toggle="modal" data-target="#closeModal_{{ instance.order_id }}">
+                <i class="fas fa-times fa-sm fa-fw mr-2 text-warning"></i>
+                <span class="text-uppercase text-warning small">Закрыть</span>
+              </a>
+                <!-- Close Modal-->
+                  <div class="modal fade" id="closeModal_{{ instance.order_id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Закрыть заявку?</h5>
+                          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                            Закрытие заявки исключает как саму заявку, так и относящиеся к ней подзаявки из систем контроля состяния. Причины закрытия заявки могут быть следующие:
+                            <ul>
+                                <li>Все плановые задачи выполнены, заявка полностью отработана</li>
+                                <li>Выполнение заявки более не возможно по техническим, финансовым или иным прияинам</li>
+                                <li>Ошибочная заявка, требуется создать новую</li>
+                            </ul>
+                            <span class="text-warning font-weight-bold">ВНИМАНИЕ! Закрытие внешней заявки не формирует АРХИВ!</span>
+                        </div>
+                        <div class="modal-footer">
+                          <button class="btn btn-secondary" type="button" data-dismiss="modal">Отмена</button>
+                          <a class="btn btn-primary" href="{% url 'orders:close-order' order_id=instance.order_id %}">Удалить заявку?</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+            </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+  function expand_order(order_id) {
+    $.ajax({
+      url: "{% url 'orders:expand-order' %}",
+      data: {'order_id': order_id},
+      success: function(data) {
+        $('#id_task').html(data);
+        $('#pills-task-tab').tab('show');
+      }
+    });
+  }
+</script>
+
+{% include 'orders/script_control_order.html' %}

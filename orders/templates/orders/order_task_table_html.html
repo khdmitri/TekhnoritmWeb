@@ -1,0 +1,34 @@
+{% load static %}
+
+<div class="table-responsive">
+<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+  <thead>
+    <tr>
+      <th>№ внутр. заявки</th>
+      <th>Тип заявки</th>
+      <th>Количество</th>
+      <th>Дата создания</th>
+      <th>Дата закрытия</th>
+      <th>Исполнить до</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for instance in tasks %}
+    <tr>
+        <td class="text-center"><a href="{{ instance.get_absolute_url }}" target="_new"><strong>{{ instance.task_id }}</strong></a></td>
+        <td>{{ instance.get_task_description }}</td>
+        <td class="text-right">{{ instance.qty }}</td>
+        <td class="text-center">{{ instance.create_date }}</td>
+        <td class="text-center">
+            {% if instance.close_date %}
+            {{ instance.close_date }}
+            {% else %}
+            <span class="text-primary">Открыта</span>
+            {% endif %}
+        </td>
+        <td class="text-center">{{ instance.dead_line }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>

@@ -1,0 +1,22 @@
+{% load static %}
+
+<div class="table-responsive">
+<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Цель</th>
+      <th>Начало</th>
+      <th>Окончание</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for instance in actions %}
+    <tr>
+        <td><a href="{{ instance.get_absolute_url }}" target="_new"><strong>{{ instance.get_target_description }}</strong></a></td>
+        <td>{{ instance.start_date|default_if_none:"---" }}</td>
+        <td>{{ instance.stop_date|default_if_none:"---" }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>

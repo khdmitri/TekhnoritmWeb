@@ -1,0 +1,142 @@
+{% load static %}
+
+{% if order %}
+
+<div class="row">
+    <div class="col"><hr /></div>
+    <div class="col text-center">РАБОТА</div>
+    <div class="col"><hr /></div>
+</div>
+
+<div class="container small m-1">
+    <div class="row">
+        <div class="col text-success font-weight-bold">ВНЕШНЯЯ ЗАЯВКА:</div>
+        <div class="col text-primary">{{order.order_id}}</div>
+        <div class="col">Дата создания: <strong>{{order.create_date}}</strong></div>
+    </div>
+    <div class="row">
+        <div class="col">Клиент:</div>
+        <div class="col text-primary">{{order.client.short_name}}</div>
+        <div class="col">
+            Дата закрытия:
+            <strong>
+              {% if order.close_date %}
+              {{ order.close_date }}
+              {% else %}
+              <span class="text-success">Открыта</span>
+              {% endif %}
+            </strong>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">Регион:</div>
+        <div class="col text-primary">{{order.region}}</div>
+        <div class="col">
+            Срок до:
+            <strong class="{{order.get_date_class}}">{{order.dead_line}}</strong>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if task %}
+
+<div class="row">
+    <div class="col"><hr /></div>
+    <div class="col text-center">ЗАДАЧИ</div>
+    <div class="col"><hr /></div>
+</div>
+
+<div class="container small m-1">
+    <div class="row">
+        <div class="col text-success font-weight-bold">ВНУТРЕННЯЯ ЗАЯВКА:</div>
+        <div class="col text-primary">{{task.task_id}}</div>
+        <div class="col">Дата создания: <strong>{{task.create_date}}</strong></div>
+    </div>
+    <div class="row">
+        <div class="col">Распределитель:</div>
+        <div class="col text-primary">{{task.distribution_dep.description}}</div>
+        <div class="col">
+            Дата закрытия:
+            <strong>
+              {% if task.close_date %}
+              {{ task.close_date }}
+              {% else %}
+              <span class="text-success">Открыта</span>
+              {% endif %}
+            </strong>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">Тип задачи:</div>
+        <div class="col text-primary">{{task.get_task_description}}</div>
+        <div class="col">
+            Срок до:
+            <strong class="{{task.get_date_class}}">{{task.dead_line}}</strong>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">Количество объектов:</div>
+        <div class="col text-primary">{{task.qty}}</div>
+        <div class="col">
+            Принятие в работу:
+            <strong>{{task.accept_date}}</strong>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <a href="javascript:" onclick="expand_order('{{ order.order_id }}')" class="btn btn-secondary btn-user btn-block btn-sm">Вернуться к внешним заявкам</a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if action %}
+
+<div class="row">
+    <div class="col"><hr /></div>
+    <div class="col text-center">ДЕЙСТВИЯ</div>
+    <div class="col"><hr /></div>
+</div>
+
+<div class="container small m-1">
+    <div class="row">
+        <div class="col text-success font-weight-bold">ТИП ДОКУМЕНТА:</div>
+        <div class="col text-primary">{{action.get_target_description}}</div>
+        <div class="col">Начало: <strong>{{action.start_date}}</strong></div>
+    </div>
+    <div class="row">
+        <div class="col">Внутренний исполнитель:</div>
+        <div class="col text-primary">{{ action.int_executor.description }}</div>
+        <div class="col">
+            Окончание:
+            <strong>
+              {% if action.stop_date %}
+              {{ action.stop_date }}
+              {% else %}
+              <span class="text-success">Открыто</span>
+              {% endif %}
+            </strong>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">Внешний исполнитель:</div>
+        <div class="col text-primary">{{ action.get_executor }}</div>
+        <div class="col"></div>
+    </div>
+    <div class="row">
+        <div class="col">Количество объектов:</div>
+        <div class="col text-primary">{{task.qty}}</div>
+        <div class="col">
+            Принятие в работу:
+            <strong>{{task.accept_date}}</strong>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <a href="javascript:" onclick="expand_task('{{ task.task_id }}')" class="btn btn-secondary btn-user btn-block btn-sm">Вернуться к внутренним заявкам</a>
+        </div>
+    </div>
+    <hr />
+</div>
+{% endif %}

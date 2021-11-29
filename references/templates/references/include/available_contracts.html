@@ -1,0 +1,7 @@
+<label for="id_ref_parent">Дополнителнение к договору</label>
+<select class="custom-select mr-sm-2" id="id_ref_parent" name="ref_parent">
+    <option value="" selected>Выберите доступный договор</option>
+    {% for item in contracts %}
+        <option value="{{ item.id }}">{{ item.doc_no }}</option>
+    {% endfor %}
+</select>

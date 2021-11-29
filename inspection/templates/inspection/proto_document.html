@@ -1,0 +1,79 @@
+{% load static %}
+
+<h4 class="text-success m-3 font-weight-bold">Используемое оборудование (приборы)</h4>
+
+<div class="card-body">
+  <div class="table-responsive small">
+    <table class="table table-bordered" id="inuseDataTable" width="100%" cellspacing="0">
+      <thead>
+        <tr>
+          <th class="text-center">Наименование</th>
+          <th class="text-center">Назначение</th>
+          <th>Диапазон</th>
+          <th>Чувствительность</th>
+          <th>Погрешность</th>
+          <th>Поверка до</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for instance in pribors %}
+        <tr>
+            <td class="text-center">{{ instance.ref_pribor.name }}</td>
+            <td>{{ instance.ref_pribor.purpose }}</td>
+            <td>{{ instance.ref_pribor.limit }}</td>
+            <td>{{ instance.ref_pribor.sensitivity }}</td>
+            <td>{{ instance.ref_pribor.accuracy }}</td>
+            <td class="{{ instance.ref_pribor.get_date_class }}">{{ instance.ref_pribor.expire_date }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+</div>
+</div>
+
+<h4 class="text-success m-3 font-weight-bold">Нормативно-правовая база</h4>
+
+<div class="row">
+    <div class="col-6">
+        <h6 class="text-secondary small font-weight-bold">ОЦЕНКА</h6>
+        <div class="table-responsive small">
+            <table class="table table-bordered" id="myEvalDataTable" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th>Реквизиты</th>
+                  <th>Наименование</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for instance in my_evals %}
+                <tr>
+                    <td>{{ instance.low_notation }}</td>
+                    <td>{{ instance.low_name }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-6">
+        <h6 class="text-secondary small font-weight-bold">МЕТОД</h6>
+        <div class="table-responsive small">
+            <table class="table table-bordered" id="myMethodDataTable" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th>Реквизиты</th>
+                  <th>Наименование</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for instance in my_methods %}
+                <tr>
+                    <td>{{ instance.low_notation }}</td>
+                    <td>{{ instance.low_name }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+        </div>
+    </div>
+</div>

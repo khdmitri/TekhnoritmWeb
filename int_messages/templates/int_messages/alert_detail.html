@@ -1,0 +1,61 @@
+<!-- page_heading.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <h4 class="h6 mb-2 text-gray-800">СОБЫТИЕ: <strong>{{ alert.topic }}</strong></h4>
+
+    <div class="row">
+        <div class="col-xl-7 col-md-10 mb-4">
+          <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                    Получатель:
+                  <strong>
+                      {% if alert.receiver_department %}
+                        {{ alert.receiver_department.name }}
+                      {% endif %}
+                      {% if alert.receiver_position %}
+                        {{ alert.receiver_position.get_position }}
+                      {% endif %}
+                  </strong>
+                  </div>
+                  <div class="h6 mb-0 font-weight-bold text-gray-800">{{ alert.create_date }}</div>
+                </div>
+                <div class="col-auto">
+                  <i class="fas fa-bell fa-2x text-warning"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <!-- Basic Card Example -->
+    <div class="row">
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">Инструкция</h6>
+        </div>
+        <div class="card-body">
+            {% autoescape on %}
+            {{ alert.body | linebreaksbr }}
+            {% endautoescape %}
+        </div>
+        <div class="card-footer">
+            <a href="{{ alert.action_url }}" class="btn btn-primary btn-user btn-block">
+                Перейти к выполнению
+            </a>
+        </div>
+      </div>
+    </div>
+
+</div>
+
+{% endblock content %}

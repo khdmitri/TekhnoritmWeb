@@ -1,0 +1,27 @@
+{% load static %}
+
+<div id="id_category_table">
+    {% include 'references/category_table.html' %}
+</div>
+
+<input type="hidden" id="id_id" name="id">
+<input type="hidden" id="id_category" name="category" value="{{ form.initial.category }}">
+
+{% if success %}
+<h6 class="text-success">{{ success }}</h6>
+{% endif %}
+
+<div class="row">
+    <div class="col-12 m-1">
+        <label for="id_item_short">Краткое наименование</label>
+        <input type="text" class="form-control" id="id_item_short" name="item_short" placeholder="Кратко">
+    </div>
+</div>
+<div class="row">
+    <div class="form-group col-12 m-1">
+        <label for="id_item_long">Полное наименование</label>
+        <input type="text" class="form-control" id="id_item_long" name="item_long" placeholder="Полностью">
+    </div>
+</div>
+
+<input class="btn btn-primary btn-user btn-block m-2" type="submit" value="Сохранить" />

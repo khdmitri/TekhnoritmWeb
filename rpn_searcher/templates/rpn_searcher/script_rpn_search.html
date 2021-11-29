@@ -1,0 +1,34 @@
+{% load static %}
+
+<script type="text/javascript">
+  const search_input = $("#search_input")
+  const delay_by_in_ms = 700
+  let scheduled_function = false
+
+  function call_search(request_parameter) {
+    var radioValue = $("input[name='type_search']:checked").val();
+    $.ajax({
+      url: "{% url 'rpn_searcher:ajax-rpn-search' %}",
+      data: {'search_line': request_parameter,
+             'type_search': radioValue,
+             'region': document.getElementById('id_region').value},
+      success: function(data) {
+        $('#list_content').html(data);
+      }
+    });
+  }
+
+  $(document).ready(function ($) {
+    call_search('');
+  });
+
+  search_input.on('keyup', function () {
+    const request_parameter = $(this).val() // value of user_input: the HTML element with ID user-input
+
+    if (scheduled_function) {
+        clearTimeout(scheduled_function)
+    }
+
+    scheduled_function = setTimeout(call_search, delay_by_in_ms, request_parameter)
+  })
+</script>

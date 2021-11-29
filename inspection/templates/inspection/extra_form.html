@@ -1,0 +1,98 @@
+{% load static %}
+
+<h3>Дополнительно: размещение радиооборудования</h3>
+
+<div class="row m-1">
+    <div class="col-4">
+        <p class="text-primary small" id="l_location">Радиоборудование размещается </p>
+    </div>
+    <div class="8">
+      <select class="custom-select mr-sm-2" id="id_container" name="container">
+        <option selected>Не выбрано...</option>
+        {% for cont in container_list %}
+            <option value="{{ cont.item }}">{{ cont.item }}</option>
+        {% endfor %}
+      </select>
+    </div>
+</div>
+<div class="row m-1">
+    <div class="col-12">
+      <select class="custom-select mr-sm-2" id="id_location" name="location">
+        <option selected>Не выбрано...</option>
+        {% for loc in location_list %}
+            <option value="{{ loc.item }}">{{ loc.item }}</option>
+        {% endfor %}
+      </select>
+    </div>
+</div>
+<div class="row m-1">
+    <div class="col-4">
+        <p class="text-primary small" id="l_antenna">Антенны устанавливаются </p>
+    </div>
+    <div class="8">
+      <select class="custom-select mr-sm-2" id="id_antenna" name="antenna">
+        <option selected>Не выбрано...</option>
+        {% for ant in antenna_list %}
+            <option value="{{ ant.item }}">{{ ant.item }}</option>
+        {% endfor %}
+      </select>
+    </div>
+</div>
+
+<a href="javascript:" onclick="generate_extra()" class="btn btn-secondary btn-user btn-block align-content-center mt-3">Генерировать</a>
+
+{% if success %}
+<p class="text-success m-3">{{ success }}</p>
+{% endif %}
+
+<input type="hidden" name="see_id" id="id_see_id" value="{{ extra_form.initial.see_id }}">
+<input type="hidden" name="ref_object" id="id_ref_object" value="{{ extra_form.initial.ref_object }}">
+
+<div class="row">
+    <div class="form-group m-0 col-12">
+        <div class="form-row">
+            <div class="col-3">
+                <span class="text-primary">Оборудование:</span>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-12">
+                <span class="text-danger">{{ extra_form.extra.errors }}</span>
+                <textarea class="form-control" id="id_extra" name="extra" placeholder="Описание размещения радиооборудования" rows="5">
+                    {{ extra_form.initial.extra }}
+                </textarea>
+                {% if extra_form.extra.help_text %}
+                <p class="help font-italic small">*{{ extra_form.extra.help_text|safe }}</p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-3">
+                <span class="text-primary">Обслуживающий персонал:</span>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-12">
+                <span class="text-danger">{{ extra_form.extra_staff.errors }}</span>
+                <textarea class="form-control" id="id_extra_staff" name="extra_staff" placeholder="Обслуживающий персонал" rows="5">
+                    {{ extra_form.initial.extra_staff }}
+                </textarea>
+                {% if extra_form.extra_staff.help_text %}
+                <p class="help font-italic small">*{{ extra_form.extra_staff.help_text|safe }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <input class="btn btn-primary btn-user btn-block" type="submit" value="Сохранить" />
+</div>
+
+
+<script type="text/javascript">
+    function generate_extra() {
+        document.getElementById('id_extra_form').elements['extra'].value = document.getElementById('l_location').innerText + ' ' +
+            document.getElementById('id_container').value + ' ' +
+            document.getElementById('id_location').value + '. ' +
+            document.getElementById('l_antenna').innerText + ' ' +
+            document.getElementById('id_antenna').value
+    }
+</script>

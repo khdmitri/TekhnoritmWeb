@@ -1,0 +1,110 @@
+<!-- ref_category.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<h3><span class="text-primary">Справочник: </span>Настройка категорий</h3>
+
+<div class="row">
+    <div class="col-6">
+        <label for="id_cat_type">Выберите категорию</label>
+        <select class="custom-select mr-sm-2" id="id_cat_type" name="cat_type" onchange="on_doc_changed()">
+        <option selected value="0">Не выбрано...</option>
+        {% for value in categories %}
+            <option value="{{ value.category }}">{{ value.category }}</option>
+        {% endfor %}
+      </select>
+    </div>
+</div>
+
+<h4 class="text-primary m-3 font-weight-bold">Список значений</h4>
+
+<div class="row">
+    <form class="user" name="form" id="id_form" method="POST">
+    {% csrf_token %}
+        <div id="id_content">
+            {% include 'references/category_form.html' %}
+        </div>
+    </form>
+</div>
+
+
+<script type="text/javascript">
+    var cat_type = $('#id_cat_type');
+    function on_doc_changed() {
+        $.ajax({
+          url: "{% url 'references:load-category' %}",
+          data: {'cat_type': cat_type.val()},
+          success: function(data) {
+             document.getElementById('id_category').value = cat_type.val();
+             $('#id_content').html(data);
+          }
+        });
+    }
+
+    function edit_item(item_id, category, item_short, item_long) {
+        var cat_type = document.getElementById('id_cat_type').value;
+        if (cat_type !== '0') {
+            document.getElementById('id_id').value = item_id;
+            document.getElementById('id_category').value = category;
+            document.getElementById('id_item_short').value = item_short;
+            document.getElementById('id_item_long').value = item_long
+        }
+        else {
+            alert('Сначало необходимо выбрать категорию!')
+        }
+    }
+
+    $(document).ready(function () {
+        const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+        $('#id_form').on('submit', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            var cat_type = document.getElementById('id_cat_type').value;
+            if (cat_type !== '0') {
+
+                const my_data = new FormData(this);
+
+                $.ajax({
+                    url: "{% url 'references:category-post' %}", // the endpoint
+                    type: "POST", // http method
+                    dataType: 'html',
+                    processData: false,
+                    contentType: false,
+                    data: my_data, // data sent with the post request
+
+                    // handle a successful response
+                    success: function (data) {
+                        $('#id_content').html(data); // remove the value from the input
+                    },
+                    error: function (data) {
+                        const res = JSON.stringify(data);
+                        $('#id_content').html(res);
+                    }
+                });
+            }
+            else {
+                alert('Не выбрана категория!')
+            }
+        });
+    })
+</script>
+
+{% endblock content %}

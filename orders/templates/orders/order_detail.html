@@ -1,0 +1,221 @@
+<!-- order_detail.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+  <div class="container">
+      <div class="row">
+            <div class="col-xl-6 col-md-9 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                          Заявка №{{ order.order_id }}
+                          {% if order.master_id %}
+                              <span class="text-success">(расширение)</span>&nbsp;->&nbsp;<strong>{{ order.master_id }}(мастер)</strong>
+                          {% else %}
+                              <br />
+                              <a href="{% url 'orders:create-extended-order' master_id=order.order_id %}" class="text-info text-uppercase font-weight-bold" target="_new">создать расширение</a>
+                              <hr/>
+                          {% endif %}
+                      </div>
+                      <div class="h6 mb-0 font-weight-bold text-gray-600">{{ order.client.short_name }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <img class="img-profile rounded-circle" src="{{ order.client.logo.url }}">
+    {#                  <i class="fas fa-calendar fa-2x text-gray-300"></i>#}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="card o-hidden border-0 shadow-lg my-5">
+              <div class="card-body p-0">
+
+                <!-- Nested Row within Card Body -->
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="p-5">
+                      <div class="text-center">
+                        <h1 class="h4 text-gray-900 mb-4">Редактирование заявки!</h1>
+                      </div>
+
+                      <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                          <li class="nav-item">
+                            <a class="nav-link active" id="pills-order-tab" data-toggle="pill" href="#pills-order" role="tab" aria-controls="pills-order" aria-selected="true">
+                                <span>Форма заявки</span>
+                                 <i class="fas fa-envelope-open-text fa-sm"></i>
+                            </a>
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link" id="pills-contract-tab" data-toggle="pill" href="#pills-contract" role="tab" aria-controls="pills-contract" aria-selected="true">
+                                <span>Договор</span>
+                                 <i class="fas fa-handshake fa-sm"></i>
+                            </a>
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link" id="pills-client-tab" data-toggle="pill" href="#pills-scan" role="tab" aria-controls="pills-scan" aria-selected="false">
+                                <span>Скан-документ</span>
+                                 <i class="fas fa-user-tie fa-sm"></i>
+                            </a>
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link" id="pills-final-tab" data-toggle="pill" href="#pills-kind" role="tab" aria-controls="pills-kind" aria-selected="false">
+                                <span>Виды работ</span>
+                                 <i class="fas fa-stamp fa-sm"></i>
+                            </a>
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link" id="pills-publication-tab" data-toggle="pill" href="#pills-pub" role="tab" aria-controls="pills-pub" aria-selected="false">
+                                <span>Публикация</span>
+                                 <i class="fas fa-bullhorn fa-sm"></i>
+                            </a>
+                          </li>
+                      </ul>
+
+                          <div class="tab-content" id="pills-tabContent">
+
+                                <div class="tab-pane fade show active" id="pills-order" role="tabpanel" aria-labelledby="pills-order-tab">
+                                    <form class="user" name="form" id="main_form" method="post" action="{% url 'orders:order-save' %}" enctype="multipart/form-data">
+                                    {% csrf_token %}
+
+                                      <input type="hidden" id="order_id" name="order_id" value="{{ order.order_id }}">
+
+                                      <div class="form-group m-3 col-12">
+                                        {{ form.ext_order_id.errors }}
+                                        <input type="text" class="form-control" id="id_ext_order_id" name="ext_order_id" placeholder="Номер оригинальной заявки" value="{{ order.ext_order_id|default_if_none:"" }}">
+                                        {% if form.ext_order_id.help_text %}
+                                        <p class="help font-italic small">*{{ form.ext_order_id.help_text|safe }}</p>
+                                        {% endif %}
+                                      </div>
+
+                                      <div class="form-group m-3 col-12">
+                                          <span class="text-danger">{{ form.region.errors }}</span>
+                                        {{ form.region }}
+                                        {% if form.region.help_text %}
+                                        <p class="help font-italic small">*{{ form.region.help_text|safe }}</p>
+                                        {% endif %}
+                                      </div>
+
+                                        <div class="form-group m-3 col-12">
+                                            {{ form.description.errors }}
+                                            <textarea class="form-control" id="id_description" name="description" placeholder="Описание" rows="3">{{order.description|default_if_none:"" }}</textarea>
+                                            {% if form.description.help_text %}
+                                            <p class="help font-italic small">*{{ form.description.help_text|safe }}</p>
+                                            {% endif %}
+                                        </div>
+
+                                      <div class="form-group m-3 col-12">
+                                        {{ form.dead_line.errors }}
+                                        <input id="datepicker" width="276" class="form-control" name="dead_line" placeholder="Срок до" value="{{ order.dead_line|default_if_none:"" }}">
+                                        {% if form.dead_line.help_text %}
+                                        <p class="help font-italic small">*{{ form.dead_line.help_text|safe }}</p>
+                                        {% endif %}
+                                      </div>
+
+                                      <div class="form-group m-3 col-12">
+                                        {{ form.img.errors }}
+                                        {{ form.img }}
+                                        {% if form.img.help_text %}
+                                        <p class="help font-italic small">*{{ form.img.help_text|safe }}</p>
+                                        {% endif %}
+                                      </div>
+
+                                        <a href="javascript:;" onclick="document.getElementById('main_form').submit();" class="btn btn-primary btn-user btn-block">
+                                          Сохранить
+                                        </a>
+                                    </form>
+
+                                    <p>
+                                        <a href="{% url 'orders:order-close' order_id=order.order_id %}" class="font-weight-bold text-warning m-0">
+                                            <p>Закрыть заявку <span class="small">* - Заявка закрывается, если все регламентные работы выполнены</span></p>
+                                        </a>
+                                    </p>
+                                    <p>
+                                        <a class="text-danger m-0" href="{% url 'orders:order-delete' order_id=order.order_id %}" data-toggle="modal" data-target="#deleteModal">
+                                            <p>Удалить <span class="small">* - При удалении заявки история работ по заявке не сохраняется</span></p>
+                                        </a>
+                                    </p>
+                                </div>
+
+                             <div class="tab-pane fade" id="pills-contract" role="tabpanel" aria-labelledby="pills-contract-tab">
+                                <div id="order_contracts_page">
+                                    {% include 'orders/include/order_contracts.html' %}
+                                </div>
+                            </div>
+
+                              <div class="tab-pane fade" id="pills-scan" role="tabpanel" aria-labelledby="pills-scan-tab">
+                                {% if order.img %}
+                                <img class="img-fluid img-thumbnail" src="{{ order.img.url }}" alt="Скан заявки"/>
+                                {% endif %}
+
+                              </div>
+
+                            <div class="tab-pane fade" id="pills-kind" role="tabpanel" aria-labelledby="pills-kind-tab">
+
+                                <div class="card-body" id="order_task_table_id">
+
+                                </div>
+
+                                <a href="{% url 'orders:order-kind-create' ref_order=order.order_id %}" class="btn btn-primary btn-user btn-block" target="_new">
+                                  Создать
+                                </a>
+
+                            </div>
+
+                            <div class="tab-pane fade" id="pills-pub" role="tabpanel" aria-labelledby="pills-publication-tab">
+                                <div id="pub_table_id">
+
+                                </div>
+
+                            </div>
+
+                          </div>
+                        <a href="{% url 'orders:order-list' %}" class="font-weight-bold text-primary m-3">
+                            <p>Назад к списку</p>
+                        </a>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+        </div>
+  </div>
+
+  <!-- Delete Modal-->
+  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Удалить заявку?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Удаление заявки приведет к удалению всей истории работ по заявке. Удалить?</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Отмена</button>
+          <a class="btn btn-primary" href="{% url 'orders:order-delete' order_id=order.order_id %}">Удалить</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <script>
+        $('#datepicker').datepicker({
+            uiLibrary: 'bootstrap4',
+            format: 'dd.mm.yyyy'
+        });
+    </script>
+
+    {% include 'orders/order_task_table_ajax.html' %}
+    {% include 'orders/order_task_publicate_ajax.html' %}
+
+{% endblock content %}

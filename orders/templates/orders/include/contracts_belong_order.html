@@ -1,0 +1,10 @@
+<ul class="list-group m-1">
+    {% for contract in order_contracts %}
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-9" style="width: 120px"><button class="btn btn-secondary btn-block btn-sm" data-toggle="modal" data-target="#contractModal_{{ contract.id }}">{{ contract.doc_no }}</button></div>
+                <div class="col-3"><a href="javascript:" onclick="remove_contract('{{ contract.id }}', '{{ order.order_id }}')"><i class="fa fa-trash text-warning" aria-hidden="true"></i></a></div>
+            </div>
+        </li>
+    {% endfor %}
+</ul>

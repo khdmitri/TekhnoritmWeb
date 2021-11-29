@@ -1,0 +1,108 @@
+{% load static %}
+
+{% if success %}
+<p id="id_success" class="text-success">{{ success }}</p>
+{% endif %}
+
+  <input type="hidden" id="id_id" name="id" value="{{ object.id }}">
+  <input type="hidden" id="id_ref_order" name="ref_order" value="{{ order_id }}">
+  <input type="hidden" id="id_address_fias" name="address_fias" value="{{ object.address_fias }}">
+
+  <div class="form-group m-3 col-12">
+    <label for="id_prto_type">Тип ПРТО</label>
+    <select class="custom-select mr-sm-2" id="id_prto_type_ref" name="prto_type_ref">
+        <option value="{{ form.initial.prto_type_ref }}" selected>{{ form.initial.prto_type_ref }}</option>
+        {% for type in prto_types %}
+            <option value="{{ type.name }}">{{ type.name }}</option>
+        {% endfor %}
+    </select>
+  </div>
+
+  <div class="form-group m-3 col-12">
+    {{ form.name.errors }}
+    <input type="text" class="form-control" id="id_name" name="name" placeholder="Наименование" value="{{ object.name }}">
+    {% if form.name.help_text %}
+    <p class="help font-italic small">*{{ form.name.help_text|safe }}</p>
+    {% endif %}
+  </div>
+
+  <div class="form-group m-3 col-12">
+    <span class="text-danger">{{ form.address.errors }}</span>
+    <div id="fias_ok">
+        {% if object.address_fias %}
+            <span class='text-success'>Адрес проверен в базе ФИАС</span>
+        {% endif %}
+    </div>
+    <input type="text" class="form-control" id="id_address" name="address" placeholder="Адреc размещения" value="{{ object.address }}">
+    {% if form.address.help_text %}
+    <p class="help font-italic small">*{{ form.address.help_text|safe }}</p>
+    {% endif %}
+  </div>
+
+  <div class="form-group m-3 col-12">
+    <label for="id_build_year">Год ввода в эксплуатацию</label>
+    <span class="text-danger">{{ form.build_year.errors }}</span>
+    <input type="number" class="form-control" id="id_build_year" name="build_year" placeholder="" value="{{ form.initial.build_year }}">
+    {% if form.build_year.help_text %}
+    <p class="help font-italic small">*{{ form.build_year.help_text|safe }}</p>
+    {% endif %}
+  </div>
+
+  <div class="form-group m-3 col-12">
+    <label for="id_build_purpose">Цель проекта строительства</label>
+    <span class="text-danger">{{ form.build_purpose.errors }}</span>
+    <input type="text" class="form-control" id="id_build_purpose" name="build_purpose" placeholder="" value="{{ form.initial.build_purpose }}">
+    {% if form.build_purpose.help_text %}
+    <p class="help font-italic small">*{{ form.build_purpose.help_text|safe }}</p>
+    {% endif %}
+  </div>
+
+  <div class="row">
+      <div class="col"><hr></div>
+      <div class="col-auto small text-primary">SHARING (совместное использвание)</div>
+      <div class="col"><hr></div>
+  </div>
+
+  <div class="row m-1">
+    <div class="col-12">
+      <div class="form-check">
+        {{ form.is_shared }}
+        <label class="form-check-label" for="id_is_shared">Используется совместно</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="row m-1">
+    <div class="col-4">
+      <label for="id_shared_name">Наименование объекта</label>
+      <span class="text-danger">{{ form.shared_name.errors }}</span>
+      <input type="text" class="form-control" id="id_shared_name" name="shared_name" placeholder="" value="{{ form.initial.shared_name }}">
+      {% if form.shared_name.help_text %}
+      <p class="help font-italic small">*{{ form.shared_name.help_text|safe }}</p>
+      {% endif %}
+    </div>
+    <div class="col-4">
+      <label for="id_shared_standard">Стандарты (через /)</label>
+      <span class="text-danger">{{ form.shared_standard.errors }}</span>
+      <input type="text" class="form-control" id="id_shared_standard" name="shared_standard" placeholder="" value="{{ form.initial.shared_standard }}">
+      {% if form.shared_standard.help_text %}
+      <p class="help font-italic small">*{{ form.shared_standard.help_text|safe }}</p>
+      {% endif %}
+    </div>
+    <div class="col-4">
+      <label for="id_shared_owner">Совладелец</label>
+      <span class="text-danger">{{ form.shared_owner.errors }}</span>
+      <input type="text" class="form-control" id="id_shared_owner" name="shared_owner" placeholder="" value="{{ form.initial.shared_owner }}">
+      {% if form.shared_owner.help_text %}
+      <p class="help font-italic small">*{{ form.shared_owner.help_text|safe }}</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <input class="btn btn-primary btn-user btn-block m-3" type="submit" value="Сохранить" />
+
+  {% if object.id %}
+  <a class="btn btn-danger btn-user btn-block m-3" href="{% url 'inspection:delete-object' object_id=object.id order_id=order_id %}">Удалить</a>
+  {% endif %}
+
+{% include 'inspection/dadata.html' %}

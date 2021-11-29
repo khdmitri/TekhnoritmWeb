@@ -1,0 +1,234 @@
+{% load static %}
+
+<!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+      <!-- Sidebar - Brand -->
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="base.html">
+        <div class="sidebar-brand-icon rotate-n-15">
+{#          <i class="fas fa-certificate"></i>#}
+            <img class="img-fluid rounded" src="/static/custom/Tekhnoritm.png" alt="Техноритм логотип" />
+        </div>
+        <div class="sidebar-brand-text mx-3">Техноритм <sup>"ЭДП"</sup></div>
+      </a>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider my-0">
+
+    {% if user.is_authenticated %}
+      <!-- Nav Item - Dashboard -->
+      <li class="nav-item active">
+        <a class="nav-link" href="/">
+          <i class="fas fa-fw fa-home"></i>
+          <span class="font-weight-bolder text-uppercase">Главная</span></a>
+      </li>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider">
+
+        {% if user.profile.department.name == 'АХО (Администрация)' or perms.accounts.site_administrator %}
+          <li class="nav-item active">
+            <a class="nav-link collapsed" href="{% url 'workflow:cleric-view' %}" data-toggle="collapse" data-target="#collapseCleric" aria-expanded="true" aria-controls="collapseCleric">
+              <i class="fas fa-fw fa-clipboard-list text-gray-200"></i>
+              <span class="text-warning">Делопроизводство</span>
+            </a>
+            <div id="collapseCleric" class="collapse" aria-labelledby="headingCleric" data-parent="#accordionSidebar">
+              <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Доступно:</h6>
+                <a class="collapse-item" href="{% url 'orders:order-list' %}">Создать заявку</a>
+                <a class="collapse-item" href="{% url 'references:create-contract' %}">Создать договор</a>
+                <a class="collapse-item" href="{% url 'orders:control-order' %}">Управление заявками</a>
+                <a class="collapse-item" href="{% url 'order_control:control-list' %}">Контроль заявок</a>
+                <a class="collapse-item" href="{% url 'export:protocol-list' %}">Росаккредитация</a>
+              </div>
+            </div>
+          </li>
+        {% endif %}
+
+        {% if user.profile.department.name == 'Орган инспекции' or perms.accounts.site_administrator %}
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'workflow:inspection-view' %}" data-toggle="collapse" data-target="#collapseInspection" aria-controls="collapseInspection">
+              <i class="fas fa-fw fa-graduation-cap text-gray-200"></i>
+              <span class="text-warning">Орган инспекции</span>
+            </a>
+            <div id="collapseInspection" class="collapse" aria-labelledby="headingInspection" data-parent="#accordionSidebar">
+              <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Доступно:</h6>
+                <a class="collapse-item" href="{% url 'inspection:source-table' %}">Объекты инспекции</a>
+              </div>
+            </div>
+          </li>
+        {% endif %}
+
+        {% if user.profile.department.name == 'Испытательная лаборатория' or perms.accounts.site_administrator %}
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'workflow:laboratory-view' %}" data-toggle="collapse" data-target="#collapseLaboratory" aria-controls="collapseLaboratory">
+              <i class="fas fa-fw fa-graduation-cap text-gray-200"></i>
+              <span class="text-warning">Лаборатория</span>
+            </a>
+            <div id="collapseLaboratory" class="collapse" aria-labelledby="headingLaboratory" data-parent="#accordionSidebar">
+              <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Доступно:</h6>
+                <a class="collapse-item" href="{% url 'laboratory:source-table' %}">Объекты ИЛ</a>
+              </div>
+            </div>
+          </li>
+        {% endif %}
+
+        {% if user.profile.department.name == 'СОУТ' or perms.accounts.site_administrator %}
+          <li class="nav-item active">
+            <a class="nav-link" href="/">
+              <i class="fas fa-fw fa-fire-extinguisher text-gray-200"></i>
+              <span class="text-warning">СОУТ</span>
+            </a>
+          </li>
+        {% endif %}
+
+     <!-- Divider -->
+      <hr class="sidebar-divider">
+
+      <!-- Nav Item - Pages Collapse Menu -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+          <i class="fas fa-fw fa-cog"></i>
+          <span>Компоненты</span>
+        </a>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Доступно:</h6>
+              {% if perms.accounts.can_distribute_job %}
+              <a class="collapse-item" href="{% url 'orders:distribution-list' %}">Распределение</a>
+              {% endif %}
+              {% if user.profile.department %}
+              <a class="collapse-item" href="{% url 'orders:in-process' %}">В работе</a>
+              {% endif %}
+              {% if perms.accounts.can_search_rpn_files or user.profile.department.name == 'Орган инспекции' or perms.accounts.site_administrator %}
+              <a class="collapse-item" href="{% url 'rpn_searcher:search-rpn' %}">Поиск в РПН</a>
+              {% endif %}
+          </div>
+        </div>
+      </li>
+
+      <!-- Nav Item - Utilities Collapse Menu -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
+          <i class="fas fa-fw fa-wrench"></i>
+          <span>Утилиты</span>
+        </a>
+        <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Доступно:</h6>
+              {% if perms.accounts.site_administrator %}
+              <a class="collapse-item" href="/site_admin/staff/">Управление персоналом</a>
+              <a class="collapse-item" href="{% url 'generators:generator-config' %}">Генераторы</a>
+              {% endif %}
+              {% if perms.accounts.site_administrator or perms.accounts.can_view_laboratory %}
+              <a class="collapse-item" href="{% url 'laboratory:pribor-list' %}">Оборудование</a>
+              {% endif %}
+              {% if perms.accounts.site_administrator or perms.accounts.can_view_orders %}
+              <a class="collapse-item" href="{% url 'order_control:target-list' %}">Настрока оповещений</a>
+              {% endif %}
+              {% if perms.accounts.site_administrator or perms.accounts.can_upload_rpn_files %}
+              <a class="collapse-item" href="{% url 'rpn_searcher:upload-page' %}">Загрузка РПН-файлов</a>
+              {% endif %}
+          </div>
+        </div>
+      </li>
+
+        <!-- Nav Item - Utilities Collapse Menu -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReferences" aria-expanded="true" aria-controls="collapseReferences">
+          <i class="fas fa-fw fa-book"></i>
+          <span>Справочники</span>
+        </a>
+        <div id="collapseReferences" class="collapse" aria-labelledby="headingReferences" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Доступно:</h6>
+              {% if user.profile.department.name == 'АХО (Администрация)' or perms.accounts.site_administrator or perms.account.can_view_orders %}
+              <a class="collapse-item" href="{% url 'references:client-list' %}">Клиенты</a>
+              {% endif %}
+              {% if perms.accounts.site_administrator %}
+              <a class="collapse-item" href="{% url 'references:default-task' %}">Наборы (этапы)</a>
+              <a class="collapse-item" href="{% url 'references:show-ref-category' %}">Категории</a>
+              {% endif %}
+              {% if user.profile.department.name == 'Орган инспекции' or perms.accounts.site_administrator %}
+              <a class="collapse-item" href="{% url 'inspection:load-ref-low' %}">НД</a>
+              <a class="collapse-item" href="{% url 'inspection:load-ref-sign' %}">Подписи</a>
+              {% endif %}
+              {% if user.profile.department.name == 'Орган инспекции' or user.profile.department.name == 'Испытательная лаборатория' or perms.accounts.site_administrator %}
+              <a class="collapse-item" href="{% url 'laboratory:ref-protocol-emp' %}">Протокол (ЭМП)</a>
+              {% endif %}
+          </div>
+        </div>
+      </li>
+
+      <!-- Nav Item - Utilities Collapse Menu -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMessages" aria-expanded="true" aria-controls="collapseMessages">
+          <i class="fas fa-fw fa-comments"></i>
+          <span>Сообщения</span>
+        </a>
+        <div id="collapseMessages" class="collapse" aria-labelledby="headingMessages" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Доступно:</h6>
+              {% if request.user.is_authenticated %}
+                <a class="collapse-item" href="{% url 'int_messages:message-create' %}">Создать</a>
+                <a class="collapse-item" href="{% url 'int_messages:message-list' box='inbox' type='all' message='None' %}">Входящие</a>
+                <a class="collapse-item" href="{% url 'int_messages:message-list' box='outbox' type='all' message='None' %}">Исходящие</a>
+              {% endif %}
+
+          </div>
+        </div>
+      </li>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider">
+
+    {% else %}
+
+      <!-- Heading -->
+      <div class="sidebar-heading">
+        Дополнительно
+      </div>
+
+      <!-- Nav Item - Pages Collapse Menu -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
+          <i class="fas fa-fw fa-folder"></i>
+          <span>Процедуры</span>
+        </a>
+        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Авторизация:</h6>
+            <a class="collapse-item" href="{% url 'start-app' %}">Вход</a>
+            <a class="collapse-item" href="{% url 'accounts:account-create' %}">Регистрация</a>
+            <a class="collapse-item" href="forgot-password.html">Забыл пароль</a>
+            <div class="collapse-divider"></div>
+{#            <h6 class="collapse-header">Other Pages:</h6>#}
+{#            <a class="collapse-item" href="404.html">404 Page</a>#}
+{#            <a class="collapse-item" href="blank.html">Blank Page</a>#}
+          </div>
+        </div>
+      </li>
+
+    {% endif %}
+      <!-- Nav Item - Charts -->
+    {% if user.profile.department.name == 'АХО (Администрация)' or perms.accounts.site_administrator %}
+     <li class="nav-item active">
+        <a class="nav-link" href="{% url 'archive:archive' %}">
+          <i class="fas fa-fw fa-archive"></i>
+          <span class="text-success text-uppercase">Архив</span></a>
+     </li>
+
+     <!-- Divider -->
+     <hr class="sidebar-divider d-none d-md-block">
+     {% endif %}
+
+      <!-- Sidebar Toggler (Sidebar) -->
+      <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+      </div>
+
+    </ul>
+
+<!-- End of Sidebar -->

@@ -1,0 +1,72 @@
+{% load static %}
+
+<input type="hidden" id="id_id" name="id" value="{{ form.initial.id }}">
+<input type="hidden" id="id_ref_client" name="ref_client" value="{{ client.id }}">
+
+<div class="form-group m-3 col-12">
+  <div class="col-4">
+      <span class="text-primary">Регион</span>
+  </div>
+  <div class="col-8">
+    <select class="custom-select mr-sm-2" id="id_ref_region" name="ref_region">
+        <option value="{{ selected_region.id }}" selected>{{ selected_region.full_name|default_if_none:"" }}</option>
+        {% for item in regions %}
+            <option value="{{ item.id }}">{{ item.full_name }}</option>
+        {% endfor %}
+    </select>
+  </div>
+</div>
+
+<div class="input-group m-1 col-12">
+    {{ form.regional_address.errors }}
+     <div class="col-2">
+         <span class="text-primary">Региональный адрес</span>
+     </div>
+    <div class="col-8">
+        <input type="text" class="form-control" id="id_regional_address" name="regional_address" placeholder="Региональный адрес" value="{{ form.initial.regional_address|default_if_none:"" }}">
+        {% if form.regional_address.help_text %}
+        <p class="help font-italic small">{{ form.regional_address.help_text|safe }}</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="input-group m-1 col-12">
+    {{ form.sign_position.errors }}
+     <div class="col-2">
+         <span class="text-primary">Должность</span>
+     </div>
+    <div class="col-8">
+        <input type="text" class="form-control" id="id_sign_position" name="sign_position" placeholder="Должность" value="{{ form.initial.sign_position|default_if_none:"" }}">
+        {% if form.sign_position.help_text %}
+        <p class="help font-italic small">{{ form.sign_position.help_text|safe }}</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="input-group m-1 col-12">
+    {{ form.sign_person.errors }}
+    <div class="col-2">
+         <span class="text-primary">Ф.И.О.</span>
+    </div>
+    <div class="col-8">
+        <input type="text" class="form-control" id="id_sign_person" name="sign_person" placeholder="ФИО" value="{{ form.initial.sign_person|default_if_none:"" }}">
+        {% if form.sign_person.help_text %}
+        <p class="help font-italic small">{{ form.sign_person.help_text|safe }}</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="input-group m-1 col-12">
+    {{ form.template.errors }}
+    <div class="col-2">
+         <span class="text-primary">Шаблон</span>
+    </div>
+    <div class="col-8">
+        <input type="text" class="form-control" id="id_template" name="template" placeholder="Шаблон" value="{{ form.initial.template|default_if_none:"" }}">
+        {% if form.template.help_text %}
+        <p class="help font-italic small">{{ form.template.help_text|safe }}</p>
+        {% endif %}
+    </div>
+</div>
+
+<input class="btn btn-primary btn-user btn-block mt-1" type="submit" value="Сохранить" />

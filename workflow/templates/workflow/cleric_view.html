@@ -1,0 +1,149 @@
+<!-- workflow/home.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Деятельность подразделения</h1>
+            <a href="{% url 'int_messages:message-create' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Написать сообщение</a>
+          </div>
+<!-- End of Page Heading -->
+
+    {% if perms.accounts.can_view_orders %}
+    <div class="row">
+
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                          <a href="orders/" class="text-primary">Делопроизводство</a>
+                      </div>
+                      <!--<div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>-->
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+    </div>
+    {% endif %}
+
+    {% if perms.accounts.can_view_laboratory %}
+    <div class="row">
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                           <a href="laboratory/" class="text-success">Лаборатория</a>
+                      </div>
+                      <!--<div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>-->
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-flask fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+    </div>
+    {% endif %}
+
+    {% if perms.accounts.can_view_inspection %}
+    <div class="row">
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                          <a href="inspection/" class="text-info">Орган Инспекции</a>
+                      </div>
+                      <!--<div class="row no-gutters align-items-center">-->
+                        <!--<div class="col-auto">-->
+                          <!--<div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>-->
+                        <!--</div>-->
+                        <!--<div class="col">-->
+                          <!--<div class="progress progress-sm mr-2">-->
+                            <!--<div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>-->
+                          <!--</div>-->
+                        <!--</div>-->
+                      <!--</div>-->
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-graduation-cap fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+    </div>
+    {% endif %}
+
+    {% if perms.accounts.can_view_sout %}
+    <div class="row">
+            <!-- Pending Requests Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                          <a href="sout/" class="text-warning">СОУТ</a>
+                      </div>
+                      <!--<div class="h5 mb-0 font-weight-bold text-gray-800">18</div>-->
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-fire-extinguisher fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+    </div>
+    {% endif %}
+
+    {% if request.user.is_authenticated %}
+    <div class="row">
+        <!-- Collapsable Card Example -->
+                  <div class="card shadow mb-4">
+                    <!-- Card Header - Accordion -->
+                    <a href="#messageCardExample" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="messageCardExample">
+                      <h6 class="m-0 font-weight-bold text-primary">Система сообщений</h6>
+                    </a>
+                    <!-- Card Content - Collapse -->
+                    <div class="collapse show" id="messageCardExample">
+                      <div class="card-body">
+                        This is a collapsable card example using Bootstrap's built in collapse functionality. <strong>Click on the card header</strong> to see the card body collapse and expand!
+                      </div>
+                    </div>
+                  </div>
+    </div>
+
+    <div class="row">
+        <!-- Collapsable Card Example -->
+                  <div class="card shadow mb-4">
+                    <!-- Card Header - Accordion -->
+                    <a href="#alertsCardExample" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="alertsCardExample">
+                      <h6 class="m-0 font-weight-bold text-primary">Система оповещений</h6>
+                    </a>
+                    <!-- Card Content - Collapse -->
+                    <div class="collapse show" id="alertsCardExample">
+                      <div class="card-body">
+                        This is a collapsable card example using Bootstrap's built in collapse functionality. <strong>Click on the card header</strong> to see the card body collapse and expand!
+                      </div>
+                    </div>
+                  </div>
+    </div>
+    {% endif %}
+{% endblock content %}

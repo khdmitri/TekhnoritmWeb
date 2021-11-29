@@ -1,0 +1,257 @@
+<!-- action_execution.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+  <div class="container">
+      <div class="row">
+            <div class="col-xl-6 col-md-9 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                          {{ action.get_target_description }} -> Объектов - {{ action.ref_task.qty }}
+                      </div>
+                      <div class="h6 mb-0 font-weight-bold text-gray-600">Dead line: {{ action.ref_task.dead_line }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="card o-hidden border-0 shadow-lg my-5">
+              <div class="card-body p-0">
+
+                <!-- Nested Row within Card Body -->
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="p-5">
+                      <div class="text-center">
+                        <h1 class="h4 text-gray-900 mb-4">Прогресс исполнения</h1>
+                      </div>
+
+                      <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                          <li class="nav-item">
+                            <a class="nav-link active" id="pills-action-tab" data-toggle="pill" href="#pills-action" role="tab" aria-controls="pills-action" aria-selected="true">
+                                <span>Цель</span>
+                                 <i class="fas fa-envelope-open-text fa-sm"></i>
+                            </a>
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link" id="pills-execution-tab" data-toggle="pill" href="#pills-execution" role="tab" aria-controls="pills-execution" aria-selected="false">
+                                <span>Прогресс</span>
+                                 <i class="fas fa-stamp fa-sm"></i>
+                            </a>
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link" id="pills-form-tab" data-toggle="pill" href="#pills-form" role="tab" aria-controls="pills-form" aria-selected="false">
+                                <span>Форма</span>
+                                 <i class="fas fa-stamp fa-sm"></i>
+                            </a>
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link" id="pills-final-tab" data-toggle="pill" href="#pills-final" role="tab" aria-controls="pills-final" aria-selected="false">
+                                <span>Завершение</span>
+                                 <i class="fas fa-bullhorn fa-sm"></i>
+                            </a>
+                          </li>
+                      </ul>
+
+                      <div class="tab-content" id="pills-tabContent">
+
+                          <div class="tab-pane fade show active" id="pills-action" role="tabpanel" aria-labelledby="pills-action-tab">
+                            <div class="row">
+                                <div class="col-6">
+                                    <span class="font-weight-bold">Начало работ</span>
+                                </div>
+                                <div class="col-6">
+                                    <span id="id_task_id" class="text-primary">{{ action.start_date }}</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <span class="font-weight-bold">Целевое количество</span>
+                                </div>
+                                <div class="col-6">
+                                    <span class="text-primary">{{ action.ref_task.qty }}</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <span class="font-weight-bold">Описание</span>
+                                </div>
+                                <div class="col-6">
+                                    <span class="text-primary small">{{ action.description }}</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <span class="font-weight-bold">Дополнительно</span>
+                                </div>
+                                <div class="col-6">
+                                    <span class="text-primary small">{{ action.extra }}</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <hr />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <span class="font-weight-bold">Исх.данные</span>
+                                </div>
+                                <div class="col-6">
+                                    {% if task.ref_order.attach %}
+                                    <a href="{% url action.ref_task.attach.url %}" class="text-warning" download>Скачать</a>
+                                    {% else %}
+                                    <span class="text-warning">Не доступно</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                          </div>
+
+                        <div class="tab-pane fade" id="pills-execution" role="tabpanel" aria-labelledby="pills-execution-tab">
+                            <div class="card-body" id="execution_table_id">
+
+                            </div>
+
+                            <a href="javascript:;" onclick="createNewExecution()" class="btn btn-primary btn-user btn-block">
+                              Добавить
+                            </a>
+
+                        </div>
+
+                        <div class="tab-pane fade" id="pills-form" role="tabpanel" aria-labelledby="pills-form-tab">
+                            <form class="user" name="form" id="main_form" method="POST" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div id="execution_form_id">
+
+                                    </div>
+                            </form>
+                        </div>
+
+                        <div class="tab-pane fade" id="pills-final" role="tabpanel" aria-labelledby="pills-final-tab">
+                            <div id="pub_table_id">
+                                <p>Если все работы успешно выполнены, работу необходимо закрыть. При этом данная работа исчезнет из списка компоненты "В РАБОТЕ" </p>
+                                <a href="{% url 'orders:action-close' action_id=action.id %}" class="btn btn-danger btn-user btn-block">
+                                  Закрыть
+                                </a>
+                            </div>
+
+                        </div>
+
+                      </div>
+                        <a href="{% url 'orders:in-process' %}" class="font-weight-bold text-primary m-3">
+                            <p>Назад к списку</p>
+                        </a>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+        </div>
+  </div>
+
+    <script>
+
+        $('#datepicker').datepicker({
+            uiLibrary: 'bootstrap4',
+            format: 'dd.mm.yyyy'
+        });
+
+        function createNewExecution() {
+            $.ajax({
+              url: "{% url 'orders:execution-post' %}",
+              data: {'ref_action': '{{ action.id }}'},
+              success: function(data) {
+                  $('#execution_form_id').html(data);
+                  $('#pills-form-tab').click()
+              }
+            });
+        }
+
+        function editExecution(param) {
+            $.ajax({
+              url: "{% url 'orders:execution-post' %}",
+              data: {'ref_action': '{{ action.id }}',
+                     'execution_id': param},
+              success: function(data) {
+                  $('#id_success').empty();
+                  $('#execution_form_id').html(data);
+                  $('#pills-form-tab').click()
+              }
+            });
+        }
+
+        function call_submit(form) {
+
+            return false;
+          }
+
+        $(document).ready(function () {
+
+            const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+            function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+            }
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                }
+            });
+
+            $('a[data-toggle="pill"]').on('show.bs.tab', function (e) {
+                if (e.target.id === 'pills-execution-tab') {
+                    $.ajax({
+                      url: "{% url 'orders:execution-list' %}",
+                      data: {'action_id': '{{ action.id }}'},
+                      success: function(data) {
+                          $('#execution_table_id').html(data);
+                      }
+                    });
+                }
+            });
+
+            $('#main_form').on('submit', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log("call submit is working!"); // sanity check
+                const my_data = new FormData(this);
+
+                $.ajax({
+                    url: "{% url 'orders:execution-post' %}", // the endpoint
+                    type: "POST", // http method
+                    dataType: 'html',
+                    processData: false,
+                    contentType: false,
+                    enctype: 'multipart/form-data',
+                    data: my_data, // data sent with the post request
+
+                    // handle a successful response
+                    success : function(data) {
+                        $('#execution_form_id').html(data); // remove the value from the input
+                        $('#pills-form-tab').click()
+                    },
+                    error: function(data) {
+                        const res = JSON.stringify(data);
+                        $('#execution_form_id').html(res);
+                    }
+                });
+            })
+        });
+    </script>
+
+{% endblock content %}

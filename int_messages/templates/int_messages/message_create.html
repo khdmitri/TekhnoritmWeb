@@ -1,0 +1,62 @@
+<!-- message_create.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Отправить сообщение</h1>
+            <a href="{% url 'int_messages:message-create' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Написать сообщение</a>
+          </div>
+<!-- End of Page Heading -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-xl-9 col-md-12 mb-4">
+          <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                      {{ request.user.first_name }} {{ request.user.last_name }}
+                  </div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">ОТПРАВИТЕЛЬ</div>
+                </div>
+                <div class="col-auto">
+                    <img class="img-profile rounded-circle" src="{{ selected_user.profile.avatar.url }}">
+{#                  <i class="fas fa-calendar fa-2x text-gray-300"></i>#}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="card o-hidden border-0 shadow-lg my-4">
+              <div class="card-body p-0">
+                <!-- Nested Row within Card Body -->
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="p-5">
+                      <div class="text-center">
+                        <h1 class="h4 text-gray-900 mb-4">Создать сообщение</h1>
+                      </div>
+                        <form class="user" id="main_form" method="POST" name="form" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {% include 'bs4_form.html' with form=form %}
+
+                            <a href="javascript:;" onclick="document.getElementById('main_form').submit();" class="btn btn-primary btn-user btn-block">
+                              Отправить
+                            </a>
+                        </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+  <div class="container">
+      <div class="row">
+            <div class="col-xl-6 col-md-9 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                          {{ client.short_name }}
+                      </div>
+                      <div class="h6 mb-0 font-weight-bold text-gray-600">{{ client.address_2 }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <img class="img-profile rounded-circle" src="{{ client.logo.url }}">
+    {#                  <i class="fas fa-calendar fa-2x text-gray-300"></i>#}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+      </div>
+      <h1 class="text-primary text-uppercase">Договоры</h1>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {{ message.alert_class }} shadow" role="alert">
+                  {{ message.text }}
+                </div>
+            {% endfor %}
+        {% endif %}
+      <div class="row">
+        <div class="col">
+          <div class="card o-hidden border-0 shadow-lg my-5 p-3">
+              <div class="row text-center">
+                  <h3>Родительские договоры</h3>
+              </div>
+              <div class="row">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable">
+                      <thead>
+                        <tr>
+                          <th>Даты</th>
+                          <th>Номер</th>
+                          <th>Статус</th>
+                          <th>Скан-документ</th>
+                          <th>Раскрыть</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for instance in contracts %}
+                        <tr>
+                            <td>
+                                <div class="d-block row text-nowrap">
+                                    <div class="row">
+                                        <div class="col text-info">Создан:</div>
+                                        <div class="col text-secondary">{{ instance.create_date|date:"d.m.Y" }}</div>
+                                    </div>
+                                </div>
+                                <div class="d-block row text-nowrap">
+                                    <div class="row">
+                                        <div class="col text-info">Подписан:</div>
+                                        <div class="col text-secondary">{{ instance.contract_date|date:"d.m.Y" }}</div>
+                                    </div>
+                                </div>
+                                <div class="d-block row text-nowrap">
+                                    <div class="row">
+                                        <div class="col text-info">Действителен:</div>
+                                        <div class="col text-secondary">{{ instance.expired_date|date:"d.m.Y" }}</div>
+                                    </div>
+                                </div>
+                                <div class="d-block row text-nowrap">
+                                    <div class="row">
+                                        <div class="col text-info">Закрыт:</div>
+                                        <div class="col text-secondary">{{ instance.closed_date|date:"d.m.Y" }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="align-middle text-center"><a href="{{ instance.get_absolute_url }}" target="_new"><strong>{{ instance.doc_no }}</strong></a></td>
+                            <td class="{{ instance.get_status.class }} align-middle text-center">
+                                <span class="text-uppercase font-weight-bold small">{{  instance.get_status.text }}</span>
+                                <div class="d-block"><a href="{% url 'references:contract-close' contract_id=instance.id %}" class="small text-muted text-warning">*-закрыть договор</a></div>
+                                <div class="d-block"><a href="{% url 'references:contract-delete' contract_id=instance.id %}" class="small text-muted text-danger">*-удалить договор</a></div>
+                            </td>
+                            <td class="align-middle text-center">
+                                {% if instance.scan_file %}
+                                    <a href="{{ instance.scan_file.url }}" download>скачать</a>
+                                {% else %}
+                                    не доступно
+                                {% endif %}
+                            </td>
+                            <td class="align-middle text-center"><a href="javascript:" onclick="expand_contract('{{ instance.id  }}')" class="btn btn-primary btn-user btn-block">Дополнения</a></td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                </div>
+              </div>
+              <div class="row">
+                  <a href="{% url 'references:create-contract-param' client_id=client.id contract_id=0 %}" class="btn btn-primary btn-user btn-block mt-2">Новый договор</a>
+              </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+          <div class="container-fluid">
+            <div class="card o-hidden border-0 shadow-lg my-5 p-3">
+              <div class="row">
+                  <div class="col-12">
+                    <h3 class="text-center">Дополнительные соглашения</h3>
+                  </div>
+              </div>
+              <div class="row">
+                <div id="expanded_contract" class="col-12 m-3 p-3 align-items-center">
+
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+  </div>
+
+<script type="text/javascript">
+    function expand_contract(contract_id) {
+        $.ajax({
+          url: "{% url 'references:expand-contract' %}",
+          data: {'contract_id': contract_id},
+          success: function(data) {
+            $('#expanded_contract').html(data);
+          }
+        })
+    }
+</script>
+
+{% endblock content %}

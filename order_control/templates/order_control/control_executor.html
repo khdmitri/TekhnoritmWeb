@@ -1,0 +1,147 @@
+<!-- control_executor.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h2 class="h3 mb-0 text-gray-800">Контроль по исполнителям</h2>
+            <a href="{% url 'int_messages:message-create' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Написать сообщение</a>
+          </div>
+
+          <div>
+              {% if success %}
+              <p class="text-success">{{ success }}</p>
+              {% endif %}
+          </div>
+
+<!-- End of Page Heading -->
+
+
+<div class="container">
+    <div class="row">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                    <form class="user" id="main_form" method="POST" name="form">
+                    {% csrf_token %}
+                      <div class="text-xs font-weight-bold text-primary text-uppercase small">
+                          <div class="form-row">
+                            <div class="col">
+                              <div class="form-group">
+                                  {{ form.use_region }}
+                                  {{ form.use_region.label }}
+                              </div>
+                            </div>
+                            <div class="col">
+                              <select class="custom-select mr-sm-2" id="id_region" name="region">
+                                {% if selected_region %}
+                                  <option selected value="{{ selected_region.id }}">{{ selected_region.full_name }}</option>
+                                {% else %}
+                                  <option selected value="0">Не выбран...</option>
+                                {% endif %}
+                                {% for item in regions %}
+                                    <option value="{{ item.id }}">{{ item.full_name }}</option>
+                                {% endfor %}
+                              </select>
+                            </div>
+                          </div>
+                      </div>
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1 mt-2">
+                          <div class="input-group">
+                              <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                {% if selected_executor == 1 %}
+                                <input type="radio" name="executor" value="1" checked>
+                                {% else %}
+                                <input type="radio" name="executor" value="1">
+                                {% endif %}
+                                </div>
+                              </div>
+                              <select class="custom-select mr-sm-2" id="id_int_executor" name="int_executor">
+                                {% if selected_int %}
+                                  <option selected value="{{ selected_int.name }}">{{ selected_int.description }}</option>
+                                {% else %}
+                                  <option selected value="0">Не выбран...</option>
+                                {% endif %}
+                                {% for item in int_executors %}
+                                    <option value="{{ item.name }}">{{ item.description }}</option>
+                                {% endfor %}
+                              </select>
+                          </div>
+                          <div class="input-group">
+                              <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                {% if selected_executor == 2 %}
+                                <input type="radio" name="executor" value="2" checked>
+                                {% else %}
+                                <input type="radio" name="executor" value="2">
+                                {% endif %}
+                                </div>
+                              </div>
+                              <select class="custom-select mr-sm-2" id="id_ext_executor" name="ext_executor">
+                                {% if selected_ext_key %}
+                                  <option selected value="{{ selected_ext_key }}">{{ selected_ext_value }}</option>
+                                {% else %}
+                                  <option selected value="0">Не выбран...</option>
+                                {% endif %}
+                                {% for key, value in ext_executors.items %}
+                                    <option value="{{ key }}">{{ value }}</option>
+                                {% endfor %}
+                              </select>
+                          </div>
+
+                      </div>
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                        <input class="btn btn-primary btn-user btn-block mt-1" type="submit" value="Поиск" />
+                      </div>
+                    </form>
+                </div>
+                <div class="col-auto ml-4">
+                  <img src="/static/img/executor.png" class="img-profile rounded-circle img-thumbnail" alt="Исполнители (Executors)">
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="card-body">
+      {% if alert_message %}
+        <h4 class="text-success">{{ alert_message }}</h4>
+      {% endif %}
+      <div class="table-responsive">
+        <table class="table table-bordered small" id="dataTable">
+          <thead>
+            <tr>
+              <th class="text-center">Объекты</th>
+              <th class="text-center">Старт</th>
+              <th class="text-center">Прогресс</th>
+              <th class="text-center">В работе (дн.)</th>
+              <th class="text-center">Заказ</th>
+              <th class="text-center">Описание</th>
+              <th class="text-center">Клиент</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for instance in results %}
+            <tr>
+                <td class="text-center"><a href="{% url 'order_control:kind-objects' action_id=instance.id %}" target="_new"><i class="fas fa-object-group fa-fw mr-2 text-primary fa-2x"></i></a></td>
+                <td class="{{ instance.get_date_class }} text-center">{{ instance.start_date }}</td>
+                <td class="text-center">{{ instance.get_progress.ready }} из {{ instance.get_progress.from }}</td>
+                <td class="text-center">{{ instance.get_duration }}</td>
+                <td class="text-center">{{ instance.ref_task.ref_order.order_id }}</td>
+                <td>{{ instance.ref_task.ref_order.description }}</td>
+                <td>{{ instance.ref_task.ref_order.client.short_name }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+</div>
+
+{% endblock content %}

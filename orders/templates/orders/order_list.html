@@ -1,0 +1,43 @@
+<!-- client_list.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <h1 class="h3 mb-2 text-gray-800">Управление базой заявок</h1>
+          {% if success %}
+          <p class="mb-4 text-primary">{{ success }}</p>
+          {% endif %}
+          <!-- DataTales Example -->
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <!-- Topbar Search -->
+              <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                <div class="input-group">
+                  <input type="text" id="search_input" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+                  <div class="input-group-append">
+                    <button class="btn btn-primary" type="button">
+                      <i class="fas fa-search fa-sm"></i>
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div id="list_content">
+            </div>
+          </div>
+          <a href="{% url 'orders:order-create' %}" class="btn btn-primary btn-user btn-block">
+            Создать новую заявку
+          </a>
+
+        </div>
+        <!-- /.container-fluid -->
+
+        {% include 'orders/script_order_search.html' %}
+
+{% endblock content %}

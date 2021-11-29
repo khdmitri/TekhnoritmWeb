@@ -1,0 +1,19 @@
+{% load static %}
+
+<script type="text/javascript">
+  function refresh_table() {
+    const ref_order = document.getElementById('main_form').elements['order_id'].value;
+    $.ajax({
+      url: "{% url 'orders:ajax-order-task-table' %}",
+      data: {'ref_order': ref_order},
+      success: function(data) {
+        $('#order_task_table_id').html(data);
+      }
+    });
+  }
+
+  $(document).ready(function ($) {
+    refresh_table();
+    const int = setInterval("refresh_table()", 10000);
+  });
+</script>

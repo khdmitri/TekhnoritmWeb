@@ -1,0 +1,299 @@
+<!-- pribor_detail.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+  <div class="container">
+      <div class="row">
+            <div class="col-xl-6 col-md-9 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                          Оборудование: {{ pribor.name }}
+                      </div>
+                      <div class="h6 mb-0 font-weight-bold text-gray-600">Поверка закончится: {{ pribor.expire_date }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="card o-hidden border-0 shadow-lg my-5">
+              <div class="card-body p-0">
+
+                <!-- Nested Row within Card Body -->
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="p-5">
+                      <div class="text-center">
+                        <h2 class="h4 text-gray-900 mb-4">Редактирование сведений об оборудовании</h2>
+                      </div>
+                      <form class="user" name="form" id="main_form" method="post" action="{% url 'laboratory:pribor-save' %}">
+                      {% csrf_token %}
+                      <div class="row">
+
+                          <input type="hidden" id="id_id" name="id" value="{{ pribor.id }}">
+
+                          <div class="form-group m-3 col-12">
+                              <div class="col-4">
+                                  <span class="text-primary">Категория</span>
+                              </div>
+                              <div class="col-8">
+                                <select class="custom-select mr-sm-2" id="id_category" name="category">
+                                    <option value="{{ pribor.category }}" selected>{{ pribor.category }}</option>
+                                    {% for item in categories %}
+                                        <option value="{{ item.item_short }}">{{ item.item_short }}</option>
+                                    {% endfor %}
+                                </select>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="form-group m-3 col-12">
+                              <div class="col-4">
+                                  <span class="text-primary">Статус</span>
+                              </div>
+                              <div class="col-8">
+                                <select class="custom-select mr-sm-2" id="id_status" name="status">
+                                    <option value="{{ pribor.status }}" selected>{{ pribor.get_status_label }}</option>
+                                    {% for key, value in form.fields.status.choices %}
+                                        <option value="{{ key }}">{{ value }}</option>
+                                    {% endfor %}
+                                </select>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="form-group m-3 col-12">
+                              <div class="col-4">
+                                  <span class="text-primary">Наименование</span>
+                              </div>
+                              <div class="col-8">
+                                <span class="text-danger">{{ form.name.errors }}</span>
+                                <input type="text" class="form-control form-control-sm" id="id_name" name="name" placeholder="" value="{{ pribor.name }}">
+                                {% if form.name.help_text %}
+                                <p class="help font-italic small">*{{ form.name.help_text|safe }}</p>
+                                {% endif %}
+                              </div>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="form-group m-3 col-12">
+                              <div class="col-4">
+                                  <span class="text-primary">Назначение</span>
+                              </div>
+                              <div class="col-8">
+                                <span class="text-danger">{{ form.purpose.errors }}</span>
+                                <input type="text" class="form-control form-control-sm" id="id_purpose" name="purpose" placeholder="" value="{{ pribor.purpose }}">
+                                {% if form.purpose.help_text %}
+                                <p class="help font-italic small">*{{ form.purpose.help_text|safe }}</p>
+                                {% endif %}
+                              </div>
+                          </div>
+                      </div>
+                      <div class="row m-3">
+                            <div class="col"><hr></div>
+                            <div class="col-auto small text-primary">НОМЕРА</div>
+                            <div class="col"><hr></div>
+                      </div>
+                      <div class="row">
+                          <div class="col-3">
+                              <span class="d-block font-weight-bold">Заводской</span>
+                              {{ form.facility_no.errors }}
+                              <input type="text" class="form-control form-control-sm" id="id_facility_no" name="facility_no" placeholder="" value="{{ pribor.facility_no }}">
+                              {% if form.facility_no.help_text %}
+                              <p class="help font-italic small">*{{ form.facility_no.help_text|safe }}</p>
+                              {% endif %}
+                          </div>
+
+                          <div class="col-3">
+                              <span class="d-block font-weight-bold">Госреестр</span>
+                              {{ form.reestr_no.errors }}
+                              <input type="text" class="form-control form-control-sm" id="id_reestr_no" name="reestr_no" placeholder="" value="{{ pribor.reestr_no }}">
+                              {% if form.reestr_no.help_text %}
+                              <p class="help font-italic small">*{{ form.reestr_no.help_text|safe }}</p>
+                              {% endif %}
+                          </div>
+
+                          <div class="col-3">
+                              <span class="d-block font-weight-bold">Инвентарный</span>
+                              {{ form.inv_no.errors }}
+                              <input type="text" class="form-control form-control-sm" id="id_inv_no" name="inv_no" placeholder="" value="{{ pribor.inv_no }}">
+                              {% if form.inv_no.help_text %}
+                              <p class="help font-italic small">*{{ form.inv_no.help_text|safe }}</p>
+                              {% endif %}
+                          </div>
+                          <div class="col-3">
+                              <span class="d-block font-weight-bold">Идентификатор</span>
+                              {{ form.unique_id.errors }}
+                              <input type="text" class="form-control form-control-sm" id="id_unique_id" name="unique_id" placeholder="" value="{{ pribor.unique_id|default_if_none:"" }}">
+                              {% if form.unique_id.help_text %}
+                              <p class="help font-italic small">*{{ form.unique_id.help_text|safe }}</p>
+                              {% endif %}
+                          </div>
+                      </div>
+                      <div class="row m-3">
+                            <div class="col"><hr></div>
+                            <div class="col-auto small text-primary">ПОВЕРКА</div>
+                            <div class="col"><hr></div>
+                      </div>
+                      <div class="row">
+                          <div class="col-4">
+                              <span class="d-block font-weight-bold">Номер свидетельства</span>
+                              {{ form.certificate_no.errors }}
+                              <input type="text" class="form-control form-control-sm" id="id_certificate_no" name="certificate_no" placeholder="" value="{{ pribor.certificate_no }}">
+                              {% if form.certificate_no.help_text %}
+                              <p class="help font-italic small">*{{ form.certificate_no.help_text|safe }}</p>
+                              {% endif %}
+                          </div>
+
+                          <div class="col-4">
+                              <span class="d-block font-weight-bold">Дата поверки</span>
+                              {{ form.certificate_date.errors }}
+                              <input type="text" class="form-control form-control-sm" id="id_certificate_date" name="certificate_date" placeholder="" value="{{ pribor.certificate_date }}">
+                              {% if form.certificate_date.help_text %}
+                              <p class="help font-italic small">*{{ form.certificate_date.help_text|safe }}</p>
+                              {% endif %}
+                          </div>
+
+                          <div class="col-4">
+                              <span class="d-block font-weight-bold">Место поверки</span>
+                              {{ form.certificate_place.errors }}
+                              <input type="text" class="form-control form-control-sm" id="id_certificate_place" name="certificate_place" placeholder="" value="{{ pribor.certificate_place }}">
+                              {% if form.certificate_place.help_text %}
+                              <p class="help font-italic small">*{{ form.certificate_place.help_text|safe }}</p>
+                              {% endif %}
+                          </div>
+                      </div>
+                      <div class="row m-3">
+                            <div class="col"><hr></div>
+                            <div class="col-auto small text-primary">СПЕЦИАЛЬНЫЕ</div>
+                            <div class="col"><hr></div>
+                      </div>
+                      <div class="row">
+                            <div class="col-4">
+                              <span class="d-block font-weight-bold">Дата выпуска</span>
+                              {{ form.produce_date.errors }}
+                              <input type="text" class="form-control form-control-sm" id="id_produce_date" name="produce_date" placeholder="" value="{{ pribor.produce_date }}">
+                              {% if form.produce_date.help_text %}
+                              <p class="help font-italic small">*{{ form.produce_date.help_text|safe }}</p>
+                              {% endif %}
+                          </div>
+
+                          <div class="col-4">
+                              <span class="d-block font-weight-bold">Дата очередной поверки</span>
+                              {{ form.produce_date.errors }}
+                              <input type="text" class="form-control form-control-sm" id="id_expire_date" name="expire_date" placeholder="" value="{{ pribor.expire_date }}">
+                              {% if form.expire_date.help_text %}
+                              <p class="help font-italic small">*{{ form.expire_date.help_text|safe }}</p>
+                              {% endif %}
+                          </div>
+
+                          <div class="col-4">
+                              <span class="d-block font-weight-bold">Примечание</span>
+                              {{ form.comment.errors }}
+                              <input type="text" class="form-control form-control-sm" id="id_comment" name="comment" placeholder="" value="{{ pribor.comment }}">
+                              {% if form.comment.help_text %}
+                              <p class="help font-italic small">*{{ form.comment.help_text|safe }}</p>
+                              {% endif %}
+                          </div>
+                      </div>
+
+                      <div class="row">
+                            <div class="col-4">
+                              <span class="d-block font-weight-bold">Диапазон измерений</span>
+                              {{ form.limit.errors }}
+                              <input type="text" class="form-control form-control-sm" id="id_limit" name="limit" placeholder="" value="{{ pribor.limit }}">
+                              {% if form.limit.help_text %}
+                              <p class="help font-italic small">*{{ form.limit.help_text|safe }}</p>
+                              {% endif %}
+                          </div>
+
+                          <div class="col-4">
+                              <span class="d-block font-weight-bold">Чувствительность</span>
+                              {{ form.sensitivity.errors }}
+                              <input type="text" class="form-control form-control-sm" id="id_sensitivity" name="sensitivity" placeholder="" value="{{ pribor.sensitivity }}">
+                              {% if form.sensitivity.help_text %}
+                              <p class="help font-italic small">*{{ form.sensitivity.help_text|safe }}</p>
+                              {% endif %}
+                          </div>
+
+                          <div class="col-4">
+                              <span class="d-block font-weight-bold">Погрешность</span>
+                              {{ form.accuracy.errors }}
+                              <input type="text" class="form-control form-control-sm" id="id_accuracy" name="accuracy" placeholder="" value="{{ pribor.accuracy }}">
+                              {% if form.accuracy.help_text %}
+                              <p class="help font-italic small">*{{ form.accuracy.help_text|safe }}</p>
+                              {% endif %}
+                          </div>
+                      </div>
+
+                      <div class="row mt-3">
+                            <div class="col-12">
+                                <a href="javascript:;" onclick="document.getElementById('main_form').submit();" class="btn btn-primary btn-user btn-block">
+                                  Сохранить
+                                </a>
+                            </div>
+                      </div>
+                      </form>
+                      <a class="text-danger m-0" href="{% url 'laboratory:pribor-delete' pribor_id=pribor.id %}" data-toggle="modal" data-target="#deleteModal">
+                        <p>Удалить</p>
+                      </a>
+                      <a href="{% url 'laboratory:pribor-list' %}" class="font-weight-bold text-primary m-3">
+                        <p>Назад к списку</p>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+        </div>
+  </div>
+
+  <!-- Delete Modal-->
+  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Удалить сведения о приборе (оборудовании)?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Удаление сведений отразится на генерации протоколов. Удалить?</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Отмена</button>
+          <a class="btn btn-primary" href="{% url 'laboratory:pribor-delete' pribor_id=pribor.id %}">Удалить</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <script>
+        $('#id_certificate_date').datepicker({
+            uiLibrary: 'bootstrap4',
+            format: 'dd.mm.yyyy'
+        });
+
+        $('#id_produce_date').datepicker({
+            uiLibrary: 'bootstrap4',
+            format: 'dd.mm.yyyy'
+        });
+
+        $('#id_expire_date').datepicker({
+            uiLibrary: 'bootstrap4',
+            format: 'dd.mm.yyyy'
+        });
+    </script>
+
+{% endblock content %}

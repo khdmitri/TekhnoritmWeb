@@ -1,0 +1,302 @@
+<!-- protocol_data.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Протокол измерений уровней ЭМП (протокол: Р2, ПК)</h1>
+            <a href="{% url 'int_messages:message-create' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Написать сообщение</a>
+          </div>
+<!-- End of Page Heading -->
+
+<div class="container">
+  <div class="row">
+    <div class="col-xl-8 col-md-12 mb-3">
+      <div class="card border-left-primary shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                  Объект экспертизы: {{ object_.name }}
+              </div>
+              <div class="h6 mb-0 font-weight-bold text-gray-600">Адрес: {{ object_.address }}</div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-calendar fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+      <div class="col-12">
+        <div class="card o-hidden border-0 shadow-lg my-5">
+          <div class="card-body p-0">
+
+            <!-- Nested Row within Card Body -->
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="p-5">
+                  <div class="text-center">
+                    <h3 class="h4 text-gray-900 mb-4">ФОРМА Протокола измерений ЭМП</h3>
+                  </div>
+
+                  <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                      <li class="nav-item">
+                        <a class="nav-link active" id="pills-main-tab" data-toggle="pill" href="#pills-main" role="tab" aria-controls="pills-main" aria-selected="true">
+                            <span>Основа</span>
+                             <i class="fas fa-list-alt fa-sm"></i>
+                        </a>
+                      </li>
+                      <li class="nav-item ml-3">
+                        <a class="nav-link" id="pills-doc-tab" data-toggle="pill" href="#pills-doc" role="tab" aria-controls="pills-doc" aria-selected="false">
+                            <span>Документы</span>
+                             <i class="fas fa-book fa-sm"></i>
+                        </a>
+                      </li>
+                      <li class="nav-item ml-3">
+                        <a class="nav-link" id="pills-point-tab" data-toggle="pill" href="#pills-point" role="tab" aria-controls="pills-point" aria-selected="false">
+                            <span>Точки измерений</span>
+                             <i class="fas fa-th fa-sm"></i>
+                        </a>
+                      </li>
+                  </ul>
+
+                  <div class="tab-content" id="pills-tabContent">
+
+                    <div class="tab-pane fade show active" id="pills-main" role="tabpanel" aria-labelledby="pills-main-tab">
+                        <form class="user" name="protocol_form" id="id_protocol_form" method="POST" action="{% url 'inspection:protocol-main-post' %}">
+                          {% csrf_token %}
+                          <input type="hidden" name="protocol_id" id="id_protocol_id" value="{{ protocol_model.protocol_id }}" />
+                          <input type="hidden" name="ref_object" id="id_ref_object" value="{{ protocol_model.ref_object.id }}" />
+
+                          {% if success %}
+                            <p class="text-success font-weight-bold">{{ success }}</p>
+                          {% endif %}
+
+                        <div class="row">
+                            <div class="input-group m-3 col-6">
+                                    <label for="gen_input" class="m-2">Номер протокола</label>
+                                    <span class="text-danger">{{ protocol_form.protocol_no.errors }}</span>
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-outline-primary" type="button" onclick="call_generator('protocol')">Генерировать</button>
+                                    </div>
+                                    <input type="text" class="form-control" id="gen_input" name="protocol_no" placeholder="Номер документа" readonly required value="{{ protocol_model.protocol_no }}">
+                                    {% if protocol_form.protocol_no.help_text %}
+                                    <p class="help font-italic small">*{{ protocol_form.protocol_no.help_text|safe }}</p>
+                                    {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-2 form-group ml-4 mt-4">Дата протокола</div>
+                            <div class="form-group m-3 col-3">
+
+                                    <span class="text-danger">{{ protocol_form.protocol_date.errors }}</span>
+                                    {{ protocol_form.protocol_date }}
+                                    {% if protocol_form.protocol_date.help_text %}
+                                    <p class="help font-italic small">*{{ protocol_form.protocol_date.help_text|safe }}</p>
+                                    {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-2 form-group ml-4 mt-4 text-success">Дата измерений</div>
+                            <div class="form-group m-3 col-3">
+                                    <span class="text-danger">{{ protocol_form.action_date.errors }}</span>
+                                    {{ protocol_form.action_date }}
+                                    {% if protocol_form.action_date.help_text %}
+                                    <p class="help font-italic small">*{{ protocol_form.action_date.help_text|safe }}</p>
+                                    {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-2 form-group ml-4 mt-4 text-success">Используемые приборы</div>
+                            <div class="form-group m-3 col-9">
+                                    {{ protocol_form.pribors }}
+                                    {% if protocol_form.pribors.help_text %}
+                                    <p class="help font-italic small">*{{ protocol_form.pribors.help_text|safe }}</p>
+                                    {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group m-3 col-12">
+                                <label for="id_standard" class="m-2">Стандарт</label>
+                                <span class="text-danger">{{ protocol_form.standard.errors }}</span>
+                                <input type="text" class="form-control" id="id_standard" name="standard" placeholder="" value="{{ protocol_model.standard }}">
+                                {% if protocol_form.standard.help_text %}
+                                <p class="help font-italic small">*{{ protocol_form.standard.help_text|safe }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col"><hr></div>
+                            <div class="col-auto">Приложения</div>
+                            <div class="col"><hr></div>
+                        </div>
+
+                        <div class="form-group m-2 col-12">
+                            <div class="row align-items-center">
+                                <div class="col-5 text-right">
+                                    <span class="text-primary">Ситуационный план в масштабе</span>
+                                    <span class="font-weight-bold text-secondary">1:</span>
+                                </div>
+                                <div class="form-group col-2">
+                                    <span class="text-danger">{{ protocol_form.plan_scale.errors }}</span>
+                                    <input type="number" class="form-control" id="id_plan_scale" name="plan_scale" placeholder="" value="{{ protocol_model.plan_scale }}">
+                                    {% if protocol_form.plan_scale.help_text %}
+                                    <p class="help font-italic small">*{{ protocol_form.plan_scale.help_text|safe }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group m-2 col-12">
+                            <div class="row align-items-center">
+                                <div class="col-5 text-right">
+                                    <span class="text-primary">На</span>
+                                </div>
+                                <div class="form-group col-2">
+                                    <span class="text-danger">{{ protocol_form.plan_page_count.errors }}</span>
+                                    <input type="number" class="form-control" id="id_plan_page_count" name="plan_page_count" placeholder="" value="{{ protocol_model.plan_page_count }}">
+                                    {% if protocol_form.plan_page_count.help_text %}
+                                    <p class="help font-italic small">*{{ protocol_form.plan_page_count.help_text|safe }}</p>
+                                    {% endif %}
+                                </div>
+                                <div class="col-4">
+                                    <span class="text-primary">листе(ах)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <input class="btn btn-primary btn-user btn-block" type="submit" value="Сохранить" />
+                        </form>
+                    </div>
+
+                    <div class="tab-pane fade" id="pills-point" role="tabpanel" aria-labelledby="pills-point-tab">
+                        <form class="user" name="point_form" id="id_point_form" method="POST">
+                        {% csrf_token %}
+                            <div id="id_points">
+
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="tab-pane fade" id="pills-doc" role="tabpanel" aria-labelledby="pills-doc-tab">
+                        <form class="user" name="doc_form" id="id_doc_form" method="POST">
+                        {% csrf_token %}
+                            <div id="id_documents">
+
+                            </div>
+                        </form>
+                    </div>
+
+                    <a href="{% url 'inspection:object-list' order_id=object_.ref_order.order_id %}" class="font-weight-bold text-primary m-3">
+                        <p>Назад к списку объектов</p>
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+
+{% include 'generators/script_generator.html' %}
+
+<script type="text/javascript">
+    $('#id_protocol_date').datepicker({
+        uiLibrary: 'bootstrap4',
+        format: 'dd.mm.yyyy'
+    });
+
+    $('#id_action_date').datepicker({
+        uiLibrary: 'bootstrap4',
+        format: 'dd.mm.yyyy'
+    });
+
+    function load_documents() {
+        $.ajax({
+          url: "{% url 'inspection:load-proto-document-tab' %}",
+          data: {'protocol_id': '{{ protocol_model.protocol_id }}'},
+          success: function(data) {
+              $('#id_documents').html(data);
+          }
+        });
+        return true
+    }
+
+    function load_points() {
+        $.ajax({
+          url: "{% url 'inspection:load-protocol-point-tab' %}",
+          data: {'protocol_id': '{{ protocol_model.protocol_id }}'},
+          success: function(data) {
+              $('#id_points').html(data);
+          }
+        });
+        return true
+    }
+
+    $(document).ready(function () {
+        const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+        $('#id_point_form').on('submit', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const my_data = new FormData(this);
+
+            $.ajax({
+                url: "{% url 'inspection:protocol-point-post' %}", // the endpoint
+                type: "POST", // http method
+                dataType: 'html',
+                processData: false,
+                contentType: false,
+                data: my_data, // data sent with the post request
+
+                // handle a successful response
+                success : function(data) {
+                    $('#id_points').html(data); // remove the value from the input
+                },
+                error: function(data) {
+                    const res = JSON.stringify(data);
+                    $('#id_points').html(res);
+                }
+            });
+        });
+
+        $('a[data-toggle="pill"]').on('show.bs.tab', function (e) {
+            if (e.target.id === 'pills-doc-tab') {
+                load_documents()
+            }
+            else if (e.target.id === 'pills-point-tab') {
+                load_points()
+            }
+        });
+    })
+</script>
+
+{% endblock content %}

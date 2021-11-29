@@ -1,0 +1,107 @@
+{% load static %}
+
+{% if success %}
+<p id="id_success" class="text-success">{{ success }}</p>
+{% endif %}
+
+  <input type="hidden" id="id_ref_order" name="ref_order" value="{{ order_id }}">
+  <input type="hidden" id="id_ref_owner_id" name="ref_owner_id" value="{{ common.ref_owner.id }}">
+  <input type="hidden" id="id_ref_project_id" name="ref_project_id" value="{{ common.ref_project.id }}">
+
+  <h6>Начните поиск для обновления списка <span class="font-weight-bold">владельцев</span> объектов</h6>
+  <div class="form-group m-3 col-12">
+    <input type="text" class="form-control font-weight-bold text-success" id="id_ref_owner_text" name="ref_owner_text" placeholder="Наименование владельца объекта" readonly required value="{{ common.ref_owner.short_name|default_if_none:"" }}">
+    {% if common_form.ref_owner.help_text %}
+    <p class="help font-italic small">*{{ common_form.ref_owner.help_text|safe }}</p>
+    {% endif %}
+  </div>
+
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <!-- Topbar Search -->
+      <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+        <div class="input-group">
+          <input type="text" id="search_owner_input" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+          <div class="input-group-append">
+            <button class="btn btn-primary" type="button">
+              <i class="fas fa-search fa-sm"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div id="list_owners_content">
+    </div>
+  </div>
+
+  <h6>Начните поиск для обновления списка <span class="font-weight-bold">проектантов</span></h6>
+  <div class="form-group m-3 col-12">
+    <input type="text" class="form-control font-weight-bold text-success" id="id_ref_project_text" name="ref_project_text" placeholder="Наименование проектанта" readonly required value="{{ common.ref_project.short_name|default_if_none:"" }}">
+    {% if common_form.ref_project.help_text %}
+    <p class="help font-italic small">*{{ common_form.ref_project.help_text|safe }}</p>
+    {% endif %}
+  </div>
+
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <!-- Topbar Search -->
+      <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+        <div class="input-group">
+          <input type="text" id="search_project_input" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+          <div class="input-group-append">
+            <button class="btn btn-primary" type="button">
+              <i class="fas fa-search fa-sm"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div id="list_projects_content">
+    </div>
+  </div>
+
+  <div class="row align-items-center">
+    <div class="col-3">
+      <span class="text-primary">Формат проекта</span>
+    </div>
+    <div class="col-9">
+      <div class="form-group m-3 col-12">
+{#      <span class="text-danger">{{ form.project_format.errors }}</span>#}
+{#      <input type="text" class="form-control" id="id_project_format" name="project_format" placeholder="Формат заголовка проекта" value="{{ common.project_format|default_if_none:"" }}">#}
+{#      {% if form.project_format.help_text %}#}
+{#      <p class="help font-italic small">*{{ form.project_format.help_text|safe }}</p>#}
+{#      {% endif %}#}
+        <select class="custom-select mr-sm-2" id="id_project_format" name="project_format">
+            <option selected value="{{ common.project_format|default_if_none:"" }}">{{ common.project_format|default_if_none:"" }}</option>
+            {% for value in project_formats %}
+                <option value="{{ value.item_long }}">{{ value.item_long }}</option>
+            {% endfor %}
+        </select>
+        <p class="help font-italic small">*{{ common_form.project_format.help_text|safe }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="row align-items-center">
+    <div class="col-3">
+      <span class="text-primary">Цель проекта</span>
+    </div>
+    <div class="col-9">
+      <div class="form-group m-3 col-12">
+      <span class="text-danger">{{ form.build_purpose.errors }}</span>
+      <input type="text" class="form-control" id="id_build_purpose" name="build_purpose" placeholder="" value="{{ common.build_purpose|default_if_none:"" }}">
+      {% if form.build_purpose.help_text %}
+      <p class="help font-italic small">*{{ form.build_purpose.help_text|safe }}</p>
+      {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <input class="btn btn-primary btn-user btn-block" type="submit" value="Сохранить" />
+
+  <hr class="mb-3" />
+  <a href="{% url 'references:client-create' %}" class="text-primary">
+    Добавить нового клиента
+  </a>
+
+  {% include 'inspection/script_client_search.html' %}

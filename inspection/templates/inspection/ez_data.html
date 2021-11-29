@@ -1,0 +1,353 @@
+<!-- ez_data.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Экспертное заключение по результатам измерений (Р2)</h1>
+            <a href="{% url 'int_messages:message-create' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Написать сообщение</a>
+          </div>
+<!-- End of Page Heading -->
+
+<div class="container">
+  <div class="row">
+    <div class="col-xl-6 col-md-9 mb-4">
+      <div class="card border-left-primary shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                  Объект экспертизы: {{ object_.name }}
+              </div>
+              <div class="h6 mb-0 font-weight-bold text-gray-600">Адрес: {{ object_.address }}</div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-calendar fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="card o-hidden border-0 shadow-lg my-5">
+      <div class="card-body p-0">
+
+        <!-- Nested Row within Card Body -->
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="p-5">
+              <div class="text-center">
+                <h3 class="h4 text-gray-900 mb-4">ФОРМА Экспертного Заключения</h3>
+              </div>
+
+              <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link active" id="pills-main-tab" data-toggle="pill" href="#pills-main" role="tab" aria-controls="pills-main" aria-selected="true">
+                        <span>Основа</span>
+                         <i class="fas fa-list-alt fa-sm"></i>
+                    </a>
+                  </li>
+                  <li class="nav-item ml-3">
+                    <a class="nav-link" id="pills-doc-tab" data-toggle="pill" href="#pills-doc" role="tab" aria-controls="pills-doc" aria-selected="false">
+                        <span>Документы</span>
+                         <i class="fas fa-book fa-sm"></i>
+                    </a>
+                  </li>
+                  <li class="nav-item ml-3">
+                    <a class="nav-link" id="pills-zone-tab" data-toggle="pill" href="#pills-zone" role="tab" aria-controls="pills-zone" aria-selected="false">
+                        <span>СЗЗ и ЗОЗ</span>
+                         <i class="fas fa-leaf fa-sm"></i>
+                    </a>
+                  </li>
+                  <li class="nav-item ml-3">
+                    <a class="nav-link" id="pills-extra-tab" data-toggle="pill" href="#pills-extra" role="tab" aria-controls="pills-extra" aria-selected="false">
+                        <span>Дополнительно</span>
+                         <i class="fas fa-cogs fa-sm"></i>
+                    </a>
+                  </li>
+              </ul>
+
+              <div class="tab-content" id="pills-tabContent">
+
+                <div class="tab-pane fade show active" id="pills-main" role="tabpanel" aria-labelledby="pills-main-tab">
+                    <form class="user" name="form" id="main_form" method="POST" action="{% url 'inspection:ez-main-post' %}">
+                      {% csrf_token %}
+                      <input type="hidden" name="ez_id" id="id_ez_id" value="{{ ez_model.ez_id }}" />
+                      <input type="hidden" name="ref_object" id="id_ref_object" value="{{ ez_model.ref_object.id }}" />
+
+                      {% if success %}
+                        <p class="text-success font-weight-bold">{{ success }}</p>
+                      {% endif %}
+
+                    <div class="input-group m-3 col-12">
+                        <span class="text-danger">{{ form.ez_no.errors }}</span>
+                        <div class="input-group-prepend">
+                            <button class="btn btn-outline-primary" type="button" onclick="call_generator('ez')">Генерировать</button>
+                        </div>
+                        <input type="text" class="form-control" id="gen_input" name="ez_no" placeholder="Номер документа" readonly required value="{{ ez_model.ez_no }}">
+                        {% if form.ez_no.help_text %}
+                        <p class="help font-italic small">*{{ form.ez_no.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group m-3 col-12">
+                        <span class="text-danger">{{ form.ez_date.errors }}</span>
+                        {{ form.ez_date }}
+                        {% if form.ez_date.help_text %}
+                        <p class="help font-italic small">*{{ form.ez_date.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="row">
+                        <div class="col"><hr></div>
+                        <div class="col-auto">Из исх. данных</div>
+                        <div class="col"><hr></div>
+                    </div>
+
+                    <div class="form-group m-2 col-12">
+                        <div class="row align-items-center">
+                            <div class="col-3">
+                                <span class="text-primary">Стандарт ПРТО</span>
+                            </div>
+                            <div class="form-group col-9">
+                                <span class="text-danger">{{ form.standard.errors }}</span>
+                                <input type="text" class="form-control" id="id_standard" name="standard" placeholder="" value="{{ ez_model.standard }}">
+                                {% if form.standard.help_text %}
+                                <p class="help font-italic small">*{{ form.standard.help_text|safe }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group m-2 col-12">
+                        <div class="row align-items-center">
+                            <div class="col-3">
+                                <span class="text-primary">Частоты</span>
+                            </div>
+                            <div class="form-group col-9">
+                                <span class="text-danger">{{ form.freq.errors }}</span>
+                                <input type="text" class="form-control" id="id_freq" name="freq" placeholder="" value="{{ ez_model.freq }}">
+                                {% if form.freq.help_text %}
+                                <p class="help font-italic small">*{{ form.freq.help_text|safe }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group m-2 col-12">
+                        <div class="row align-items-center">
+                            <div class="col-3">
+                                <span class="text-primary">Азимуты</span>
+                            </div>
+                            <div class="form-group col-9">
+                                <span class="text-danger">{{ form.az.errors }}</span>
+                                <input type="text" class="form-control" id="id_az" name="az" placeholder="" value="{{ ez_model.az }}">
+                                {% if form.az.help_text %}
+                                <p class="help font-italic small">*{{ form.az.help_text|safe }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col"><hr></div>
+                        <div class="col-auto">Из общих</div>
+                        <div class="col"><hr></div>
+                    </div>
+
+                    <a href="{% url 'inspection:refresh-ez-main' ez_id=ez_model.ez_id %}" class="btn btn-secondary btn-user btn-block align-content-center">Обновить</a>
+                    <input class="btn btn-primary btn-user btn-block" type="submit" value="Сохранить" />
+                    </form>
+                </div>
+
+                <div class="tab-pane fade" id="pills-doc" role="tabpanel" aria-labelledby="pills-doc-tab">
+                    <form class="user" name="doc_form" id="id_doc_form" method="POST">
+                    {% csrf_token %}
+                        <div id="id_documents">
+
+                        </div>
+                    </form>
+                </div>
+
+                <div class="tab-pane fade" id="pills-zone" role="tabpanel" aria-labelledby="pills-zone-tab">
+                    <form class="user" name="szz_zone_form" id="id_szz_zone_form" method="POST">
+                    {% csrf_token %}
+                        <div id="id_szz_zones">
+
+                        </div>
+                    </form>
+                </div>
+
+                <div class="tab-pane fade" id="pills-extra" role="tabpanel" aria-labelledby="pills-extra-tab">
+                    <form class="user" name="extra_form" id="id_extra_form" method="POST">
+                    {% csrf_token %}
+                        <div id="id_extra_div">
+
+                        </div>
+                    </form>
+                </div>
+
+                <a href="{% url 'inspection:object-list' order_id=object_.ref_order.order_id %}" class="font-weight-bold text-primary m-3">
+                    <p>Назад к списку объектов</p>
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% include 'generators/script_generator.html' %}
+<script>
+    $('#id_ez_date').datepicker({
+        uiLibrary: 'bootstrap4',
+        format: 'dd.mm.yyyy'
+    });
+
+    function load_documents() {
+        $.ajax({
+          url: "{% url 'inspection:load-document-ez-tab' %}",
+          data: {'ez_id': '{{ ez_model.ez_id }}'},
+          success: function(data) {
+              $('#id_documents').html(data);
+          }
+        });
+        return true
+    }
+
+    function load_extra() {
+        $.ajax({
+          url: "{% url 'inspection:load-extra-ez-tab' %}",
+          data: {'ez_id': '{{ ez_model.ez_id }}'},
+          success: function(data) {
+              $('#id_extra_div').html(data);
+          }
+        });
+        return true
+    }
+
+    function load_szz_zones() {
+        $.ajax({
+          url: "{% url 'inspection:load-szz-zone-ez-tab' %}",
+          data: {'ez_id': '{{ ez_model.ez_id }}'},
+          success: function(data) {
+              $('#id_szz_zones').html(data);
+          }
+        });
+        return true
+    }
+
+    $(document).ready(function () {
+        const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+        $('#id_doc_form').on('submit', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const my_data = new FormData(this);
+
+            $.ajax({
+                url: "{% url 'inspection:document-ez-post' %}", // the endpoint
+                type: "POST", // http method
+                dataType: 'html',
+                processData: false,
+                contentType: false,
+                data: my_data, // data sent with the post request
+
+                // handle a successful response
+                success : function(data) {
+                    $('#id_documents').html(data); // remove the value from the input
+                },
+                error: function(data) {
+                    const res = JSON.stringify(data);
+                    $('#id_documents').html(res);
+                }
+            });
+        });
+
+        $('#id_extra_form').on('submit', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const my_data = new FormData(this);
+
+            $.ajax({
+                url: "{% url 'inspection:extra-ez-post' %}", // the endpoint
+                type: "POST", // http method
+                dataType: 'html',
+                processData: false,
+                contentType: false,
+                data: my_data, // data sent with the post request
+
+                // handle a successful response
+                success : function(data) {
+                    $('#id_extra_div').html(data); // remove the value from the input
+                },
+                error: function(data) {
+                    const res = JSON.stringify(data);
+                    $('#id_extra_div').html(res);
+                }
+            });
+        });
+
+        $('#id_szz_zone_form').on('submit', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const my_data = new FormData(this);
+
+            $.ajax({
+                url: "{% url 'inspection:szz-zone-ez-post' %}", // the endpoint
+                type: "POST", // http method
+                dataType: 'html',
+                processData: false,
+                contentType: false,
+                data: my_data, // data sent with the post request
+
+                // handle a successful response
+                success : function(data) {
+                    $('#id_szz_zones').html(data); // remove the value from the input
+                },
+                error: function(data) {
+                    const res = JSON.stringify(data);
+                    $('#id_szz_zones').html(res);
+                }
+            });
+        });
+
+        $('a[data-toggle="pill"]').on('show.bs.tab', function (e) {
+            if (e.target.id === 'pills-doc-tab') {
+                load_documents()
+            }
+            else if (e.target.id === 'pills-point-tab') {
+                load_points()
+            }
+            else if (e.target.id === 'pills-zone-tab') {
+                load_szz_zones()
+            }
+            else if (e.target.id === 'pills-extra-tab') {
+                load_extra()
+            }
+        });
+    })
+</script>
+
+{% endblock content %}

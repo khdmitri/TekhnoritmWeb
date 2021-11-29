@@ -1,0 +1,17 @@
+{% load static %}
+
+<script type="text/javascript">
+
+  function call_generator(request_parameter) {
+    $.ajax({
+      url: "{% url 'generators:ajax-generate' %}",
+      data: {'use_area': request_parameter},
+      success: function(data) {
+          var el = document.getElementById("gen_input");
+          console.log('Result is:'+data);
+          el.value = String(data);
+      }
+    });
+  }
+
+</script>

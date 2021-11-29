@@ -1,0 +1,10 @@
+asgiref==3.2.3
+Django==3.0.2
+django-crontab==0.7.1
+django-widget-tweaks==1.4.5
+mysql-connector==2.2.9
+mysqlclient==1.4.6
+Pillow==7.0.0
+pytz==2019.3
+pywin32==227
+sqlparse==0.3.0

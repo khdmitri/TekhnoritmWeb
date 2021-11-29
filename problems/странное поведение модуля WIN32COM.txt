@@ -1,0 +1,2 @@
+Помогает очистка кеша с помощью команды (из PowerShell):
+Remove-Item -path $env:LOCALAPPDATA\Temp\gen_py -recurse

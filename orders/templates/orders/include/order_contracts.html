@@ -1,0 +1,105 @@
+<div class="container">
+    <div class="row">
+        <div class="col text-center">
+            <h4 class="text-primary text-uppercase font-weight-bold">Доступные договоры</h4>
+            <ul class="list-group">
+                {% for contract in contracts %}
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col-2"><a href="javascript:" onclick="expand_contract_2('{{ contract.id  }}','{{ order.order_id }}')"><i class="fa fa-plus-square fa-2x" aria-hidden="true"></i></a></div>
+                            <div class="col-8"><button class="btn btn-primary btn-block" data-toggle="modal" data-target="#contractModal_{{ contract.id }}"><span class="small">{{ contract.doc_no }}</span></button></div>
+                            <div class="col-2"><a href="javascript:" onclick="add_contract('{{ contract.id }}','{{ order.order_id }}')"><i class="fa fa-arrow-circle-right fa-2x" aria-hidden="true"></i></a></div>
+                            <!-- Modal -->
+                            <div class="modal fade" id="contractModal_{{ contract.id }}" tabindex="-1" role="dialog" aria-labelledby="contractModal_{{ contract.id }}Title" aria-hidden="true">
+                              <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="contractModal_{{ contract.id }}Title">{{ contract.ref_client.short_name }} - {{ contract.doc_no }}</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col text-primary text-left">Дата создания:</div>
+                                        <div class="col text-left">{{ contract.create_date|date:"d.m.Y" }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col text-primary text-left">Дата договора:</div>
+                                        <div class="col text-left">{{ contract.contract_date|date:"d.m.Y" }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col text-primary text-left">Дата окончания:</div>
+                                        <div class="col text-left">{{ contract.expired_date|date:"d.m.Y" }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col text-primary text-left">Дата закрытия:</div>
+                                        <div class="col text-left">{{ contract.closed_date|date:"d.m.Y" }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col text-primary text-left">Описание:</div>
+                                        <div class="col text-left">{{ contract.comment|default_if_none:"" }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col text-primary text-left">Скан-документ:</div>
+                                        <div class="col text-left"><a href="{{ contract.scan_file.url }}" target="_new">Скачать</a></div>
+                                    </div>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        <div id="expanded_contract_{{ contract.id }}" class="pl-2 ml-1 small mt-2">
+
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col">
+            <h4 class="text-primary text-uppercase font-weight-bold">В составе заявки</h4>
+            <div id="order_contracts">
+                {% include 'orders/include/contracts_belong_order.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function expand_contract_2(contract_id, order_id) {
+        let div_id = '#expanded_contract_'+contract_id
+        $.ajax({
+          url: "{% url 'orders:ajax-expand-contract' %}",
+          data: {'contract_id': contract_id,
+                 'order_id': order_id},
+          success: function(data) {
+            $(div_id).html(data);
+          }
+        })
+    }
+
+    function add_contract(contract_id, order_id) {
+        $.ajax({
+          url: "{% url 'orders:ajax-add-contract' %}",
+          data: {'contract_id': contract_id,
+                 'order_id': order_id},
+          success: function(data) {
+            $('#order_contracts').html(data);
+          }
+        })
+    }
+
+    function remove_contract(contract_id, order_id) {
+        $.ajax({
+          url: "{% url 'orders:ajax-remove-contract' %}",
+          data: {'contract_id': contract_id,
+                 'order_id': order_id},
+          success: function(data) {
+            $('#order_contracts').html(data);
+          }
+        })
+    }
+</script>

@@ -1,0 +1,177 @@
+{% load static %}
+
+<h4>Точки измерения</h4>
+
+<a href="javascript:" onclick="add_service_room('{{ point_form.ref_protocol.protocol_id }}')" class="btn btn-primary m-1">
+    Добавить точки в аппаратной
+</a>
+
+<div class="row">
+    <div class="col-12">
+        <div class="table-responsive small">
+            <table class="table table-bordered" id="projectDataTable" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th class="text-center">Удаление</th>
+                  <th>No.</th>
+                  <th>No.сит.план</th>
+                  <th>Место</th>
+                  <th>Значение</th>
+                  <th>ПДУ</th>
+                  <th>Ед.измерения</th>
+                  <th>Расстояние, м</th>
+                  <th>Высота, м</th>
+                  <th>Азимут, град.</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for instance in points %}
+                <tr>
+                    <td class="text-center">
+                        <a href="javascript:" onclick="delete_point('{{ instance.id }}')">
+                            <i class="fas fa-times fa-lg fa-fw mr-2 text-danger"></i>
+                        </a>
+                    </td>
+                    <td><a href="javascript:" onclick="copy_point('{{instance.place}}',
+                                                                  '{{instance.value}}',
+                                                                  '{{instance.uncert}}',
+                                                                  '{{instance.pdu}}',
+                                                                  '{{instance.unit}}',
+                                                                  '{{instance.distance}}',
+                                                                  '{{instance.high}}',
+                                                                  '{{instance.az}}')">
+                        {{ instance.no }}</a>
+                    </td>
+                    <td>{{ instance.no_plan|default_if_none:"-" }}</td>
+                    <td>{{ instance.place|default_if_none:"-" }}</td>
+                    <td>{{ instance.value|default_if_none:"-" }}</td>
+                    <td>{{ instance.pdu|default_if_none:"-" }}</td>
+                    <td>{{ instance.unit|default_if_none:"-" }}</td>
+                    <td>{{ instance.distance|default_if_none:"-" }}</td>
+                    <td>{{ instance.high|default_if_none:"-" }}</td>
+                    <td>{{ instance.az|default_if_none:"-" }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{{ point_form.ref_protocol }}
+
+<div class="row">
+    <div class="form-group m-0 col-12">
+        <div class="row align-items-center">
+            <div class="col-3">
+                <span class="text-primary">No.на сит. плане</span>
+            </div>
+            <div class="form-group col-3">
+                <span class="text-danger">{{ point_form.no_plan.errors }}</span>
+                <input type="number" class="form-control" id="id_no_plan" name="no_plan" placeholder="" value="{{ cur_no_plan }}">
+                {% if point_form.no_plan.help_text %}
+                <p class="help font-italic small">*{{ point_form.no_plan.help_text|safe }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="form-group m-0 col-12">
+        <div class="row align-items-center">
+            <div class="col-3">
+                <span class="text-primary">Место</span>
+            </div>
+            <div class="form-group col-9">
+                <span class="text-danger">{{ point_form.place.errors }}</span>
+                <input type="text" class="form-control" id="id_place" name="place" placeholder="">
+                {% if point_form.place.help_text %}
+                <p class="help font-italic small">*{{ point_form.place.help_text|safe }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="form-group mt-3 col-12">
+        <div class="form-row">
+            <div class="col-4 m-0">
+                <div class="row">
+                    <div class="col-6 mt-1">
+                      <label for="id_value" class="d-block font-weight-bold small">Изм. значение<br /></label>
+                      <span class="text-danger">{{ point_form.value.errors }}</span>
+                      <input type="text" class="form-control form-control-sm" id="id_value" placeholder="" name="value">
+                    </div>
+                    <div class="col-1 mt-4 font-weight-bold text-info h4">&plusmn;</div>
+                    <div class="col-5 mt-1">
+                      <label for="id_uncert" class="d-block font-weight-bold small">Неопределенность<br /></label>
+                      <span class="text-danger">{{ point_form.uncert.errors }}</span>
+                      <input type="text" class="form-control form-control-sm" id="id_uncert" placeholder="" name="uncert">
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+              <label for="id_pdu" class="d-block font-weight-bold">ПДУ<br /></label>
+              <span class="text-danger">{{ point_form.high.errors }}</span>
+              <input type="text" class="form-control form-control-sm" id="id_pdu" placeholder="" name="pdu">
+            </div>
+            <div class="col-4">
+              <label for="id_unit" class="d-block font-weight-bold">Ед. измерения<br /></label>
+              <span class="text-danger">{{ point_form.az.errors }}</span>
+              <input type="text" class="form-control form-control-sm" id="id_unit" placeholder="" name="unit">
+            </div>
+        </div>
+    </div>
+    <div class="form-group m-0 col-12">
+        <div class="form-row">
+            <div class="col-4">
+              <span class="d-block font-weight-bold">Расстояние, м<br /></span>
+              <span class="text-danger">{{ point_form.distance.errors }}</span>
+              <input type="text" class="form-control form-control-sm" id="id_distance" placeholder="" name="distance">
+            </div>
+            <div class="col-4">
+              <span class="d-block font-weight-bold">Высота, м<br /></span>
+              <span class="text-danger">{{ point_form.high.errors }}</span>
+              <input type="text" class="form-control form-control-sm" id="id_high" placeholder="" name="high">
+            </div>
+            <div class="col-4">
+              <span class="d-block font-weight-bold">Азимут, град<br /></span>
+              <span class="text-danger">{{ point_form.az.errors }}</span>
+              <input type="text" class="form-control form-control-sm" id="id_az" placeholder="" name="az">
+            </div>
+        </div>
+    </div>
+
+    <input class="btn btn-primary btn-user btn-block mt-3" type="submit" value="Добавить" />
+</div>
+
+
+<script type="text/javascript">
+    function delete_point(point_id) {
+        $.ajax({
+          url: "{% url 'inspection:delete-protocol-point' %}",
+          data: {'protocol_id': '{{ protocol_id }}',
+                 'point_id': point_id},
+          success: function(data) {
+             $('#id_points').html(data);
+          }
+        });
+    }
+
+    function add_service_room(point_id) {
+        $.ajax({
+          url: "{% url 'inspection:add-service-room' %}",
+          data: {'protocol_id': '{{ protocol_id }}'},
+          success: function(data) {
+             $('#id_points').html(data);
+          }
+        });
+    }
+
+    function copy_point(place, value, uncert, pdu, unit, distance, high, az) {
+        document.getElementById('id_place').value = place;
+        document.getElementById('id_value').value = value;
+        document.getElementById('id_uncert').value = uncert;
+        document.getElementById('id_pdu').value = pdu;
+        document.getElementById('id_unit').value = unit;
+        document.getElementById('id_distance').value = distance;
+        document.getElementById('id_high').value = high;
+        document.getElementById('id_az').value = az;
+    }
+</script>

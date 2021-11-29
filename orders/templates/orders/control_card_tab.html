@@ -1,0 +1,115 @@
+<!-- control_card_tab.html -->
+
+{% load static %}
+
+<div id="id_parent_card">
+{% include 'orders/parent_card.html' %}
+</div>
+
+<div id="id_related_actions">
+    {% if action.target == 'SEE' %}
+    <div class="ml-5 mr-5">
+        <a href="{% url 'orders:generate-request' action_id=action.id doc_type='sez' %}" class="btn btn-secondary btn-user btn-block align-content-center btn-sm" target="_new">
+            <i class="fas fa-arrow-right fa-1x fa-sm"></i>&nbsp;
+            Сгенерировать заявление на получение СЭЗ (Р1)
+        </a>
+    </div>
+    {% endif %}
+    {% if action.target == 'EZ-R2' %}
+    <div class="ml-5 mr-5">
+        <a href="{% url 'orders:generate-request' action_id=action.id doc_type='letter' %}" class="btn btn-secondary btn-user btn-block align-content-center btn-sm" target="_new">
+            <i class="fas fa-arrow-right fa-1x fa-sm"></i>&nbsp;
+            Сгенерировать заявление на получение письма-согласования (Р2)</a>
+    </div>
+    {% endif %}
+</div>
+
+<div class="card-body">
+  <div class="table-responsive">
+    <table class="table table-bordered small" id="dataTable" width="100%" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Объект</th>
+          <th>Номер документа</th>
+          <th>Дата</th>
+          <th>Количество</th>
+          <th>Исходник</th>
+          <th>Архив</th>
+          <th>Действие</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for instance in cards %}
+        <tr>
+            <td><strong class="text-primary">{{ instance.doc_title }}</strong></td>
+            <td class="text-center">{{ instance.doc_no }}</td>
+            <td class="text-center">{{ instance.doc_date }}</td>
+            <td class="text-center">{{ instance.doc_qty }}</td>
+            <td class="text-center">
+                {% if instance.source_file %}
+                    <a href="{{ instance.source_file.url }}" download>скачать</a>
+                {% else %}
+                    Отсутствует
+                {% endif %}
+            </td>
+            <td class="text-center">
+                {% if instance.archive_file %}
+                    <a href="{{ instance.archive_file.url }}" download>скачать</a>
+                {% else %}
+                    Отсутствует
+                {% endif %}
+            </td>
+            <td class="text-center">
+              <a href="{{ instance.get_absolute_url }}" target="_new"><strong class="text-primary">Редактировать</strong></a><br />
+{#              <a href="{% url 'orders:delete-card' card_id=instance.execution_id %}"><strong class="text-danger">Удалить</strong></a>#}
+              <a class="mt-0 text-warning" href="javascript:" onclick="delete_card('{{ instance.execution_id }}', '{{ action.id }}')">
+                <i class="fas fa-times fa-sm fa-fw mr-2 text-warning"></i>
+                <span class="text-uppercase text-warning small">Удалить</span>
+              </a>
+            </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% if action %}
+  <a href="{% url 'orders:card-create' ref_action=action.id %}" onclick="return card_create('{{ action.id }}')" class="btn btn-primary btn-user btn-block" target="_new">
+      Добавить новый объект
+  </a>
+  {% endif %}
+</div>
+
+<script type="text/javascript">
+  function card_create(action_id) {
+      if (action_id !== '') {
+          return true
+      }
+      else {
+          alert('Целевой документ не обозначен!');
+          return false
+      }
+  }
+
+  function expand_card(card_id) {
+    $.ajax({
+      url: "{% url 'orders:expand-card' %}",
+      data: {'card_id': card_id},
+      success: function(data) {
+        $('#id_parent_card').html(data);
+      }
+    });
+  }
+
+  function delete_card(card_id, action_id) {
+    $.ajax({
+      url: "{% url 'orders:delete-card' %}",
+      data: {'card_id': card_id,
+             'action_id': action_id},
+      success: function(data) {
+        $('#id_card').html(data);
+        {#$('#pills-card-tab').click()#}
+      }
+    });
+  }
+</script>
+{% include 'orders/script_control_card.html' %}

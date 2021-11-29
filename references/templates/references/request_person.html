@@ -1,0 +1,138 @@
+<!-- request_person.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+  <div class="container">
+      <div class="row">
+            <div class="col-xl-6 col-md-9 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                          Заявитель, владелец объектов (ПРТО):<br /> <strong>{{ client.short_name }}</strong>
+                      </div>
+{#                      <div class="h6 mb-0 font-weight-bold text-gray-600">{{ department }}</div>#}
+                    </div>
+                    <div class="col-auto">
+                      <img class="img-profile rounded-circle" src="{{ client.logo.url }}">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12" id="id_request_person_table">
+                {% include 'references/request_person_table.html' %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <a href="javascript:" class="btn btn-block btn-user btn-primary" onclick="createNewPerson('{{ client.id }}')">
+                    Добавить заявителя для нового региона
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+
+                <div class="row">
+                  <div class="col-lg-12">
+
+                      <form class="user" name="form" id="main_form" method="post">
+                          {% csrf_token %}
+
+                        <div class="row" id="id_request_person_form">
+
+                        </div>
+                      </form>
+
+                  </div>
+                </div>
+
+        </div>
+  </div>
+
+    <script>
+        function delete_request_person(record_id) {
+            $.ajax({
+              url: "{% url 'references:delete-request-person' %}",
+              data: {'record_id': record_id,
+                     'client_id': '{{ client.id }}'},
+              success: function(data) {
+                 $('#id_request_person_table').html(data);
+              }
+            });
+        }
+
+        function createNewPerson(client_id) {
+            $.ajax({
+              url: "{% url 'references:prepare-request-person' %}",
+              data: {'client_id': client_id},
+              success: function(data) {
+                 $('#id_request_person_form').html(data);
+              }
+            });
+        }
+
+        function editPerson(client_id, request_id) {
+            $.ajax({
+              url: "{% url 'references:prepare-request-person' %}",
+              data: {'client_id': client_id,
+                     'request_id': request_id},
+              success: function(data) {
+                 $('#id_request_person_form').html(data);
+              }
+            });
+        }
+
+        $(document).ready(function () {
+            const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+            function csrfSafeMethod(method) {
+                // these HTTP methods do not require CSRF protection
+                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+            }
+
+            $.ajaxSetup({
+                beforeSend: function (xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                }
+            });
+
+            $('#main_form').on('submit', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const my_data = new FormData(this);
+
+                $.ajax({
+                    url: "{% url 'references:request-person-post' %}", // the endpoint
+                    type: "POST", // http method
+                    dataType: 'html',
+                    processData: false,
+                    contentType: false,
+                    data: my_data, // data sent with the post request
+
+                    // handle a successful response
+                    success : function(data) {
+                        $('#id_request_person_table').html(data); // remove the value from the input
+                    },
+                    error: function(data) {
+                        const res = JSON.stringify(data);
+                        $('#id_request_person_table').html(res);
+                    }
+                });
+            });
+        })
+
+    </script>
+
+{% endblock content %}

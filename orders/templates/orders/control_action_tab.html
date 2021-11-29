@@ -1,0 +1,201 @@
+<!-- control_action_tab.html -->
+
+{% load static %}
+
+{% if order %}
+
+<div class="row">
+    <div class="col"><hr /></div>
+    <div class="col text-center">РАБОТА</div>
+    <div class="col"><hr /></div>
+</div>
+
+<div class="container small m-1">
+    <div class="row">
+        <div class="col text-success font-weight-bold">ВНЕШНЯЯ ЗАЯВКА:</div>
+        <div class="col text-primary">{{order.order_id}}</div>
+        <div class="col">Дата создания: <strong>{{order.create_date}}</strong></div>
+    </div>
+    <div class="row">
+        <div class="col">Клиент:</div>
+        <div class="col text-primary">{{order.client.short_name}}</div>
+        <div class="col">
+            Дата закрытия:
+            <strong>
+              {% if order.close_date %}
+              {{ order.close_date }}
+              {% else %}
+              <span class="text-success">Открыта</span>
+              {% endif %}
+            </strong>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">Регион:</div>
+        <div class="col text-primary">{{order.region}}</div>
+        <div class="col">
+            Срок до:
+            <strong class="{{order.get_date_class}}">{{order.dead_line}}</strong>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if task %}
+
+<div class="row">
+    <div class="col"><hr /></div>
+    <div class="col text-center">ЗАДАЧИ</div>
+    <div class="col"><hr /></div>
+</div>
+
+<div class="container small m-1">
+    <div class="row">
+        <div class="col text-success font-weight-bold">ВНУТРЕННЯЯ ЗАЯВКА:</div>
+        <div class="col text-primary">{{task.task_id}}</div>
+        <div class="col">Дата создания: <strong>{{task.create_date}}</strong></div>
+    </div>
+    <div class="row">
+        <div class="col">Распределитель:</div>
+        <div class="col text-primary">{{task.distribution_dep.description}}</div>
+        <div class="col">
+            Дата закрытия:
+            <strong>
+              {% if task.close_date %}
+              {{ task.close_date }}
+              {% else %}
+              <span class="text-success">Открыта</span>
+              {% endif %}
+            </strong>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">Тип задачи:</div>
+        <div class="col text-primary">{{task.get_task_description}}</div>
+        <div class="col">
+            Срок до:
+            <strong class="{{task.get_date_class}}">{{task.dead_line}}</strong>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">Количество объектов:</div>
+        <div class="col text-primary">{{task.qty}}</div>
+        <div class="col">
+            Принятие в работу:
+            <strong>{{task.accept_date}}</strong>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <a href="javascript:" onclick="expand_order('{{ order.order_id }}')" class="btn btn-secondary btn-user btn-block btn-sm">Вернуться</a>
+        </div>
+    </div>
+    <hr />
+</div>
+{% endif %}
+
+<div class="card-body">
+  <div class="table-responsive">
+    <table class="table table-bordered small" id="dataTable" width="100%" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Цель</th>
+          <th>Внутренний исполнитель</th>
+          <th>Внешний исполнитель</th>
+          <th>Начало</th>
+          <th>Окончание</th>
+          <th>Прогресс</th>
+          <th>Описание</th>
+          <th>Действие</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for instance in actions %}
+        <tr>
+            <td><a href="javascript:" onclick="expand_action('{{instance.id}}')"><strong>{{ instance.get_target_description }}</strong></a></td>
+            <td>{{ instance.int_executor.description }}</td>
+            <td>
+                {% if instance.get_executor %}
+                {{ instance.get_executor }}
+                {% else %}
+                ---
+                {% endif %}
+            </td>
+            <td>
+                {%  if instance.start_date %}
+                    {{ instance.start_date }}
+                {% else %}
+                    <a href="javascript:;" onclick="start_action('{{instance.id}}')" class="btn btn-primary btn-user btn-block">
+                        СТАРТ
+                    </a>
+                {% endif %}
+            </td>
+            <td>
+              {% if instance.stop_date %}
+              {{ instance.stop_date }}
+              {% else %}
+                  {% if instance.start_date %}
+                    <span class="text-success">Открыто</span>
+                  {% else %}
+                      ---
+                  {% endif %}
+
+              {% endif %}
+            </td>
+            <td>Выполнено:<br />
+                {% if instance.get_progress.ready >= instance.get_progress.from %}
+                <span class="text-success font-weight-bold">{{ instance.get_progress.ready  }}&nbsp;из&nbsp; {{ instance.get_progress.from }}</span>
+                {% else %}
+                <span class="text-warning font-weight-bold">{{ instance.get_progress.ready }}&nbsp;из&nbsp; {{ instance.get_progress.from }}</span>
+                {% endif %}
+            </td>
+            <td>{{ instance.description|default_if_none:"---" }}</td>
+            <td class="align-content-center">
+              <a href="{{ instance.get_absolute_url }}"><strong class="text-primary">Редактировать</strong></a><br />
+              <a href="javascript:;" onclick="close_action('{{ task.task_id }}', '{{ instance.id }}')"><strong class="text-warning">Закрыть</strong></a>
+            </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+  function expand_action(action_id) {
+    $.ajax({
+      url: "{% url 'orders:expand-action' %}",
+      data: {'action_id': action_id},
+      success: function(data) {
+        $('#id_card').html(data);
+        $('#pills-card-tab').click()
+      }
+    });
+  }
+
+  function start_action(action_id) {
+    $.ajax({
+      url: "{% url 'orders:start-action' %}",
+      data: {'action_id': action_id},
+      success: function(data) {
+        $('#id_action').html(data);
+        $('#pills-action-tab').tab('show')
+      }
+    });
+  }
+
+  function close_action(task_id, action_id) {
+    $.ajax({
+      url: "{% url 'orders:close-action' %}",
+      data: {'task_id': task_id,
+             'action_id': action_id},
+      success: function(data) {
+        $('#id_action').html(data);
+        $('#pills-action-tab').tab('show')
+      }
+    });
+  }
+</script>
+
+{% include 'orders/script_control_action.html' %}

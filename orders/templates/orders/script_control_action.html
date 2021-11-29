@@ -1,0 +1,30 @@
+{% load static %}
+
+<script type="text/javascript">
+  var search_input_action = $("#action_search_input");
+  var delay_by_in_ms = 700;
+  var scheduled_function_action = false;
+
+  function call_search_action(request_parameter) {
+    $.ajax({
+      url: "{% url 'orders:ajax-control-action-search' %}",
+      data: {'search_line': request_parameter},
+      success: function(data) {
+          $('#id_action').html(data);
+      },
+      error: function(data) {
+          $('#id_action').html(data);
+      }
+    });
+  }
+
+  search_input_action.on('keyup', function () {
+    var request_parameter = $(this).val(); // value of user_input: the HTML element with ID user-input
+
+    if (scheduled_function_action) {
+        clearTimeout(scheduled_function_action)
+    }
+
+    scheduled_function_action = setTimeout(call_search_action, delay_by_in_ms, request_parameter)
+  })
+</script>

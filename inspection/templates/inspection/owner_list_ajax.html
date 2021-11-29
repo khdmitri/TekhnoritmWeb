@@ -1,0 +1,36 @@
+{% load static %}
+
+<div class="card-body">
+  <div class="table-responsive">
+    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Наименование</th>
+          <th>Представитель</th>
+          <th>Телефон</th>
+          <th>E-mail</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for instance in clients %}
+        <tr>
+            <td><a href="javascript:;" onclick="fill_client_form('{{ instance.id }}', '{{ instance.short_name }}')"><strong>{{ instance.short_name }}</strong></a></td>
+            <td>{{ instance.representative }}</td>
+            <td>{{ instance.phone }}</td>
+            <td>{{ instance.email }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  function fill_client_form(pk, name) {
+    var client_id = document.getElementById("id_owner_id");
+    var client_name = document.getElementById("id_owner_name");
+
+    client_id.value = pk;
+    client_name.value = name
+  }
+</script>

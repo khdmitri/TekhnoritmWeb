@@ -1,0 +1,54 @@
+<!-- control_list.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Области контроля заявок</h1>
+            <a href="{% url 'int_messages:message-create' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Написать сообщение</a>
+          </div>
+
+          <div>
+              {% if success %}
+              <p class="text-success">{{ success }}</p>
+              {% endif %}
+          </div>
+
+<!-- End of Page Heading -->
+
+
+<div class="container">
+    <div class="row">
+        <div class="card-body">
+          {% if alert_message %}
+            <h4 class="text-success">{{ alert_message }}</h4>
+          {% endif %}
+          <div class="table-responsive">
+            <table class="table" id="dataTable" width="100%" cellspacing="0">
+              <tbody>
+                <tr>
+                    <td class="m-2 p-2 align-middle"><img src="/static/img/division.png" class="img-profile rounded-circle img-thumbnail" alt="Subdivisions (Подразделения)">
+                    <a class="ml-4" href="{% url 'order_control:control-division' %}"><span class="text-uppercase">Заявки в работе подразделений</span></a></td>
+                <tr>
+                    <td class="m-2 p-2 align-middle"><img src="/static/img/kind.png" class="img-profile rounded-circle img-thumbnail" alt="Task kind (Виды работ)">
+                    <a class="ml-4" href="{% url 'order_control:control-kind' %}"><span class="text-uppercase">Контроль по видам работ</span></a></td>
+                </tr>
+                <tr>
+                    <td class="m-2 p-2 align-middle"><img src="/static/img/executor.png" class="img-profile rounded-circle img-thumbnail" alt="Executors (Исполнители)">
+                    <a class="ml-4" href="{% url 'order_control:control-executor' %}"><span class="text-uppercase">Контроль исполнителей</span></a></td>
+                </tr>
+                <tr>
+                    <td class="m-2 p-2 align-middle"><img src="/static/img/objects.png" class="img-profile rounded-circle img-thumbnail" alt="Objects (Объектыв исследований)">
+                    <a class="ml-4" href="{% url 'order_control:control-card' %}"><span class="text-uppercase">Контроль объектов исследований</span></a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

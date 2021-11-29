@@ -1,0 +1,40 @@
+{% load static %}
+
+<div class="card-body">
+  <div class="table-responsive">
+    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Наименование</th>
+          <th>Представитель</th>
+          <th>Телефон</th>
+          <th>E-mail</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for instance in clients %}
+        <tr>
+            <td><a href="javascript:;" onclick="fill_field_by_client('owner', '{{ instance.short_name }}', '{{ instance.id }}')"><strong>{{ instance.short_name }}</strong></a></td>
+            <td>{{ instance.representative }}</td>
+            <td>{{ instance.phone }}</td>
+            <td>{{ instance.email }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script type="text/javascript">
+
+  function fill_field_by_client(param, name, client_id) {
+    if (param === 'owner') {
+      document.getElementById('id_ref_owner_text').value = name;
+      document.getElementById('id_ref_owner_id').value = client_id
+    }
+    else {
+      document.getElementById('id_ref_project_text').value = name;
+      document.getElementById('id_ref_project_id').value = client_id
+    }
+  }
+</script>

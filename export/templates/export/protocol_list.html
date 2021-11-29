@@ -1,0 +1,153 @@
+<!-- doc_generation.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Генерация XML-документа для Росаккредитации</h1>
+            <a href="{% url 'int_messages:message-create' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Написать сообщение</a>
+          </div>
+    <!-- End of Page Heading -->
+
+    <div class="container">
+
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">
+                    {{ message|safe }}
+                </div>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <form class="user" name="form" method="post">
+
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger" role="alert">
+                {% for error in form.non_field_errors %}
+                  {{ error }}
+                {% endfor %}
+              </div>
+            {% endif %}
+
+          <div class="row">
+            <div class="col-xl-6 col-md-9 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col mr-2">
+                        {{ form.action.errors }}
+                          {{ form.action }}
+                        {% if form.action.help_text %}
+                        <p class="help font-italic small">*{{ form.action.help_text|safe }}</p>
+                        {% endif %}
+                        <div class="form-row mt-2">
+                            <div class="col">
+                              {{ form.from_date.errors }}
+                              {{ form.from_date }}
+                              {% if form.from_date.help_text %}
+                                <p class="help font-italic small">*{{ form.from_date.help_text|safe }}</p>
+                              {% endif %}
+                            </div>
+                            <div class="col">
+                              {{ form.to_date.errors }}
+                              {{ form.to_date }}
+                              {% if form.to_date.help_text %}
+                                <p class="help font-italic small">*{{ form.to_date.help_text|safe }}</p>
+                              {% endif %}
+                            </div>
+                      </div>
+                      <div class="d-block">
+                          <span class="text-secondary small">**Указание периода применяется ТОЛЬКО для действия выборки</span>
+                      </div>
+                      <div class="d-block">
+                          <button type="submit" class="btn btn-primary">Выполнить</button>
+                      </div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+            <div class="card shadow">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-xl-12 col-md-12 mb-2">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTable">
+                              <thead>
+                                <tr>
+                                  <th class="text-center"><input type="checkbox" onClick="toggle(this)" /> Выбрать ВСЕ<br/></th>
+                                  <th>Номер протокола</th>
+                                  <th>Дата протокола</th>
+                                  <th>Дата измерения</th>
+                                  <th>Наименование</th>
+                                  <th>Дата экспорта</th>
+                                  <th>Исключение</th>
+                                  <th>Ошибка экспорта</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {% for protocol in protocols %}
+                                <tr>
+                                    <td class="text-center"><input type="checkbox" name="protocol" value="{{ protocol.protocol_id }}"></td>
+                                    <td>{{ protocol.protocol_no }}</td>
+                                    <td>{{ protocol.protocol_date|date:"d.m.Y" }}</td>
+                                    <td>{{ protocol.action_date|date:"d.m.Y" }}</td>
+                                    <td>{{ protocol.ref_object.name }}</td>
+                                    <td>{{ protocol.export_date|date:"d.m.Y" }}</td>
+                                    <td>
+                                        {% if protocol.export_exclude %}
+                                            <span class="text-warning">Исключен</span>
+                                        {% else %}
+                                            ---
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="text-danger">{{ protocol.export_error|default_if_none:"" }}</span>
+                                        <div class="d-block small"><a href="{% url 'export:protocol-address' protocol_id=protocol.protocol_id %}" target="_new">Обновить адрес (ФИАС)</a></div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                              </tbody>
+                            </table>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+            $('#id_from_date').datepicker({
+                uiLibrary: 'bootstrap4',
+                format: 'dd.mm.yyyy'
+            });
+            $('#id_to_date').datepicker({
+                uiLibrary: 'bootstrap4',
+                format: 'dd.mm.yyyy'
+            });
+        });
+
+        function toggle(source) {
+          checkboxes = document.getElementsByName('protocol');
+          for(let i=0, n=checkboxes.length;i<n;i++) {
+            checkboxes[i].checked = source.checked;
+          }
+        }
+    </script>
+
+{% endblock %}

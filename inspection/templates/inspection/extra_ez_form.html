@@ -1,0 +1,49 @@
+{% load static %}
+
+<h3>Дополнительно: размещение радиооборудования</h3>
+
+{% if success %}
+<p class="text-success m-3">{{ success }}</p>
+{% endif %}
+
+<input type="hidden" name="ez_id" id="id_ez_id" value="{{ extra_form.initial.ez_id }}">
+<input type="hidden" name="ref_object" id="id_ref_object" value="{{ extra_form.initial.ref_object }}">
+
+<div class="row">
+    <div class="form-group m-0 col-12">
+        <div class="form-row">
+            <div class="col-3">
+                <span class="text-primary">Оборудование:</span>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-12">
+                <span class="text-danger">{{ extra_form.extra.errors }}</span>
+                <textarea class="form-control" id="id_extra" name="extra" placeholder="Описание размещения радиооборудования" rows="5">
+                    {{ extra_form.initial.extra }}
+                </textarea>
+                {% if extra_form.extra.help_text %}
+                <p class="help font-italic small">*{{ extra_form.extra.help_text|safe }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="col-3">
+                <span class="text-primary">Обслуживающий персонал:</span>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-12">
+                <span class="text-danger">{{ extra_form.extra_staff.errors }}</span>
+                <textarea class="form-control" id="id_extra_staff" name="extra_staff" placeholder="Обслуживающий персонал" rows="5">
+                    {{ extra_form.initial.extra_staff }}
+                </textarea>
+                {% if extra_form.extra_staff.help_text %}
+                <p class="help font-italic small">*{{ extra_form.extra_staff.help_text|safe }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <input class="btn btn-primary btn-user btn-block" type="submit" value="Сохранить" />
+</div>

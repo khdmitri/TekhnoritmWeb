@@ -1,0 +1,58 @@
+<!-- control_card.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <h1 class="h3 mb-2 text-gray-800">Поиск по объектам исследований</h1>
+
+          <!-- DataTales Example -->
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <!-- Topbar Search -->
+              <form class="form-inline navbar-search" name="form">
+                <div class="input-group col-lg-4">
+                  <input type="text" id="search_input" name="search_text" class="form-control bg-gradient-light border-0 small text-warning" placeholder="Поисковый запрос..." aria-label="Search" aria-describedby="basic-addon2">
+                  <div class="input-group-append">
+                    <button class="btn btn-primary" type="button">
+                      <i class="fas fa-search fa-sm"></i>
+                    </button>
+                  </div>
+                </div>
+                <fieldset class="form-group row">
+                  <legend class="text-primary ml-4 small text-uppercase">Тип поиска</legend>
+                    <div class="form-check">
+                      <label class="form-check-label m-1 ml-4">
+                        <input class="form-check-input radio-inline" type="radio" name="type_search" id="id_soft_search" value="soft" checked>
+                        Мягкий</label>
+                        <label class="form-check-label m-1">
+                        <input class="form-check-input radio-inline" type="radio" name="type_search" id="id_strong_search" value="strong">
+                        Строгий</label>
+                    </div>
+                </fieldset>
+                <fieldset class="form-group row ml-4">
+                  <label class="text-primary" for="id_doc_type">Регион поиска</label>
+                  <select class="custom-select mr-sm-2 ml-4" id="id_region" name="region">
+                    <option selected value="0">Любой...</option>
+                    {% for key, value in regions %}
+                        <option value="{{ key }}">{{ value }}</option>
+                    {% endfor %}
+                  </select>
+                </fieldset>
+              </form>
+            </div>
+            <div id="list_content">
+            </div>
+          </div>
+
+        </div>
+        <!-- /.container-fluid -->
+
+        {% include 'order_control/script_card_search.html' %}
+
+{% endblock content %}

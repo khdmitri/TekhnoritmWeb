@@ -1,0 +1,66 @@
+{% load static %}
+
+<script>
+    var search_input_owner = $("#search_input_owner");
+    var delay_by_in_ms = 700;
+    var scheduled_function = false;
+
+    function call_search(request_parameter, what='owner') {
+      $.ajax({
+        url: "{% url 'inspection:ajax-owner-search' %}",
+        data: {'search_line': request_parameter,
+               'what': what},
+        success: function(data) {
+          $('#list_content').html(data);
+        }
+      });
+    }
+
+    $(document).ready(function(){
+      $("#id_row_type").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#rowTypesList li").filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+      call_search('');
+    });
+
+    search_input_owner.on('keyup', function () {
+      var request_parameter = $(this).val(); // value of user_input: the HTML element with ID user-input
+
+      if (scheduled_function) {
+          clearTimeout(scheduled_function)
+      }
+
+      scheduled_function = setTimeout(call_search, delay_by_in_ms, request_parameter, 'owner')
+    });
+
+    function add_to_reference(category) {
+      var value = '';
+      if (category === 'row_types') {
+        value = document.getElementById('id_row_type').value
+      }
+      else if (category === 'antennas') {
+        value = document.getElementById('id_antenna').value
+      }
+      else if (category === 'modulations') {
+        value = document.getElementById('id_modulation').value
+      }
+      $.ajax({
+        url: "{% url 'inspection:add-to-reference' %}",
+        data: { 'category': category,
+                'item': value
+              },
+        dataType: 'json',
+        success: function(data) {
+          if (data.success) {
+            alert('Запись была успешно добавлена в справочник!');
+          }
+          else {
+            alert('При добавлении записи возникла ошибка!');
+          }
+        }
+      });
+    }
+  </script>

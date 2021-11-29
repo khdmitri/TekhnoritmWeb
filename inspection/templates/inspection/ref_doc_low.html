@@ -1,0 +1,120 @@
+<!-- ref_doc_low.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<h3><span class="text-primary">Справочник: </span>Нормативные документы</h3>
+
+<div class="row">
+    <div class="col-6">
+        <label for="id_doc_type">Выберите тип документа</label>
+        <select class="custom-select mr-sm-2" id="id_doc_type" name="doc_type" onchange="on_doc_changed()">
+        <option selected value="0">Не выбрано...</option>
+        {% for key, value in doc_types.items %}
+            <option value="{{ key }}">{{ value }}</option>
+        {% endfor %}
+      </select>
+    </div>
+</div>
+
+<h4 class="text-success m-3 font-weight-bold">ДОСТУПНО</h4>
+
+<div class="row">
+    <div class="col-6">
+        <h6 class="text-secondary small font-weight-bold">ОЦЕНКА</h6>
+        <div class="table-responsive small">
+            <table class="table table-bordered" id="evalDataTable" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th class="text-center"><i class="fas fa-list-alt fa-lg fa-fw m-0 text-warning"></i></th>
+                  <th>Реквизиты</th>
+                  <th>Наименование</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for instance in evals %}
+                <tr>
+                    <td class="text-center">
+                        <a href="javascript:" onclick="add_doc_low('evals', '{{ instance.item_short }}', '{{ instance.item_long }}')">
+                            <i class="fas fa-download fa-lg fa-fw mr-2 text-success"></i>
+                        </a>
+                    </td>
+                    <td>{{ instance.item_short }}</td>
+                    <td>{{ instance.item_long }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-6">
+        <h6 class="text-secondary small font-weight-bold">МЕТОД</h6>
+        <div class="table-responsive small">
+            <table class="table table-bordered" id="methodDataTable" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th class="text-center"><i class="fas fa-list-alt fa-lg fa-fw m-0 text-warning"></i></th>
+                  <th>Реквизиты</th>
+                  <th>Наименование</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for instance in methods %}
+                <tr>
+                    <td class="text-center">
+                        <a href="javascript:" onclick="add_doc_low('methods', '{{ instance.item_short }}', '{{ instance.item_long }}')">
+                            <i class="fas fa-download fa-lg fa-fw mr-2 text-success"></i>
+                        </a>
+                    </td>
+                    <td>{{ instance.item_short }}</td>
+                    <td>{{ instance.item_long }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div id="id_content">
+
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    var doc_type = $('#id_doc_type');
+    function on_doc_changed() {
+        $.ajax({
+          url: "{% url 'inspection:load-doc-low-content' %}",
+          data: {'doc_type': doc_type.val()},
+          success: function(data) {
+             $('#id_content').html(data);
+          }
+        });
+    }
+
+    function add_doc_low(low_type, notation, name) {
+        var doc_type = document.getElementById('id_doc_type').value;
+        if (doc_type !== '0') {
+            $.ajax({
+              url: "{% url 'inspection:add-doc-low' %}",
+              data: {'doc_type': doc_type,
+                     'low_type': low_type,
+                     'notation': notation,
+                     'name': name},
+              success: function(data) {
+                 $('#id_content').html(data);
+              }
+            })
+        }
+        else {
+            alert('Сначало необходимо выбрать тип документа!')
+        }
+    }
+</script>
+
+{% endblock content %}

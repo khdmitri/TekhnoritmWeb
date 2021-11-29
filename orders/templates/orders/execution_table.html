@@ -1,0 +1,24 @@
+{% load static %}
+
+<div class="table-responsive">
+<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Номер документа</th>
+      <th>Дата документа</th>
+      <th>Тип</th>
+      <th>Название</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for instance in executions %}
+    <tr>
+        <td><a href="javascript:;" onclick="editExecution('{{ instance.execution_id }}')"><strong>{{ instance.doc_no }}</strong></a></td>
+        <td>{{ instance.doc_date }}</td>
+        <td>{{ instance.doc_type }}</td>
+        <td>{{ instance.doc_title }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>

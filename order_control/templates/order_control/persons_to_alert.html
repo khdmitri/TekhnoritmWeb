@@ -1,0 +1,45 @@
+{% load static %}
+
+<h3>Добавить сотрудников для оповещения</h3>
+
+<div class="row">
+    <div class="col">
+        <h6 class="text-primary">Доступно</h6>
+        <div class="table-responsive small">
+            <table class="table table-bordered" id="projectDataTable" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th class="text-center">Должность</th>
+                  <th class="text-center">Ф.И.О.</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for instance in persons %}
+                <tr>
+                    <td class="text-center">
+                        <a href="javascript:" onclick="add_person('{{ instance.id }}')">
+                            {{ instance.get_position }}
+                        </a>
+                    </td>
+                    <td class="text-center">
+                        {{ instance.user.first_name }}&nbsp;{{ instance.initials }}
+                    </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col">
+        <ul class="list-group m-1 ml-1 small" id="docList">
+          {% for item in person_list %}
+          <li>
+              <a href="javascript:" onclick="delete_person('{{ item.id }}')">
+                <i class="fas fa-times fa-lg fa-fw mr-2 text-danger"></i>
+              </a>
+              {{ item.ref_profile.get_position }} ({{ item.ref_profile.user.last_name }}&nbsp;{{ item.ref_profile.initials }})
+          </li>
+          {% endfor %}
+        </ul>
+    </div>
+</div>

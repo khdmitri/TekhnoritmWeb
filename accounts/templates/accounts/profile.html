@@ -1,0 +1,26 @@
+<!-- profile.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">{{ page_name }}</h1>
+            <a href="{% url 'int_messages:message-create' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Написать сообщение</a>
+          </div>
+<!-- End of Page Heading -->
+          <div class="row">
+              {% if perms.accounts.can_view_orders %}
+              <h6>Делопроизводство</h6>
+              {% endif %}
+              {% if perms.accounts.can_view_laboratory %}
+              <h6>Лаборатория</h6>
+              {% endif %}
+              {% if perms.accounts.can_view_inspection %}
+              <h6>Орган инспекции</h6>
+              {% endif %}
+          </div>
+
+{% endblock content %}

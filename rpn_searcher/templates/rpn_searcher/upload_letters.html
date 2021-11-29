@@ -1,0 +1,50 @@
+<!-- object_list.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+  <div class="container">
+      <div class="row">
+            <div class="col-xl-6 col-md-9 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                          Панель загрузки файлов в систему
+                      </div>
+                      <div class="h6 mb-0 font-weight-bold text-gray-600">Тип: Microsoft Word (письма-согласования)</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <form class="user" name="form" id="main_form" method="POST" enctype="multipart/form-data" action="{% url 'rpn_searcher:upload-post' %}">
+        {% csrf_token %}
+            <div class="row">
+                    <div class="form-group m-3 col-12">
+                        <p class="text-danger small">{{ form.file_field.errors }}</p>
+                        {{ form.file_field }}
+                        {% if form.file_field.help_text %}
+                        <p class="help font-italic small">*{{ form.file_field.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+            </div>
+            <input class="btn btn-primary btn-user btn-block mt-1" type="submit" value="Загрузить" />
+        </form>
+
+        <div class="row">
+            <div class="col-12">
+                {% include 'rpn_searcher\process_counter.html' %}
+            </div>
+        </div>
+  </div>
+
+{% endblock content %}

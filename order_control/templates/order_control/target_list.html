@@ -1,0 +1,53 @@
+<!-- target_list.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Выбор задачи для настройки контроля</h1>
+            <a href="{% url 'int_messages:message-create' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Написать сообщение</a>
+          </div>
+
+          <div>
+              {% if success %}
+              <p class="text-success">{{ success }}</p>
+              {% endif %}
+          </div>
+
+<!-- End of Page Heading -->
+
+
+<div class="container">
+    <div class="row">
+        <div class="card-body">
+          {% if alert_message %}
+            <h4 class="text-success">{{ alert_message }}</h4>
+          {% endif %}
+          <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th>Тип задачи</th>
+                  <th>Код цели</th>
+                  <th>Описание цели</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for instance in tasks %}
+                <tr>
+                    <td>{{ instance.task_type }}</td>
+                    <td><a href="{% url 'order_control:control-config' task_id=instance.id %}"><strong>{{ instance.target }}</strong></a></td>
+                    <td>{{ instance.get_target_description }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,21 @@
+{% load static %}
+
+<script type="text/javascript">
+  function publicate(request_parameter) {
+    const ref_order = document.getElementById('main_form').elements['order_id'].value;
+    $.ajax({
+      url: "{% url 'orders:ajax-order-publicate' %}",
+      data: {'order_id': ref_order,
+             'action': request_parameter},
+      success: function(data) {
+        $('#pub_table_id').html(data);
+      }
+    });
+  }
+
+  $('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+      if (e.target.id === "pills-publication-tab") {
+          publicate("refresh")
+      }
+  })
+</script>

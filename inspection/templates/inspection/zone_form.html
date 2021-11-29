@@ -1,0 +1,98 @@
+{% load static %}
+
+<h3>Санитарно-Защитная Зона (СЗЗ) и Зона Ограничения Застройки (ЗОЗ)</h3>
+
+<div class="row">
+    <div class="col-12">
+        <div class="table-responsive small">
+            <table class="table table-bordered" id="projectDataTable" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th class="text-center">Удаление</th>
+                  <th>Азимут, град</th>
+                  <th>H, max, м</th>
+                  <th>H, min, м</th>
+                  <th>R, м</th>
+                  <th>Тип</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for instance in zones %}
+                <tr>
+                    <td class="text-center">
+                        <a href="javascript:" onclick="delete_zone('{{ instance.id }}')">
+                            <i class="fas fa-times fa-lg fa-fw mr-2 text-danger"></i>
+                        </a>
+                    </td>
+                    <td><a href="javascript:" onclick="copy_point('{{instance.id}}',
+                                                                  '{{instance.ref_see.see_id}}',
+                                                                  '{{instance.az}}',
+                                                                  '{{instance.high}}',
+                                                                  '{{instance.low}}',
+                                                                  '{{instance.distance}}')">
+                        {{ instance.az }}</a>
+                    </td>
+                    <td>{{ instance.high|default_if_none:"" }}</td>
+                    <td>{{ instance.low|default_if_none:"" }}</td>
+                    <td>{{ instance.distance|default_if_none:"" }}</td>
+                    <td>{{ instance.get_type_description|default_if_none:"" }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" name="ref_see" id="id_ref_see_zone" value="{{ zone_form.initial.ref_see.see_id }}" />
+<input type="hidden" name="id" id="id_id_zone" />
+
+<div class="row">
+    <div class="form-group m-0 col-12">
+        <div class="form-row">
+            <div class="col-3">
+              <span class="d-block font-weight-bold">Азимут, град<br /></span>
+              <span class="text-danger">{{ zone_form.az.errors }}</span>
+              <input type="text" class="form-control form-control-sm" id="id_az_eval" placeholder="" name="az">
+            </div>
+            <div class="col-3">
+              <span class="d-block font-weight-bold">Высота (max), м<br /></span>
+              <span class="text-danger">{{ zone_form.high.errors }}</span>
+              <input type="text" class="form-control form-control-sm" id="id_high_zone" placeholder="" name="high">
+            </div>
+            <div class="col-3">
+              <span class="d-block font-weight-bold">Высота (min), м<br /></span>
+              <span class="text-danger">{{ zone_form.low.errors }}</span>
+              <input type="text" class="form-control form-control-sm" id="id_low_zone" placeholder="" name="low">
+            </div>
+            <div class="col-3">
+              <span class="d-block font-weight-bold">Расстояние, м<br /></span>
+              <span class="text-danger">{{ zone_form.distance.errors }}</span>
+              <input type="text" class="form-control form-control-sm" id="id_distance_zone" placeholder="" name="distance">
+            </div>
+        </div>
+    </div>
+    <input class="btn btn-primary btn-user btn-block mt-3" type="submit" value="Сохранить" />
+</div>
+
+<script type="text/javascript">
+    function copy_point(ins_id, see_id, az, high, low, distance) {
+        document.getElementById('id_id_zone').value = ins_id;
+        document.getElementById('id_ref_see_zone').value = see_id;
+        document.getElementById('id_distance_zone').value = distance;
+        document.getElementById('id_high_zone').value = high;
+        document.getElementById('id_low_zone').value = low;
+        document.getElementById('id_az_eval').value = az;
+    }
+
+    function delete_zone(zone_id) {
+        $.ajax({
+          url: "{% url 'inspection:delete-zone' %}",
+          data: {'see_id': '{{ see_id }}',
+                 'zone_id': zone_id},
+          success: function(data) {
+             $('#id_zones').html(data);
+          }
+        });
+    }
+</script>

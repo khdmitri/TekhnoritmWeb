@@ -1,0 +1,42 @@
+{% load static %}
+
+<div class="card-body">
+  <div class="table-responsive">
+    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Тип заявки</th>
+          <th>Распределитель</th>
+          <th>Дата создания</th>
+          <th>Дата принятия</th>
+          <th>Исполнить до</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for instance in tasks %}
+        <tr>
+            <td>{{ instance.get_task_description }}</td>
+            <td>{{ instance.distribution_dep.name }}</td>
+            <td>{{ instance.create_date }}</td>
+            <td>
+                {% if instance.accept_date %}
+                <span class="text-success">{{ instance.accept_date }}</span>
+                {% else %}
+                <span class="text-warning">Не принята</span>
+                {% endif %}
+            </td>
+            <td>{{ instance.dead_line }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% if order.is_public %}
+<p class="text-success font-weight-bold">Заявка опубликована!</p>
+{% else %}
+<p class="text-warning">Заявка еще не была опубликована!</p>
+<a href="javascript:;" class="btn btn-primary btn-user btn-block" onclick="publicate('publicate')">
+  Опубликовать
+</a>
+{% endif %}

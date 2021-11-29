@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<h3>СПРАВОЧНИК: Перечень приборов для измерения ЭМП (по умолчанию)</h3>
+
+<h6 class="text-success font-weight-bold">Перечень доступных приборов</h6>
+
+<div class="row">
+    <div class="col-12">
+        <div class="table-responsive small">
+            <table class="table table-bordered" id="refDataTable" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th class="text-center">Наименование</th>
+                  <th class="text-center">Назначение</th>
+                  <th>Диапазон</th>
+                  <th>Чувствительность</th>
+                  <th>Погрешность</th>
+                  <th>Поверка до</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for instance in pribors %}
+                <tr>
+                    <td class="text-center">
+                        <a href="javascript:" onclick="add_pribor_ref('{{ instance.id }}')">
+                            {{ instance.name }}
+                        </a>
+                    </td>
+                    <td>{{ instance.purpose }}</td>
+                    <td>{{ instance.limit }}</td>
+                    <td>{{ instance.sensitivity }}</td>
+                    <td>{{ instance.accuracy }}</td>
+                    <td class="{{ instance.get_date_class }}">{{ instance.expire_date }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<h6 class="text-success font-weight-bold">Используется по умолчанию</h6>
+
+<div class="row">
+    <div class="col-12" id="id_pribors">
+        {% include 'laboratory/pribors_table.html' %}
+    </div>
+</div>
+
+<script type="text/javascript">
+    function add_pribor_ref(pribor_id) {
+        $.ajax({
+          url: "{% url 'laboratory:add-pribor-ref' %}",
+          data: {'pribor_id': pribor_id},
+          success: function(data) {
+             $('#id_pribors').html(data);
+          }
+        });
+    }
+
+    function delete_pribor(pribor_id) {
+        $.ajax({
+          url: "{% url 'laboratory:delete-pribor' %}",
+          data: {'pribor_id': pribor_id},
+          success: function(data) {
+             $('#id_pribors').html(data);
+          }
+        });
+    }
+</script>
+
+{% endblock content %}

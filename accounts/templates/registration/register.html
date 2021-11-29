@@ -1,0 +1,64 @@
+<!-- register.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+  <div class="container">
+
+    <div class="card o-hidden border-0 shadow-lg my-5">
+      <div class="card-body p-0">
+        <!-- Nested Row within Card Body -->
+        <div class="row">
+          <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
+          <div class="col-lg-7">
+            <div class="p-5">
+              <div class="text-center">
+                <h1 class="h4 text-gray-900 mb-4">Создание нового аккаунта!</h1>
+              </div>
+              <form class="user" name="form" id="main_form" method="post">
+                  {% csrf_token %}
+                  {% include 'bs4_form.html' %}
+                <!--<div class="form-group row">-->
+                  <!--<div class="col-sm-6 mb-3 mb-sm-0">-->
+                    <!--<input type="text" class="form-control form-control-user" id="exampleFirstName" placeholder="Имя" name="first_name">-->
+                  <!--</div>-->
+                  <!--<div class="col-sm-6">-->
+                    <!--<input type="text" class="form-control form-control-user" id="exampleLastName" placeholder="Фамилия" name="last_name">-->
+                  <!--</div>-->
+                <!--</div>-->
+                  <!--<div class="form-group">-->
+                  <!--<input type="text" class="form-control form-control-user" id="inputUsername" placeholder="Имя пользователя" name="username">-->
+                <!--</div>-->
+                <!--<div class="form-group">-->
+                  <!--<input type="email" class="form-control form-control-user" id="inputEmail" placeholder="Email адрес" name="email">-->
+                <!--</div>-->
+                <!--<div class="form-group row">-->
+                  <!--<div class="col-sm-6 mb-3 mb-sm-0">-->
+                    <!--<input type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Пароль" name="password1">-->
+                  <!--</div>-->
+                  <!--<div class="col-sm-6">-->
+                    <!--<input type="password" class="form-control form-control-user" id="exampleRepeatPassword" placeholder="Повторить пароль" name="password2">-->
+                  <!--</div>-->
+                <!--</div>-->
+                ``<a href="javascript:;" onclick="document.getElementById('main_form').submit();" class="btn btn-primary btn-user btn-block">
+                  Зарегистрировать
+                </a>``
+              </form>
+              <hr>
+              <div class="text-center">
+                <a class="small" href="forgot-password.html">Забыли пароль?</a>
+              </div>
+              <div class="text-center">
+                <a class="small" href="/accounts/custom_login/">Уже есть аккаунт? Войти!</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+{% endblock content %}

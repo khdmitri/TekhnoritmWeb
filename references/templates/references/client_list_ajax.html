@@ -1,0 +1,26 @@
+{% load static %}
+
+<div class="card-body">
+  <div class="table-responsive">
+    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Наименование</th>
+          <th>Представитель</th>
+          <th>Телефон</th>
+          <th>E-mail</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for instance in clients %}
+        <tr>
+            <td><a href="{{ instance.get_absolute_url }}"><strong>{{ instance.short_name }}</strong></a></td>
+            <td>{{ instance.representative|default_if_none:"---" }}</td>
+            <td>{{ instance.phone|default_if_none:"---" }}</td>
+            <td>{{ instance.email|default_if_none:"---" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>

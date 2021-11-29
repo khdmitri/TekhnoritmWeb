@@ -1,0 +1,49 @@
+{% load static %}
+
+<script type="text/javascript">
+  var scheduled_function_ins = false;
+  var scheduled_function_ins_2 = false;
+
+  function call_search(what, search_string) {
+      $.ajax({
+          url: "{% url 'inspection:ajax-client-search' %}",
+          data: {'search_line': search_string,
+                 'what': what},
+          success: function (data) {
+              if (what === 'owner') {
+                  $('#list_owners_content').html(data);
+              }
+              else {
+                  $('#list_projects_content').html(data);
+              }
+          }
+      });
+  }
+
+  $(document).ready(function ($) {
+    call_search('owner', '');
+    call_search('project', '');
+  });
+
+  $("#search_owner_input").on('keyup', function () {
+    const search_line = $(this).val(); // value of user_input: the HTML element with ID user-input
+    const what = 'owner';
+
+    if (scheduled_function_ins) {
+        clearTimeout(scheduled_function_ins)
+    }
+
+    scheduled_function_ins = setTimeout(call_search, 700, what, search_line)
+  });
+
+  $("#search_project_input").on('keyup', function () {
+    const search_line = $(this).val(); // value of user_input: the HTML element with ID user-input
+    const what = 'project';
+
+    if (scheduled_function_ins_2) {
+        clearTimeout(scheduled_function_ins_2)
+    }
+
+    scheduled_function_ins_2 = setTimeout(call_search, 700, what, search_line)
+  })
+</script>

@@ -1,0 +1,6 @@
+login: khdmitri@yahoo.com
+pass: MojParol_422
+API-ключ
+92f893615d8cde3c9d4c8f6edc10314039979922
+Секретный ключ для стандартизации
+19ebf698d7166d88e1a1d8465a44bab24f1bf22f

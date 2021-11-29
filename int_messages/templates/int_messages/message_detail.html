@@ -1,0 +1,144 @@
+<!-- page_heading.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <h2 class="h4 mb-2 text-gray-800">ТИКЕТ: {{ message.ticket_id }}</h2>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">История по тикету</h6>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+              {% if history %}
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Отправитель</th>
+                     <th>Получатель</th>
+                    <th>Текст</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for instance in history %}
+                <tr>
+                    <td>{{ instance.create_date }}</td>
+                    <td>{{ instance.sender.first_name }} {{ instance.sender.last_name }}</td>
+                    <td>{{ instance.receiver_staff.first_name }} {{ instance.receiver_staff.last_name }}</td>
+                    <td>{{ instance.body }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+              {% else %}
+              <span>отсутствует</span>
+              {% endif %}
+          </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-9 col-md-12 mb-4">
+          <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                      {{ message.sender.first_name }} {{ message.sender.last_name }}
+                  </div>
+                  <div class="h6 mb-0 font-weight-bold text-gray-800">ОТПРАВИТЕЛЬ</div>
+                </div>
+                <div class="col-auto">
+                    <img class="img-profile rounded-circle" src="{{ message.sender.profile.avatar.url }}">
+{#                  <i class="fas fa-calendar fa-2x text-gray-300"></i>#}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <!-- Basic Card Example -->
+    <div class="row">
+      <div class="card shadow col-xl-9 col-md-12 mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">Тема: {{ message.topic }}</h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12">
+                    <textarea class="form-control" id="id_body" name="body" placeholder="" rows="10">
+                        {{ message.body }}
+                    </textarea>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    {% if message.attach %}
+    <!-- Basic Card Example -->
+    <div class="row">
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-gray-800">Имеются вложения</h6>
+        </div>
+        <div class="card-body">
+          <a href="{{ message.attach.url }}" class="text-info text-uppercase font-weight-bold" download>Скачать</a><br />
+          <a href="{{ message.attach.url }}" class="text-info text-uppercase font-weight-bold" target="_new">Открыть</a>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="card o-hidden border-0 shadow-lg my-5">
+      <div class="card-body p-0">
+        <!-- Nested Row within Card Body -->
+        <div class="row">
+          <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
+          <div class="col-lg-7">
+            <div class="p-5">
+              <div class="text-center">
+                <h4 class="h4 text-gray-900 mb-4">Если необходимо - напишите ответ...</h4>
+              </div>
+              <form class="user" name="form" id="main_form" method="post" action="/int_messages/answer/" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  {% include 'bs4_form.html' %}
+                <a href="javascript:;" onclick="document.getElementById('main_form').submit();" class="btn btn-primary btn-user btn-block">
+                  Ответить
+                </a>
+              </form>
+              <hr>
+
+              <!-- Collapsable Card Example -->
+              <div class="card shadow mb-4">
+                <!-- Card Header - Accordion -->
+                <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
+                  <h6 class="m-0 font-weight-bold text-primary">Дополнительно</h6>
+                </a>
+                <!-- Card Content - Collapse -->
+                <div class="collapse show" id="collapseCardExample">
+                  <div class="card-body">
+                      {% if message.ticket_id %}
+                      <a href="{% url 'int_messages:topic-close' ticket_id=message.ticket_id parent_box=parent_box %}" class="text-warning text-uppercase">
+                        <strong>Закрыть тему</strong>
+                      </a>
+                      {% endif %}
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</div>
+
+{% endblock content %}

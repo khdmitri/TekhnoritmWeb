@@ -1,0 +1,34 @@
+{% load static %}
+
+<div class="table-responsive small">
+    <table class="table table-bordered" id="inuseDataTable" width="100%" cellspacing="0">
+      <thead>
+        <tr>
+          <th class="text-center"><i class="fas fa-list-alt fa-lg fa-fw m-0 text-warning"></i></th>
+          <th class="text-center">Наименование</th>
+          <th class="text-center">Назначение</th>
+          <th>Диапазон</th>
+          <th>Чувствительность</th>
+          <th>Погрешность</th>
+          <th>Поверка до</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for instance in protocol_pribors %}
+        <tr>
+            <td class="text-center">
+                <a href="javascript:" onclick="delete_pribor('{{ instance.id }}')">
+                    <i class="fas fa-times fa-lg fa-fw mr-2 text-danger"></i>
+                </a>
+            </td>
+            <td class="text-center">{{ instance.ref_pribor.name }}</td>
+            <td>{{ instance.ref_pribor.purpose }}</td>
+            <td>{{ instance.ref_pribor.limit }}</td>
+            <td>{{ instance.ref_pribor.sensitivity }}</td>
+            <td>{{ instance.ref_pribor.accuracy }}</td>
+            <td class="{{ instance.ref_pribor.get_date_class }}">{{ instance.ref_pribor.expire_date }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+</div>

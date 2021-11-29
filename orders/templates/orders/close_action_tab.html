@@ -1,0 +1,111 @@
+<!-- close_action_tab.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+{% if not success %}
+    <div class="row">
+        <div class="col"><hr /></div>
+        <div class="col text-center">СПИСОК ЗАДАЧ ДЛЯ ЗАКРЫТИЯ</div>
+        <div class="col"><hr /></div>
+    </div>
+{% else %}
+    <div class="row">
+        <div class="col"><hr /></div>
+        <div class="col text-center text-info">Внутренняя заявка была успешно закрыта, архив сформирован!</div>
+        <div class="col"><hr /></div>
+    </div>
+{% endif %}
+
+<div class="card-body">
+  <div class="table-responsive">
+    <table class="table table-bordered small" id="dataTable" width="100%" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Цель</th>
+          <th>Внутренний исполнитель</th>
+          <th>Внешний исполнитель</th>
+          <th>Начало</th>
+          <th>Окончание</th>
+          <th>Прогресс</th>
+          <th>Описание</th>
+          <th>Действие</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for instance in actions %}
+        <tr>
+            <td><strong class="text-primary">{{ instance.get_target_description }}</strong></td>
+            <td>{{ instance.int_executor.description }}</td>
+            <td>
+                {% if instance.get_executor %}
+                {{ instance.get_executor }}
+                {% else %}
+                ---
+                {% endif %}
+            </td>
+            <td>{{ instance.start_date|default_if_none:"---" }}</td>
+            <td>
+              {% if instance.stop_date %}
+              {{ instance.stop_date }}
+              {% else %}
+              <span class="text-success">Открыто</span>
+              {% endif %}
+            </td>
+            <td>Выполнено:<br />
+                {% if instance.get_progress.ready >= instance.get_progress.from %}
+                <span class="text-success font-weight-bold">{{ instance.get_progress.ready  }}&nbsp;из&nbsp; {{ instance.get_progress.from }}</span>
+                {% else %}
+                <span class="text-warning font-weight-bold">{{ instance.get_progress.ready }}&nbsp;из&nbsp; {{ instance.get_progress.from }}</span>
+                {% endif %}
+            </td>
+            <td>{{ instance.description|default_if_none:"---" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+{% if not success %}
+    <div>
+        <div class="row">
+            <div class="col text-info align-content-center">
+                ***Закрытие внутренней заявки формирует АРХИВ и не позволяет далее редактировать данные***
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <a href="{% url 'orders:close-task' task_id=task.task_id %}" class="btn btn-user btn-primary m-2">Закрыть</a>
+            </div>
+        </div>
+    </div>
+{% endif %}
+    <div>
+        {% if show_progress %}
+            {% include 'display_progress.html' %}
+        {% endif %}
+    </div>
+    <div>
+        <a href="{% url 'orders:control-order' %}" class="text-info m-2"><strong>Вернуться к списку заявок</strong></a>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+  function expand_action(action_id) {
+    $.ajax({
+      url: "{% url 'orders:expand-action' %}",
+      data: {'action_id': action_id},
+      success: function(data) {
+        $('#id_card').html(data);
+        $('#pills-card-tab').click()
+      }
+    });
+  }
+</script>
+
+{% include 'orders/script_control_action.html' %}
+
+{% endblock content %}

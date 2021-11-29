@@ -1,0 +1,88 @@
+<!-- source_data.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+  <div class="container">
+      <div class="row">
+            <div class="col-xl-6 col-md-9 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                          Объект: {{ object.name }}
+                      </div>
+                      <div class="h6 mb-0 font-weight-bold text-gray-600">Адрес: {{ object.address }}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="card o-hidden border-0 shadow-lg my-5">
+              <div class="card-body p-0">
+
+                <!-- Nested Row within Card Body -->
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="p-5">
+                      <div class="text-center">
+                        <h2 class="h4 text-gray-900 mb-4">ИСХОДНЫЕ ДАННЫЕ ПО ОБЪЕКТУ</h2>
+                      </div>
+
+                      <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                          <li class="nav-item">
+                            <a class="nav-link active" id="pills-list-tab" data-toggle="pill" href="#pills-list" role="tab" aria-controls="pills-list" aria-selected="true">
+                                <span>ТАБЛИЦА</span>
+                                 <i class="fas fa-envelope-open-text fa-sm"></i>
+                            </a>
+                          </li>
+                          <li class="nav-item ml-3">
+                            <a class="nav-link" id="pills-detail-tab" data-toggle="pill" href="#pills-detail" role="tab" aria-controls="pills-detail" aria-selected="false">
+                                <span>ФОРМА</span>
+                                 <i class="fas fa-stamp fa-sm"></i>
+                            </a>
+                          </li>
+                      </ul>
+
+                      <div class="tab-content" id="pills-tabContent">
+
+                        <div class="tab-pane fade show active" id="pills-list" role="tabpanel" aria-labelledby="pills-list-tab">
+                            <div class="card-body" id="id_source_table">
+
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="pills-detail" role="tabpanel" aria-labelledby="pills-detail-tab">
+                            <form class="user" name="form" id="main_form" method="POST">
+                                {% csrf_token %}
+                                <div id="id_source_form">
+
+                                </div>
+                            </form>
+                        </div>
+
+                      </div>
+                        <a href="{% url 'inspection:object-list' order_id=object.ref_order.order_id %}" class="font-weight-bold text-primary m-3">
+                            <p>Назад к списку</p>
+                        </a>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+        </div>
+  </div>
+
+  {% include 'inspection/source_list_scripts.html' %}
+
+{% endblock content %}

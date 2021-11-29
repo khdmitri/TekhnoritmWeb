@@ -1,0 +1,18 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/suggestions-jquery@20.3.0/dist/js/jquery.suggestions.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $("#id_address").suggestions({
+            token: "92f893615d8cde3c9d4c8f6edc10314039979922",
+            type: "ADDRESS",
+            /* Вызывается, когда пользователь выбирает одну из подсказок */
+            onSelect: function (suggestion) {
+                {#console.log(suggestion);#}
+                document.getElementById('id_address_fias').value = JSON.stringify(suggestion);
+                fias_ok = document.getElementById('fias_ok');
+                fias_ok.innerHTML = "<span class='text-success'>Адрес найден!</span>";
+            }
+        });
+    })
+</script>

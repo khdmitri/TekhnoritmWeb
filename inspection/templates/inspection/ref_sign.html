@@ -1,0 +1,140 @@
+<!-- ref_sign.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<h3><span class="text-primary">Справочник: </span>Настройка подписей</h3>
+
+<div class="row">
+    <div class="col-6">
+        <label for="id_doc_type">Выберите тип документа</label>
+        <select class="custom-select mr-sm-2" id="id_doc_type" name="doc_type" onchange="on_doc_changed()">
+        <option selected value="0">Не выбрано...</option>
+        {% for key, value in doc_types.items %}
+            <option value="{{ key }}">{{ value }}</option>
+        {% endfor %}
+      </select>
+    </div>
+</div>
+
+<h4 class="text-success m-3 font-weight-bold">ДОСТУПНО</h4>
+
+<div class="row">
+    <div class="col-12">
+        <div class="table-responsive small">
+            <table class="table table-bordered" id="evalDataTable" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th>Сотрудник</th>
+                  <th>Должность</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for instance in persons %}
+                <tr>
+                    <td class="text-center">
+                        <a href="javascript:" onclick="add_person('{{ instance.id }}', '{{ instance.first_name }}', '{{ instance.last_name }}')">
+                            {{ instance.first_name }}&nbsp;{{ instance.last_name }}
+                        </a>
+                    </td>
+                    <td>{{ instance.profile.position }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <form class="user" name="sign_form" id="id_sign_form" method="POST">
+    {% csrf_token %}
+        <div id="id_content">
+
+        </div>
+    </form>
+</div>
+
+
+<script type="text/javascript">
+    var doc_type = $('#id_doc_type');
+    function on_doc_changed() {
+        $.ajax({
+          url: "{% url 'inspection:load-sign' %}",
+          data: {'doc_type': doc_type.val()},
+          success: function(data) {
+             $('#id_content').html(data);
+          }
+        });
+    }
+
+    function add_person(person_id, first_name, last_name) {
+        var doc_type = document.getElementById('id_doc_type').value;
+        if (doc_type !== '0') {
+            document.getElementById('id_ref_person').value = person_id;
+            document.getElementById('id_ref_person_text').value = first_name + ' ' + last_name;
+            document.getElementById('id_document_type').value = doc_type
+        }
+        else {
+            alert('Сначало необходимо выбрать тип документа!')
+        }
+    }
+
+    $(document).ready(function () {
+        const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+        $('#id_sign_form').on('submit', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            var doc_type = document.getElementById('id_doc_type').value;
+            if (doc_type !== '0') {
+
+                if (document.getElementById('id_sign_type').value !== '0') {
+                    const my_data = new FormData(this);
+
+                    $.ajax({
+                        url: "{% url 'inspection:sign-post' %}", // the endpoint
+                        type: "POST", // http method
+                        dataType: 'html',
+                        processData: false,
+                        contentType: false,
+                        data: my_data, // data sent with the post request
+
+                        // handle a successful response
+                        success: function (data) {
+                            $('#id_content').html(data); // remove the value from the input
+                        },
+                        error: function (data) {
+                            const res = JSON.stringify(data);
+                            $('#id_content').html(res);
+                        }
+                    });
+                }
+                else {
+                    alert('Не выбран тип подписи!')
+                }
+            }
+            else {
+                alert('Не выбран тип документа!')
+            }
+        });
+    })
+</script>
+
+{% endblock content %}

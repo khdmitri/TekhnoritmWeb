@@ -1,0 +1,5 @@
+EXPORT
+mysqldump -u techno_work_admin -p --default-character-set=utf8 --result-file=techno_work.backup.sql techno_work
+
+IMPORT
+mysql -u techno_work_admin -p --default_character_set=utf8 < techno_work.backup.sql techno_work

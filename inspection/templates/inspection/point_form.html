@@ -1,0 +1,149 @@
+{% load static %}
+
+<h3>Контрольные точки</h3>
+
+<div class="row">
+    <div class="col-12">
+        <div class="table-responsive small">
+            <table class="table table-bordered" id="projectDataTable" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th class="text-center">Удаление</th>
+                  <th>No.</th>
+                  <th>No.сит.план</th>
+                  <th>Место</th>
+                  <th>Значение</th>
+                  <th>Ед.измерения</th>
+                  <th>Расстояние, м</th>
+                  <th>Высота, м</th>
+                  <th>Азимут, град.</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for instance in points %}
+                <tr>
+                    <td class="text-center">
+                        <a href="javascript:" onclick="delete_point('{{ instance.id }}')">
+                            <i class="fas fa-times fa-lg fa-fw mr-2 text-danger"></i>
+                        </a>
+                    </td>
+                    <td><a href="javascript:" onclick="copy_point('{{instance.place}}',
+                                                                  '{{instance.value}}',
+                                                                  '{{instance.unit}}',
+                                                                  '{{instance.distance}}',
+                                                                  '{{instance.high}}',
+                                                                  '{{instance.az}}')">
+                        {{ instance.no }}</a>
+                    </td>
+                    <td>{{ instance.no_plan }}</td>
+                    <td>{{ instance.place }}</td>
+                    <td>{{ instance.value }}</td>
+                    <td>{{ instance.unit }}</td>
+                    <td>{{ instance.distance }}</td>
+                    <td>{{ instance.high }}</td>
+                    <td>{{ instance.az }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{{ point_form.ref_see }}
+
+<div class="row">
+    <div class="form-group m-0 col-12">
+        <div class="row align-items-center">
+            <div class="col-3">
+                <span class="text-primary">No.на сит. плане</span>
+            </div>
+            <div class="form-group col-3">
+                <span class="text-danger">{{ point_form.no_plan.errors }}</span>
+                <input type="number" class="form-control" id="id_no_plan" name="no_plan" placeholder="" value="{{ cur_no_plan }}">
+                {% if point_form.no_plan.help_text %}
+                <p class="help font-italic small">*{{ point_form.no_plan.help_text|safe }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="form-group m-0 col-12">
+        <div class="row align-items-center">
+            <div class="col-3">
+                <span class="text-primary">Место</span>
+            </div>
+            <div class="form-group col-9">
+                <span class="text-danger">{{ point_form.place.errors }}</span>
+                <input type="text" class="form-control" id="id_place" name="place" placeholder="">
+                {% if point_form.place.help_text %}
+                <p class="help font-italic small">*{{ point_form.place.help_text|safe }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="form-group mt-3 col-12">
+        <div class="form-row ">
+            <div class="col-3">
+                <span class="text-primary">Расчетное значение</span>
+            </div>
+            <div class="col-3">
+                <span class="text-danger">{{ point_form.value.errors }}</span>
+                <input type="text" class="form-control" id="id_value" name="value" placeholder="">
+                {% if point_form.value.help_text %}
+                <p class="help font-italic small">*{{ point_form.value.help_text|safe }}</p>
+                {% endif %}
+            </div>
+            <div class="col-2">
+                <span class="text-danger">{{ point_form.unit.errors }}</span>
+                <input type="text" class="form-control" id="id_unit" name="unit" placeholder="Ед. измерения">
+                {% if point_form.unit.help_text %}
+                <p class="help font-italic small">*{{ point_form.unit.help_text|safe }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="form-group m-0 col-12">
+        <div class="form-row">
+            <div class="col-4">
+              <span class="d-block font-weight-bold">Расстояние, м<br /></span>
+              <span class="text-danger">{{ point_form.distance.errors }}</span>
+              <input type="text" class="form-control form-control-sm" id="id_distance" placeholder="" name="distance">
+            </div>
+            <div class="col-4">
+              <span class="d-block font-weight-bold">Высота, м<br /></span>
+              <span class="text-danger">{{ point_form.high.errors }}</span>
+              <input type="text" class="form-control form-control-sm" id="id_high" placeholder="" name="high">
+            </div>
+            <div class="col-4">
+              <span class="d-block font-weight-bold">Азимут, град<br /></span>
+              <span class="text-danger">{{ point_form.az.errors }}</span>
+              <input type="text" class="form-control form-control-sm" id="id_az_2" placeholder="" name="az">
+            </div>
+        </div>
+    </div>
+
+    <input class="btn btn-primary btn-user btn-block mt-3" type="submit" value="Добавить" />
+</div>
+
+
+<script type="text/javascript">
+    function delete_point(point_id) {
+        $.ajax({
+          url: "{% url 'inspection:delete-point' %}",
+          data: {'see_id': '{{ see_id }}',
+                 'point_id': point_id},
+          success: function(data) {
+             $('#id_points').html(data);
+          }
+        });
+    }
+
+    function copy_point(place, value, unit, distance, high, az) {
+        document.getElementById('id_place').value = place;
+        document.getElementById('id_value').value = value;
+        document.getElementById('id_unit').value = unit;
+        document.getElementById('id_distance').value = distance;
+        document.getElementById('id_high').value = high;
+        document.getElementById('id_az_2').value = az;
+    }
+</script>

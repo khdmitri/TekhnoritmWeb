@@ -1,0 +1,131 @@
+{% load static %}
+
+<h3>Документы на рассмотрение</h3>
+
+<div class="row">
+    <div class="col-9">
+        <div class="table-responsive small">
+            <table class="table table-bordered" id="projectDataTable" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th class="text-center"><i class="fas fa-list-alt fa-lg fa-fw m-0 text-warning"></i> Справочник</th>
+                  <th class="text-center">Удаление</th>
+                  <th>Кратко</th>
+                  <th>Представление</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for instance in docs %}
+                <tr>
+                    <td class="text-center">
+                        <a href="javascript:" onclick="add_income_doc_ref('{{ instance.short_name }}', '{{ instance.presentation }}')">
+                            <i class="fas fa-download fa-lg fa-fw mr-2 text-success"></i>
+                        </a>
+                        <a href="javascript:" onclick="delete_income_doc_ref('{{ instance.short_name }}', '{{ instance.presentation }}')">
+                            <i class="fas fa-upload fa-lg fa-fw mr-2 text-warning"></i>
+                        </a>
+                    </td>
+                    <td class="text-center">
+                        <a href="javascript:" onclick="delete_income_doc('{{ instance.id }}')">
+                            <i class="fas fa-times fa-lg fa-fw mr-2 text-danger"></i>
+                        </a>
+                    </td>
+                    <td>{{ instance.short_name }}</td>
+                    <td>{{ instance.presentation }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-3">
+        <ul class="list-group m-1 ml-1 small" id="docList">
+          {% for item in doc_list %}
+          <li><a href="javascript:" onclick="add_income_doc('{{ item.id }}')">{{ item.item_short }}</a></li>
+          {% endfor %}
+        </ul>
+    </div>
+</div>
+
+{{ doc_form.ref_see }}
+
+<div class="row">
+    <div class="form-group m-0 col-12">
+        <div class="row align-items-center">
+            <div class="col-3">
+                <span class="text-primary">Краткое наименование</span>
+            </div>
+            <div class="form-group col-9">
+                <span class="text-danger">{{ doc_form.short_name.errors }}</span>
+                <input type="text" class="form-control" id="id_short_name" name="short_name" placeholder="">
+                {% if doc_form.short_name.help_text %}
+                <p class="help font-italic small">*{{ doc_form.short_name.help_text|safe }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="form-group m-0 col-12">
+        <div class="row align-items-center">
+            <div class="col-3">
+                <span class="text-primary">Представление</span>
+            </div>
+            <div class="form-group col-9">
+                <span class="text-danger">{{ doc_form.presentation.errors }}</span>
+                <input type="text" class="form-control" id="id_presentation" name="presentation" placeholder="">
+                {% if doc_form.presentation.help_text %}
+                <p class="help font-italic small">*{{ doc_form.presentation.help_text|safe }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <input class="btn btn-primary btn-user btn-block" type="submit" value="Добавить" />
+</div>
+
+
+<script type="text/javascript">
+    function add_income_doc(doc_id) {
+        $.ajax({
+          url: "{% url 'inspection:add-income-doc' %}",
+          data: {'doc_id': doc_id,
+                 'see_id': '{{ see_id }}'},
+          success: function(data) {
+             $('#id_documents').html(data);
+          }
+        });
+    }
+
+    function add_income_doc_ref(item_short, item_long) {
+        $.ajax({
+          url: "{% url 'inspection:add-income-doc-ref' %}",
+          data: {'see_id': '{{ see_id }}',
+                 'item_short': item_short,
+                 'item_long': item_long},
+          success: function(data) {
+             $('#id_documents').html(data);
+          }
+        });
+    }
+
+    function delete_income_doc_ref(item_short, item_long) {
+        $.ajax({
+          url: "{% url 'inspection:delete-income-doc-ref' %}",
+          data: {'see_id': '{{ see_id }}',
+                 'item_short': item_short,
+                 'item_long': item_long},
+          success: function(data) {
+             $('#id_documents').html(data);
+          }
+        });
+    }
+
+    function delete_income_doc(doc_id) {
+        $.ajax({
+          url: "{% url 'inspection:delete-income-doc' %}",
+          data: {'see_id': '{{ see_id }}',
+                 'doc_id': doc_id},
+          success: function(data) {
+             $('#id_documents').html(data);
+          }
+        });
+    }
+</script>

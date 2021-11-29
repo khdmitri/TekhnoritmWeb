@@ -1,0 +1,65 @@
+<!-- default_task_list_ajax.html -->
+{% load static %}
+
+{% block content %}
+
+      <div class="row">
+            <div class="col-xl-9 col-md-12 mb-4">
+              <div class="card border-left-primary shadow py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                          Выбрана задача: {{ selected_item }}
+                      </div>
+                      <div class="h6 mb-0 font-weight-bold text-gray-600">Список стандартных наборов работ</div>
+                    </div>
+                    <div class="col-auto">
+                      <a href="javascript:;" onclick="call_task_list('{{ selected_item }}')"><i class="fas fa-spinner fa-2x text-primary"></i></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th>Цель</th>
+                  <th>Внутр. исполнитель</th>
+                  <th>Внешний исполнитель</th>
+                  <th>Начальная дата</th>
+                  <th>Позиция</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for instance in tasks %}
+                <tr>
+                    <td><a href="{{ instance.get_absolute_url }}" target="_new"><strong>{{ instance.get_target_description }}</strong></a></td>
+                    <td>
+                        {% if instance.int_executor %}
+                            {{ instance.int_executor.name }}
+                        {% else %}
+                            Отсутствует
+                        {% endif %}
+                    </td>
+                    <td>{{ instance.ext_executor }}</td>
+                    <td>{{ instance.start_date }}</td>
+                    <td>{{ instance.position }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            </div>
+        </div>
+      <div class="row">
+          <a href="{% url 'references:default-task-create' task_type=selected_item %}" class="btn btn-primary btn-user btn-block" target="_new">
+              Добавить
+          </a>
+      </div>
+
+{% endblock content %}

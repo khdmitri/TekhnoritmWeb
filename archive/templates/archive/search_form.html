@@ -1,0 +1,114 @@
+{% load static %}
+
+<div class="container">
+
+    <h3 class="text-uppercase">СФОРМИРУЙТЕ ПОИСКОВЫЙ ЗАПРОС:</h3>
+
+    <div class="row">
+        <div class="form-group m-0 col-12">
+            <div class="form-row">
+                <div class="col-6">
+                    <span class="text-primary">Укажите временной диапазон:</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-12">
+                  <div class="row m-1">
+                    <div class="col-2">
+                        <span class="text-secondary">Начальная дата:</span>
+                    </div>
+                    <div class="col-3">
+                        <span class="text-danger">{{ form.from_date.errors }}</span>
+                        {{ form.from_date }}
+                        {% if form.from_date.help_text %}
+                        <p class="help font-italic small">*{{ form.from_date.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                  </div>
+                  <div class="row m-1">
+                    <div class="col-2">
+                        <span class="text-secondary">Конечная дата:</span>
+                    </div>
+                    <div class="col-3">
+                        <span class="text-danger">{{ form.to_date.errors }}</span>
+                        {{ form.to_date }}
+                        {% if form.to_date.help_text %}
+                        <p class="help font-italic small">*{{ form.to_date.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-3">
+                    <span class="text-primary">Контекст заявки:</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-12">
+                    <span class="text-danger">{{ form.order_context.errors }}</span>
+                    <input type="text" class="form-control" id="id_order_context" name="order_context" placeholder="Текст для поиска" value="{{ form.initial.order_context }}">
+                    {% if form.order_context.help_text %}
+                    <p class="help font-italic small">*{{ form.order_context.help_text|safe }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-3">
+                    <span class="text-primary">Контекст внутренней заявки:</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-12">
+                    <span class="text-danger">{{ form.task_context.errors }}</span>
+                    <input type="text" class="form-control" id="id_task_context" name="task_context" placeholder="Текст для поиска" value="{{ form.initial.task_context }}">
+                    {% if form.task_context.help_text %}
+                    <p class="help font-italic small">*{{ form.task_context.help_text|safe }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-3">
+                    <span class="text-primary">Контекст задачи:</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-12">
+                    <span class="text-danger">{{ form.execution_context.errors }}</span>
+                    <input type="text" class="form-control" id="id_execution_context" name="execution_context" placeholder="Текст для поиска" value="{{ form.initial.execution_context }}">
+                    {% if form.execution_context.help_text %}
+                    <p class="help font-italic small">*{{ form.execution_context.help_text|safe }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-3">
+                    <span class="text-primary">Контекст объекта:</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-12">
+                    <span class="text-danger">{{ form.card_context.errors }}</span>
+                    <input type="text" class="form-control" id="id_card_context" name="card_context" placeholder="Текст для поиска" value="{{ form.initial.card_context }}">
+                    {% if form.card_context.help_text %}
+                    <p class="help font-italic small">*{{ form.card_context.help_text|safe }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <input class="btn btn-primary btn-user btn-block" type="submit" value="Поиск" />
+    </div>
+
+
+    <script type="text/javascript">
+        $('#id_from_date').datepicker({
+          uiLibrary: 'bootstrap4',
+          format: 'dd.mm.yyyy'
+        });
+        $('#id_to_date').datepicker({
+          uiLibrary: 'bootstrap4',
+          format: 'dd.mm.yyyy'
+        });
+    </script>
+
+</div>

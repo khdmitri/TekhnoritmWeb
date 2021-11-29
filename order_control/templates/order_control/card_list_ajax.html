@@ -1,0 +1,343 @@
+{% load static %}
+
+<div class="card-body">
+  <div class="table-responsive">
+    <table class="table table-bordered" id="dataTable">
+      <thead>
+        <tr>
+          <th>Детали</th>
+          <th>Даты</th>
+          <th>Цель</th>
+          <th>Документы</th>
+          <th>Описание</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for instance in cards %}
+        <tr>
+            <td class="text-nowrap small">
+                <ul>
+                    <li>
+                        <button type="button" class="btn btn-primary small text-xs m-1" data-toggle="modal" data-target="#orderImgModal_{{ instance.execution_id }}">
+                            <span class="text-uppercase">заявка скан</span>
+                        </button>
+
+                        <!-- Modal Order Img -->
+                        <div class="modal fade" id="orderImgModal_{{ instance.execution_id }}" tabindex="-1" role="dialog" aria-labelledby="orderImgModal_{{ instance.execution_id }}Title" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">Одностраничный скан заявки</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                {% if instance.ref_action.ref_task.ref_order.img %}
+                                <img class="img-fluid img-thumbnail" src="{{ instance.ref_action.ref_task.ref_order.img.url }}" alt="Скан заявки"/>
+                                {% endif %}
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </li>
+                    <li>
+                        <button type="button" class="btn btn-secondary small text-xs m-1" data-toggle="modal" data-target="#orderModal_{{ instance.execution_id }}">
+                            <span class="text-xs">Заявка внешняя</span>
+                        </button>
+
+                        <!-- Modal Order -->
+                        <div class="modal fade" id="orderModal_{{ instance.execution_id }}" tabindex="-1" role="dialog" aria-labelledby="orderImgModal_{{ instance.execution_id }}Title" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="orderImgModal_{{ instance.execution_id }}Title">Внешняя заявка: {{ instance.ref_action.ref_task.ref_order.order_id }}</h5><br />
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="text-center">
+                                <h6 class="text-warning font-weight-bold">Клиент: {{ instance.ref_action.ref_task.ref_order.client.short_name }}</h6>
+                              </div>
+                              <div class="modal-body">
+                                <div class="row">
+                                    <div class="col text-primary text-uppercase small">
+                                        No. оригинальной заявки
+                                    </div>
+                                    <div class="col small text-gray-650">{{ instance.ref_action.ref_task.ref_order.ext_order_id }}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-primary text-uppercase small">
+                                        Описание
+                                    </div>
+                                    <div class="col small text-gray-650 text-wrap">{{ instance.ref_action.ref_task.ref_order.description }}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-primary text-uppercase small">
+                                        Создание/Закрытие
+                                    </div>
+                                    <div class="col small text-gray-650">
+                                        {{ instance.ref_action.ref_task.ref_order.create_date|default_if_none:"---" }}/
+                                        {{ instance.ref_action.ref_task.ref_order.close_date|default_if_none:"---" }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-primary text-uppercase small">
+                                        Срок до
+                                    </div>
+                                    <div class="col small text-gray-650">
+                                        {{ instance.ref_action.ref_task.ref_order.dead_line|default_if_none:"---" }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-primary text-uppercase small">
+                                        No.Мастер-Заявки
+                                    </div>
+                                    <div class="col small text-gray-650">
+                                        {{ instance.ref_action.ref_task.ref_order.master_id|default_if_none:"---" }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-primary text-uppercase small">
+                                        Регион
+                                    </div>
+                                    <div class="col small text-gray-650">
+                                        {{ instance.ref_action.ref_task.ref_order.region|default_if_none:"---" }}
+                                    </div>
+                                </div>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                    </li>
+                    <li>
+                        <button type="button" class="btn btn-secondary small text-xs m-1" data-toggle="modal" data-target="#taskModal_{{ instance.execution_id }}">
+                            <span class="text-xs">Заявка внутренняя</span>
+                        </button>
+
+                        <!-- Modal Task -->
+                        <div class="modal fade" id="taskModal_{{ instance.execution_id }}" tabindex="-1" role="dialog" aria-labelledby="taskModal_{{ instance.execution_id }}Title" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">Внутренняя заявка: {{ instance.ref_action.ref_task.task_id }}</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="text-center">
+                                <h6 class="text-warning font-weight-bold">Клиент: {{ instance.ref_action.ref_task.ref_order.client.short_name }}</h6>
+                              </div>
+                              <div class="modal-body">
+                                <div class="row">
+                                    <div class="col text-primary text-uppercase small">
+                                        Тип задачи
+                                    </div>
+                                    <div class="col small text-gray-650">{{ instance.ref_action.ref_task.get_task_description }}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-primary text-uppercase small">
+                                        Количество
+                                    </div>
+                                    <div class="col small text-gray-650">{{ instance.ref_action.ref_task.qty }}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-primary text-uppercase small">
+                                        Описание
+                                    </div>
+                                    <div class="col small text-gray-650 text-wrap">{{ instance.ref_action.ref_task.description }}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-primary text-uppercase small">
+                                        Создание/Принятие/Закрытие
+                                    </div>
+                                    <div class="col small text-gray-650">
+                                        {{ instance.ref_action.ref_task.create_date|default_if_none:"---" }}/
+                                        {{ instance.ref_action.ref_task.accept_date|default_if_none:"---" }}/
+                                        {{ instance.ref_action.ref_task.close_date|default_if_none:"---" }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-primary text-uppercase small">
+                                        Срок до
+                                    </div>
+                                    <div class="col small text-gray-650">
+                                        {{ instance.ref_action.ref_task.dead_line|default_if_none:"---" }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-primary text-uppercase small">
+                                        Исходные данные
+                                    </div>
+                                    <div class="col small text-uppercase">
+                                        <a href="{{ instance.ref_action.ref_task.attach.url }}" target="_new">Скачать</a>
+                                    </div>
+                                </div>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                    </li>
+                    <li>
+                        <button type="button" class="btn btn-secondary text-xs m-1" data-toggle="modal" data-target="#actionModal_{{ instance.execution_id }}">
+                            <span class="text-xs">Задача</span>
+                        </button>
+
+                        <!-- Modal Action -->
+                        <div class="modal fade" id="actionModal_{{ instance.execution_id }}" tabindex="-1" role="dialog" aria-labelledby="actionModal_{{ instance.execution_id }}Title" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">Задача: {{ instance.ref_action.get_target_description }}</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="text-center">
+                                <h6 class="text-warning font-weight-bold">Клиент: {{ instance.ref_action.ref_task.ref_order.client.short_name }}</h6>
+                              </div>
+                              <div class="modal-body">
+                                <div class="row">
+                                    <div class="col text-primary text-uppercase small">
+                                        Описание
+                                    </div>
+                                    <div class="col small text-gray-650 text-wrap">{{ instance.ref_action.description|default_if_none:"---" }}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-primary text-uppercase small">
+                                        Дополнительно
+                                    </div>
+                                    <div class="col small text-gray-650 text-wrap">{{ instance.ref_action.extra|default_if_none:"---" }}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-primary text-uppercase small">
+                                        Создание/Закрытие
+                                    </div>
+                                    <div class="col small text-gray-650">
+                                        {{ instance.ref_action.start_date|default_if_none:"---" }}/
+                                        {{ instance.ref_action.stop_date|default_if_none:"---" }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-primary text-uppercase small">
+                                        Внутренний исполнитель
+                                    </div>
+                                    <div class="col small text-gray-650 text-wrap">{{ instance.ref_action.int_executor.description|default_if_none:"---" }}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-primary text-uppercase small">
+                                        Внешний исполнитель
+                                    </div>
+                                    <div class="col small text-gray-650 text-wrap">{{ instance.ref_action.ext_executor.get_executor|default_if_none:"---" }}</div>
+                                </div>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                    </li>
+                    <li>
+                        <button type="button" class="btn btn-secondary text-xs m-1" data-toggle="modal" data-target="#cardModal_{{ instance.execution_id }}">
+                            <span class="text-xs">Объект</span>
+                        </button>
+
+                        <!-- Modal Card -->
+                        <div class="modal fade" id="cardModal_{{ instance.execution_id }}" tabindex="-1" role="dialog" aria-labelledby="cardModal_{{ instance.execution_id }}Title" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">Объект: {{ instance.doc_title }}</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="text-center">
+                                <h6 class="text-warning font-weight-bold">Клиент: {{ instance.ref_action.ref_task.ref_order.client.short_name }}</h6>
+                              </div>
+                              <div class="modal-body">
+                                <div class="row">
+                                    <div class="col text-primary text-uppercase small">
+                                        Номер/Дата/Кол.
+                                    </div>
+                                    <div class="col small text-gray-650">
+                                        No.:{{ instance.doc_no }}<br />
+                                        Дата:{{ instance.doc_date }}<br />
+                                        Кол.:{{ instance.doc_qty }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-primary text-uppercase small">
+                                        Целевой тип
+                                    </div>
+                                    <div class="col small text-gray-650 text-wrap">{{ instance.get_doc_type_description }}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-primary text-uppercase small">
+                                        Наименование
+                                    </div>
+                                    <div class="col small text-gray-650 text-wrap">{{ instance.object_full_name }}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-primary text-uppercase small">
+                                        Создание/Закрытие
+                                    </div>
+                                    <div class="col small text-gray-650">
+                                        {{ instance.start_date|default_if_none:"---" }}/
+                                        {{ instance.stop_date|default_if_none:"---" }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-primary text-uppercase small">
+                                        База
+                                    </div>
+                                    <div class="col small text-gray-650 text-wrap">{{ instance.doc_base }}</div>
+                                </div>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </li>
+                </ul>
+            </td>
+            <td>
+                <div class="text-nowrap">Начало: {{ instance.start_date|default_if_none:"---" }}</div>
+                <div class="text-nowrap">Окончание: {{ instance.stop_date|default_if_none:"---" }}</div>
+            </td>
+            <td>{{ instance.get_doc_type_description }}</td>
+            <td class="text-nowrap small text-uppercase font-weight-bold">
+                {% if instance.source_file %}
+                    <a href="{{ instance.source_file.url }}" download>Исходник</a>
+                {% else %}
+                    Исходник отсутствует
+                {% endif %}
+                <hr />
+                {% if instance.archive_file %}
+                    <a href="{{ instance.archive_file.url }}" download>Архив</a>
+                {% else %}
+                    Архив отсутствует
+                {% endif %}
+            </td>
+            <td>{{ instance.doc_base|default_if_none:"Отсутствует" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>

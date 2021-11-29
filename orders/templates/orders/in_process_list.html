@@ -1,0 +1,54 @@
+<!-- distribution_list.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Список активных задач</h1>
+            <a href="{% url 'int_messages:message-create' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Написать сообщение</a>
+          </div>
+
+          <div>
+              {% if success %}
+              <p class="text-success">{{ success }}</p>
+              {% endif %}
+          </div>
+
+<!-- End of Page Heading -->
+
+
+<div class="container">
+    <div class="row">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th>Заказчик</th>
+                  <th>Тип задачи</th>
+                  <th>Цель</th>
+                  <th>Открытие</th>
+                  <th>Описание</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for instance in list_obj %}
+                <tr>
+                    <td>{{ instance.ref_task.ref_order.client.short_name }}</td>
+                    <td>{{ instance.ref_task.get_task_description }}</td>
+                    <td><a href="{{ instance.get_execution_url }}"><strong>{{ instance.get_target_description }}</strong></a></td>
+                    <td>{{ instance.start_date }}</td>
+                    <td>{{ instance.description }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

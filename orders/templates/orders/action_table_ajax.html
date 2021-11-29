@@ -1,0 +1,19 @@
+{% load static %}
+
+<script type="text/javascript">
+  const task_id = document.getElementById('id_task_id').textContent;
+  function refresh_actions() {
+    $.ajax({
+      url: "{% url 'orders:ajax-task-action-table' %}",
+      data: {'task_id': task_id},
+      success: function(data) {
+        $('#task_table_id').html(data);
+      }
+    });
+  }
+
+  $(document).ready(function ($) {
+    refresh_actions();
+    const int = setInterval("refresh_actions()", 10000);
+  });
+</script>

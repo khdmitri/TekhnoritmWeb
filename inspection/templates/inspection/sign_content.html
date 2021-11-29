@@ -1,0 +1,71 @@
+{% load static %}
+
+<h4 class="text-success m-3 font-weight-bold">СОДЕРЖИТ</h4>
+
+<div class="row">
+    <div class="col-12">
+        <div class="table-responsive small">
+            <table class="table table-bordered" id="myEvalDataTable" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th class="text-center"><i class="fas fa-list-alt fa-lg fa-fw m-0 text-warning"></i></th>
+                  <th>Тип подписи</th>
+                  <th>Сотрудник</th>
+                  <th>Должность</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for instance in signs %}
+                <tr>
+                    <td class="text-center">
+                        <a href="javascript:" onclick="delete_sign('{{ instance.id }}')">
+                            <i class="fas fa-times fa-lg fa-fw mr-2 text-danger"></i>
+                        </a>
+                    </td>
+                    <td>{{ instance.get_sign_type_description }}</td>
+                    <td>{{ instance.ref_person.first_name }}&nbsp;{{ instance.ref_person.last_name }}</td>
+                    <td>{{ instance.ref_person.profile.position }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="id_ref_person" name="ref_person">
+<input type="hidden" id="id_document_type" name="document_type" value="{{ sign_form.initial.document_type }}">
+
+
+<div class="row">
+    <div class="col-5">
+        <label for="id_sign_type">Тип подписи</label>
+        <select class="custom-select mr-sm-2" id="id_sign_type" name="sign_type">
+        <option selected value="0">Не выбрано...</option>
+        {% for key, value in sign_form.fields.sign_type.choices %}
+            <option value="{{ key }}">{{ value }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group col-6">
+        {% if sign_form.ref_person_text.help_text %}
+        <p class="help font-italic small">*{{ sign_form.ref_person_text.help_text|safe }}</p>
+        {% endif %}
+        <input type="text" class="form-control" id="id_ref_person_text" name="ref_person_text" placeholder="Имя сотрудника" readonly>
+    </div>
+</div>
+
+<input class="btn btn-primary btn-user btn-block m-2" type="submit" value="Добавить" />
+
+<script type="text/javascript">
+    function delete_sign(sign_id) {
+        $.ajax({
+          url: "{% url 'inspection:delete-sign' %}",
+          data: {'doc_type': document.getElementById('id_doc_type').value,
+                 'sign_id': sign_id},
+          success: function(data) {
+             $('#id_content').html(data);
+          }
+        });
+    }
+</script>

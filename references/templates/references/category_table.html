@@ -1,0 +1,46 @@
+{% load static %}
+
+    <div class="row">
+        <div class="col-12">
+            <div class="table-responsive small">
+                <table class="table table-bordered" id="evalDataTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th class="text-center"><i class="fas fa-list-alt fa-lg fa-fw m-0 text-warning"></i></th>
+                      <th>Короткое наименование</th>
+                      <th>Полное наименование</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for instance in cat_items %}
+                    <tr>
+                        <td class="text-center">
+                            <a href="javascript:" onclick="delete_category('{{ instance.id }}')">
+                                <i class="fas fa-times fa-lg fa-fw mr-2 text-danger"></i>
+                            </a>
+                        </td>
+                        <td class="text-center">
+                            <a href="javascript:" onclick="edit_item('{{ instance.id }}', '{{ instance.category }}', '{{ instance.item_short }}', '{{ instance.item_long }}')">
+                                {{ instance.item_short }}
+                            </a>
+                        </td>
+                        <td>{{ instance.item_long }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function delete_category(item_id) {
+            $.ajax({
+              url: "{% url 'references:delete-category-item' %}",
+              data: {'item_id': item_id},
+              success: function(data) {
+                 $('#id_content').html(data);
+              }
+            });
+        }
+    </script>

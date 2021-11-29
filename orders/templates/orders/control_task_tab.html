@@ -1,0 +1,104 @@
+<!-- control_task_tab.html -->
+
+{% load static %}
+
+{% if order %}
+
+<div class="row">
+    <div class="col"><hr /></div>
+    <div class="col text-center">РАБОТА</div>
+    <div class="col"><hr /></div>
+</div>
+
+<div class="container small m-1">
+    <div class="row">
+        <div class="col text-success font-weight-bold">ВНЕШНЯЯ ЗАЯВКА:</div>
+        <div class="col text-primary">{{order.order_id}}</div>
+        <div class="col">Дата создания: <strong>{{order.create_date}}</strong></div>
+    </div>
+    <div class="row">
+        <div class="col">Клиент:</div>
+        <div class="col text-primary">{{order.client.short_name}}</div>
+        <div class="col">
+            Дата закрытия:
+            <strong>
+              {% if order.close_date %}
+              {{ order.close_date }}
+              {% else %}
+              <span class="text-success">Открыта</span>
+              {% endif %}
+            </strong>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">Регион:</div>
+        <div class="col text-primary">{{order.region}}</div>
+        <div class="col">
+            Срок до:
+            <strong class="{{order.get_date_class}}">{{order.dead_line}}</strong>
+        </div>
+    </div>
+    <hr />
+</div>
+{% endif %}
+
+<div class="card-body">
+  <div class="table-responsive">
+    <table class="table table-bordered small" id="dataTable" width="100%" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Номер заявки</th>
+          <th>Тип заявки</th>
+          <th>Дата создания</th>
+          <th>Дата закрытия</th>
+          <th>Срок до</th>
+          <th>Описание</th>
+          <th>Действие</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for instance in tasks %}
+        <tr>
+            <td><a href="javascript:" onclick="expand_task('{{instance.task_id}}')"><strong>{{ instance.task_id }}</strong></a></td>
+            <td>{{ instance.get_task_description }}</td>
+            <td>{{ instance.create_date }}</td>
+            <td>
+              {% if instance.close_date %}
+              {{ instance.close_date }}
+              {% else %}
+              <span class="text-success">Открыта</span>
+              {% endif %}
+            </td>
+            <td class="{{ instance.get_date_class }}">{{ instance.dead_line }}</td>
+            <td>{{ instance.description|default_if_none:"---" }}</td>
+            <td>
+              {% if instance.close_date %}
+                  <span class="text-info">Не доступно</span>
+              {% else %}
+                  <a href="{{ instance.get_absolute_url }}"><strong class="text-primary">Редактировать</strong></a><br />
+                  <a href="{% url 'orders:preview-close-task' task_id=instance.task_id %}"><strong class="text-warning">Закрыть</strong></a><br />
+{#              <a href="{% url 'orders:delete-task' task_id=instance.task_id %}"><strong class="text-danger">Удалить</strong></a>#}
+              {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+  function expand_task(task_id) {
+    $.ajax({
+      url: "{% url 'orders:expand-task' %}",
+      data: {'task_id': task_id},
+      success: function(data) {
+        $('#id_action').html(data);
+        $('#pills-action-tab').click()
+      }
+    });
+  }
+</script>
+
+{% include 'orders/script_control_task.html' %}

@@ -1,0 +1,113 @@
+<!--card_detail.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+{% if success %}
+<p id="id_success" class="text-success">{{ success }}</p>
+{% endif %}
+
+
+<form class="user" name="form" id="main_form" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+  <input type="hidden" id="id_execution_id" name="execution_id" value="{{ form.initial.execution_id }}">
+  <input type="hidden" id="id_ref_action" name="ref_action" value="{{ form.initial.ref_action }}">
+
+<div class="container">
+<div class="card o-hidden border-2 shadow-lg my-5">
+    <div class="row m-3">
+        <div class="col-12 text-center">
+            <h2>Форма добавления <strong>карты объекта</strong></h2>
+        </div>
+    </div>
+    <div class="row ml-3">
+      <div class="form-group m-1 col-3">
+        {{ form.doc_no.errors }}
+        <label for="id_doc_no">Номер документа</label>
+        <input type="text" class="form-control" id="id_doc_no" name="doc_no" placeholder="Номер документа" value="{{ form.initial.doc_no|default_if_none:"" }}">
+        {% if form.doc_no.help_text %}
+        <p class="help font-italic small">*{{ form.doc_no.help_text|safe }}</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="row ml-3">
+      <div class="form-group m-1 col-3">
+          <span class="text-danger">{{ form.doc_date.errors }}</span>
+        <label for="datepicker">Дата документа</label>
+        <input id="datepicker" width="276" class="form-control" name="doc_date" placeholder="Дата документа" value="{{ form.initial.doc_date|default_if_none:"" }}">
+        {% if form.doc_date.help_text %}
+        <p class="help font-italic small">*{{ form.doc_date.help_text|safe }}</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="row ml-3">
+      <div class="form-group m-1 col-6">
+            <span class="text-danger">{{ form.doc_type.errors }}</span>
+            <label for="id_doc_type">Целевой тип</label><br />
+            {{ form.doc_type }}
+            {% if form.doc_type.help_text %}
+            <p class="help font-italic small">*{{ form.doc_type.help_text|safe }}</p>
+            {% endif %}
+      </div>
+    </div>
+
+    <div class="row ml-3">
+      <div class="form-group m-1 col-3">
+        <span class="text-danger">{{ form.doc_qty.errors }}</span>
+        <label for="id_doc_qty">Количество</label><br />
+        {{ form.doc_qty }}
+        {% if form.doc_qty.help_text %}
+        <p class="help font-italic small">*{{ form.doc_qty.help_text|safe }}</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="row ml-3">
+        <div class="form-group m-1 col-11">
+            <span class="text-danger">{{ form.doc_title.errors }}</span>
+            <label for="id_doc_title">Название</label><br />
+            <input type="text" class="form-control" id="id_doc_title" name="doc_title" placeholder="Название" value="{{ form.initial.doc_title|default_if_none:"" }}">
+            {% if form.doc_title.help_text %}
+            <p class="help font-italic small">*{{ form.doc_title.help_text|safe }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row ml-4 mt-3">
+      <div class="form-group m-1 col-12">
+        {{ form.source_file.errors }}
+        {{ form.source_file }}
+        {% if form.source_file.help_text %}
+        <p class="help font-italic small">*{{ form.source_file.help_text|safe }}</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="row ml-4">
+      <div class="form-group m-1 col-12">
+        {{ form.archive_file.errors }}
+        {{ form.archive_file }}
+        {% if form.archive_file.help_text %}
+        <p class="help font-italic small">*{{ form.archive_file.help_text|safe }}</p>
+        {% endif %}
+      </div>
+    </div>
+
+  <input class="btn btn-primary btn-user m-3" type="submit" value="Сохранить" />
+</div>
+</div>
+</form>
+
+<script>
+    $('#datepicker').datepicker({
+      uiLibrary: 'bootstrap4',
+      format: 'dd.mm.yyyy'
+    });
+</script>
+
+{% endblock content %}

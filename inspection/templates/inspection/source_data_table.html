@@ -1,0 +1,158 @@
+{% load static %}
+
+
+<p class="text-success mt-3 mb-0">Проектируемое оборудование</p>
+<div class="table-responsive small">
+    <table class="table table-bordered" id="projectDataTable" width="100%" cellspacing="0">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Тип передатчика</th>
+          <th>P,макс</th>
+          <th>Кол-во</th>
+          <th>Частота</th>
+          <th>Модуляция</th>
+          <th>Антенна</th>
+          <th>КУ</th>
+          <th>Высота</th>
+          <th>P,факт</th>
+          <th>ДН</th>
+          <th>Аз.гор</th>
+          <th>Аз.верт</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for instance in source_projects %}
+        <tr>
+            <td><a href="javascript:" onclick="editSource('{{ instance.id }}')">{{ instance.no }}</a><br />
+                <a href="{% url 'inspection:delete-source' source_id=instance.id object_id=instance.ref_object.id %}">
+                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-danger"></i>
+                </a>
+            </td>
+            <td>{{ instance.row_type }}</td>
+            <td>{{ instance.power }}</td>
+            <td>{{ instance.qty }}</td>
+            <td>{{ instance.freq }}</td>
+            <td>{{ instance.modulation }}</td>
+            <td>{{ instance.antenna }}</td>
+            <td>{{ instance.gain }}</td>
+            <td>{{ instance.high }}</td>
+            <td>{{ instance.power_fact }}</td>
+            <td>{{ instance.dn }}</td>
+            <td>{{ instance.az_hor }}</td>
+            <td>{{ instance.az_vert }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+</div>
+<a href="javascript:;" onclick="createNewSource('1')" class="btn btn-primary btn-user btn-block">
+  Добавить
+</a>
+
+<p class="text-success mt-3 mb-0">Существующее оборудование</p>
+<div class="table-responsive small">
+    <table class="table table-bordered" id="existDataTable" width="100%" cellspacing="0">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Тип передатчика</th>
+          <th>P,макс</th>
+          <th>Кол-во</th>
+          <th>Частота</th>
+          <th>Модуляция</th>
+          <th>Антенна</th>
+          <th>КУ</th>
+          <th>Высота</th>
+          <th>P,факт</th>
+          <th>ДН</th>
+          <th>Аз.гор</th>
+          <th>Аз.верт</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for instance in source_exists %}
+        <tr>
+            <td><a href="javascript:" onclick="editSource('{{ instance.id }}')">{{ instance.no }}</a><br />
+                <a href="{% url 'inspection:delete-source' source_id=instance.id object_id=instance.ref_object.id %}">
+                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-danger"></i>
+                </a>
+            </td>
+            <td>{{ instance.row_type }}</td>
+            <td>{{ instance.power }}</td>
+            <td>{{ instance.qty }}</td>
+            <td>{{ instance.freq }}</td>
+            <td>{{ instance.modulation }}</td>
+            <td>{{ instance.antenna }}</td>
+            <td>{{ instance.gain }}</td>
+            <td>{{ instance.high }}</td>
+            <td>{{ instance.power_fact }}</td>
+            <td>{{ instance.dn }}</td>
+            <td>{{ instance.az_hor }}</td>
+            <td>{{ instance.az_vert }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+</div>
+<a href="javascript:;" onclick="createNewSource('2')" class="btn btn-primary btn-user btn-block">
+  Добавить
+</a>
+
+<p class="text-success mt-3 mb-0">Стороннее оборудование</p>
+<div class="table-responsive small">
+    <table class="table table-bordered" id="outDataTable" width="100%" cellspacing="0">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Тип передатчика</th>
+          <th>P,макс</th>
+          <th>Кол-во</th>
+          <th>Частота</th>
+          <th>Модуляция</th>
+          <th>Антенна</th>
+          <th>КУ</th>
+          <th>Высота</th>
+          <th>P,факт</th>
+          <th>ДН</th>
+          <th>Аз.гор</th>
+          <th>Аз.верт</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% regroup source_outs by ref_owner as owner_source %}
+        {% for owner in owner_source %}
+                <TR>
+                    <td colspan="13" class="text-center font-italic text-primary font-weight-bold">
+                        {{ owner.grouper.short_name }}
+                    </td>
+                </TR>
+                {% for instance in owner.list %}
+                    <tr>
+                        <td>
+                            <a href="javascript:" onclick="editSource('{{ instance.id }}')">{{ instance.no }}</a><br />
+                            <a href="{% url 'inspection:delete-source' source_id=instance.id object_id=instance.ref_object.id %}">
+                                <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-danger"></i>
+                            </a>
+                        </td>
+                        <td>{{ instance.row_type }}</td>
+                        <td>{{ instance.power }}</td>
+                        <td>{{ instance.qty }}</td>
+                        <td>{{ instance.freq }}</td>
+                        <td>{{ instance.modulation }}</td>
+                        <td>{{ instance.antenna }}</td>
+                        <td>{{ instance.gain }}</td>
+                        <td>{{ instance.high }}</td>
+                        <td>{{ instance.power_fact }}</td>
+                        <td>{{ instance.dn }}</td>
+                        <td>{{ instance.az_hor }}</td>
+                        <td>{{ instance.az_vert }}</td>
+                    </tr>
+                {% endfor %}
+        {% endfor %}
+      </tbody>
+    </table>
+</div>
+<a href="javascript:;" onclick="createNewSource('3')" class="btn btn-primary btn-user btn-block">
+  Добавить
+</a>

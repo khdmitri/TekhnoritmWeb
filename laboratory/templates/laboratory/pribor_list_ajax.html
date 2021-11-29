@@ -1,0 +1,65 @@
+{% load static %}
+
+<div class="card-body">
+  <div class="table-responsive">
+    <table class="table table-bordered small" id="dataTable">
+      <thead>
+        <tr>
+          <th>Статус</th>
+          <th>Наименование</th>
+          <th>Назначение</th>
+          <th>
+              Дата выпуска<br/>
+              Номера:<br/>
+              Заводской<br/>
+              Госреестр<br/>
+              Инвентарный<br/>
+              Идентификатор
+          </th>
+          <th>
+              Номер поверки<br/>
+              Дата
+          </th>
+          <th>Место поверки</th>
+          <th>Дата следующей поверки</th>
+          <th>Примечание</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% regroup pribors by get_category_name as pribor_by_category %}
+        {% for pribor in pribor_by_category %}
+          <TR>
+              <td class="font-weight-bold text-center" colspan="8">{{ pribor.grouper.item_long }}</td>
+          </TR>
+            {% for instance in pribor.list %}
+            <tr>
+                <td>
+                    {% if instance.status == 'active' %}
+                    <span class="text-success">{{ instance.get_status_label }}</span>
+                    {% else %}
+                    <span class="text-warning">{{ instance.get_status_label }}</span>
+                    {% endif%}
+                </td>
+                <td><a href="{{ instance.get_absolute_url }}"><strong>{{ instance.name }}</strong></a></td>
+                <td>{{ instance.purpose }}</td>
+                <td>
+                    {{ instance.produce_date }}<br/>
+                    {{ instance.facility_no }}<br/>
+                    {{ instance.reestr_no }}<br/>
+                    {{ instance.inv_no }}<br/>
+                    {{ instance.unique_id|default_if_none:"---" }}
+                </td>
+                <td>
+                    {{ instance.certificate_no }}<br/>
+                    {{ instance.certificate_date }}
+                </td>
+                <td>{{ instance.certificate_place }}</td>
+                <td class="{{ instance.get_date_class }}">{{ instance.expire_date }}</td>
+                <td>{{ instance.comment }}</td>
+            </tr>
+            {% endfor %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,30 @@
+{% load static %}
+
+<script type="text/javascript">
+  var search_input_order = $("#order_search_input");
+  var delay_by_in_ms = 700;
+  var scheduled_function_order = false;
+
+  function call_search_order(request_parameter) {
+    $.ajax({
+      url: "{% url 'orders:ajax-control-order-search' %}",
+      data: {'search_line': request_parameter},
+      success: function(data) {
+          $('#id_order').html(data);
+      },
+      error: function(data) {
+          $('#id_order').html(data);
+      }
+    });
+  }
+
+  search_input_order.on('keyup', function () {
+    var request_parameter = $(this).val(); // value of user_input: the HTML element with ID user-input
+
+    if (scheduled_function_order) {
+        clearTimeout(scheduled_function_order)
+    }
+
+    scheduled_function_order = setTimeout(call_search_order, delay_by_in_ms, request_parameter)
+  })
+</script>

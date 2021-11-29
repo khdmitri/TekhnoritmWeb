@@ -1,0 +1,52 @@
+<ul>
+    {% for sub_contract in sub_contracts %}
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-9 text-center" style="width: 120px"><button class="btn btn-info btn-sm btn-block" data-toggle="modal" data-target="#contractModal_{{ sub_contract.id }}">{{ sub_contract.doc_no }}</button></div>
+                <div class="col-3 align-middle"><a href="javascript:" onclick="add_contract('{{ sub_contract.id }}','{{ order.order_id }}')"><i class="fa fa-arrow-circle-right text-info fa-2x" aria-hidden="true"></i></a></div>
+                <!-- Modal -->
+                <div class="modal fade" id="contractModal_{{ sub_contract.id }}" tabindex="-1" role="dialog" aria-labelledby="contractModal_{{ sub_contract.id }}Title" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="contractModal_{{ sub_contract.id }}Title">{{ sub_contract.ref_parent.ref_client.short_name }} - {{ sub_contract.ref_parent.doc_no }} -> {{ contract.doc_no }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="row">
+                            <div class="col text-primary">Дата создания:</div>
+                            <div class="col">{{ sub_contract.create_date|date:"d.m.Y" }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col text-primary">Дата договора:</div>
+                            <div class="col">{{ sub_contract.contract_date|date:"d.m.Y" }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col text-primary">Дата окончания:</div>
+                            <div class="col">{{ sub_contract.expired_date|date:"d.m.Y" }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col text-primary">Дата закрытия:</div>
+                            <div class="col">{{ sub_contract.closed_date|date:"d.m.Y" }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col text-primary">Описание:</div>
+                            <div class="col">{{ sub_contract.comment|default_if_none:"" }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col text-primary">Скан-документ:</div>
+                            <div class="col"><a href="{{ sub_contract.scan_file.url }}">Скачать</a></div>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </li>
+    {% endfor %}
+</ul>

@@ -1,0 +1,79 @@
+<!-- action_detail.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Редактор записи набора</h1>
+            <a href="{% url 'int_messages:message-create' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Написать сообщение</a>
+          </div>
+
+          <div>
+              {% if success %}
+              <p class="text-success">{{ success }}</p>
+              {% endif %}
+          </div>
+
+<!-- End of Page Heading -->
+
+<div class="container">
+    <div class="row">
+        <div class="card o-hidden border-0 shadow-lg my-5">
+              <div class="card-body p-0">
+                <!-- Nested Row within Card Body -->
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="p-5">
+                      <div class="text-center">
+                        <h1 class="h4 text-gray-900 mb-4">Выбрана запись</h1>
+                      </div>
+                        <form class="user" id="main_form" method="POST" name="form">
+                            {% csrf_token %}
+                            {% include 'bs4_form.html' with form=form %}
+
+                            <a href="javascript:;" onclick="document.getElementById('main_form').submit();" class="btn btn-primary btn-user btn-block">
+                              Сохранить
+                            </a>
+                            <a class="dropdown-item mt-5" href="{% url 'orders:action-delete' task_id=action_id %}" data-toggle="modal" data-target="#deleteModal">
+                                <i class="fas fa-times fa-sm fa-fw mr-2 text-warning"></i>
+                                <span class="font-weight-bold text-warning">&nbsp;Удалить</span>
+                            </a>
+                        </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal-->
+  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Удалить запись набора?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Удаление записи набора изменить поведение набора по умолчанию. Удалить?</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Отмена</button>
+          <a class="btn btn-primary" href="{% url 'orders:action-delete' task_id=action_id %}">Удалить</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    $('#id_start_date').datepicker({
+        uiLibrary: 'bootstrap4',
+        format: 'dd.mm.yyyy'
+    });
+  </script>
+
+{% endblock content %}

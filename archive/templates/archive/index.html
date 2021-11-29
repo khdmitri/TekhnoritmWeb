@@ -1,0 +1,22 @@
+<!-- client_list.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Begin Page Content -->
+    <div class="container-fluid">
+
+      <!-- Page Heading -->
+      <h1 class="h1 mb-2 text-gray-800">А-Р-Х-И-В</h1>
+
+      <form class="user" name="main_form" id="id_main_form" method="POST">
+          {% csrf_token %}
+          {% include 'archive/search_form.html' %}
+      </form>
+
+    </div>
+    <!-- /.container-fluid -->
+
+{% endblock content %}

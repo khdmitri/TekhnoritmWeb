@@ -1,0 +1,40 @@
+{% load static %}
+
+{% if success %}
+<h6 class="success">{{ success }}</h6>
+{% endif %}
+
+<div class="table-responsive small">
+    <table class="table table-bordered" id="evalDataTable" width="100%" cellspacing="0">
+      <thead>
+        <tr>
+          <th class="text-center">Регион</th>
+          <th>Должность</th>
+          <th>ФИО</th>
+          <th>Шаблон</th>
+          <th>Удаление</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for instance in requests %}
+        <tr>
+            <td class="text-center">
+                <a href="javascript:" onclick="editPerson('{{ client.id }}','{{ instance.id }}')">
+                    {{ instance.ref_region.short_name }}
+                </a>
+            </td>
+            <td class="text-center">
+                {{ instance.sign_position }}
+            </td>
+            <td>{{ instance.sign_person }}</td>
+            <td>{{ instance.template }}</td>
+            <td>
+                <a href="javascript:" onclick="delete_request_person('{{ instance.id }}')">
+                    <i class="fas fa-times fa-lg fa-fw mr-2 text-danger"></i>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+</div>

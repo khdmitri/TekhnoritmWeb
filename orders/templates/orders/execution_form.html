@@ -1,0 +1,76 @@
+{% load static %}
+
+{% if success %}
+<p id="id_success" class="text-success">{{ success }}</p>
+{% endif %}
+
+  <input type="hidden" id="id_execution_id" name="execution_id" value="{{ execution.execution_id }}">
+  <input type="hidden" id="id_ref_action" name="ref_action" value="{{ action_id }}">
+
+  <div class="form-group m-3 col-12">
+    {{ form.doc_no.errors }}
+    <input type="text" class="form-control" id="id_doc_no" name="doc_no" placeholder="Номер документа" value="{{ execution.doc_no }}">
+    {% if form.doc_no.help_text %}
+    <p class="help font-italic small">*{{ form.doc_no.help_text|safe }}</p>
+    {% endif %}
+  </div>
+
+  <div class="form-group m-3 col-12">
+      <span class="text-danger">{{ form.doc_date.errors }}</span>
+    <input id="datepicker" width="276" class="form-control" name="doc_date" placeholder="Дата документа" value="{{ execution.get_formatted_date }}">
+    {% if form.doc_date.help_text %}
+    <p class="help font-italic small">*{{ form.doc_date.help_text|safe }}</p>
+    {% endif %}
+  </div>
+
+  <div class="form-group m-3 col-12">
+        <span class="text-danger">{{ form.doc_type.errors }}</span>
+        {{ form.doc_type }}
+        {% if form.doc_type.help_text %}
+        <p class="help font-italic small">*{{ form.doc_type.help_text|safe }}</p>
+        {% endif %}
+  </div>
+
+  <div class="form-group m-3 col-12">
+    <span class="text-danger">{{ form.doc_qty.errors }}</span>
+    {{ form.doc_qty }}
+    {% if form.doc_qty.help_text %}
+    <p class="help font-italic small">*{{ form.doc_qty.help_text|safe }}</p>
+    {% endif %}
+  </div>
+
+    <div class="form-group m-3 col-12">
+        <span class="text-danger">{{ form.doc_title.errors }}</span>
+        <input type="text" class="form-control" id="id_doc_title" name="doc_title" placeholder="Название" value="{{ execution.doc_title }}">
+        {% if form.doc_title.help_text %}
+        <p class="help font-italic small">*{{ form.doc_title.help_text|safe }}</p>
+        {% endif %}
+    </div>
+
+  <div class="form-group m-3 col-12">
+    {{ form.source_file.errors }}
+    {{ form.source_file }}
+    {% if form.source_file.help_text %}
+    <p class="help font-italic small">*{{ form.source_file.help_text|safe }}</p>
+    {% endif %}
+  </div>
+
+  <div class="form-group m-3 col-12">
+    {{ form.archive_file.errors }}
+    {{ form.archive_file }}
+    {% if form.archive_file.help_text %}
+    <p class="help font-italic small">*{{ form.archive_file.help_text|safe }}</p>
+    {% endif %}
+  </div>
+
+  <input class="btn btn-primary btn-user btn-block" type="submit" value="Сохранить" />
+  {% if execution %}
+  <a class="btn btn-danger btn-user btn-block" href="{% url 'orders:delete-execution' execution_id=execution.execution_id action_id=action_id %}">Удалить</a>
+  {% endif %}
+
+<script>
+    $('#datepicker').datepicker({
+      uiLibrary: 'bootstrap4',
+      format: 'dd.mm.yyyy'
+    });
+</script>

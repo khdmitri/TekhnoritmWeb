@@ -1,0 +1,95 @@
+<!-- generator_create.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+  <div class="container">
+
+    <div class="card o-hidden border-0 shadow-lg my-5">
+      <div class="card-body p-0">
+        <!-- Nested Row within Card Body -->
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="p-5">
+              <div class="text-center">
+                  <h1 class="h4 text-gray-900 mb-4">Создание <strong>внутренней</strong> заявки!</h1>
+              </div>
+              <form class="user" name="form" id="main_form" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <input type="hidden" id="ref_order_id" name="ref_order" value="{{ ref_order }}">
+
+                <div class="input-group m-3 col-12">
+                  <span class="text-danger">{{ form.task_id.errors }}</span>
+                  <div class="input-group-prepend">
+                      <button class="btn btn-outline-primary" type="button" onclick="call_generator('order_task')">Генерировать</button>
+                  </div>
+                  <input type="text" class="form-control" id="gen_input" name="task_id" placeholder="Номер заявки" readonly required value="{{task.task_id|default_if_none:"" }}">
+                  {% if form.task_id.help_text %}
+                  <p class="help font-italic small">*{{ form.task_id.help_text|safe }}</p>
+                  {% endif %}
+              </div>
+
+              <div class="form-group m-3 col-12">
+                {{ form.task_type.errors }}
+                {{ form.task_type }}
+                {% if form.tasl_type.help_text %}
+                <p class="help font-italic small">*{{ form.task_type.help_text|safe }}</p>
+                {% endif %}
+              </div>
+
+              <div class="form-group m-3 col-12">
+                {{ form.qty.errors }}
+                {{ form.qty }}
+                {% if form.qty.help_text %}
+                <p class="help font-italic small">*{{ form.qty.help_text|safe }}</p>
+                {% endif %}
+              </div>
+
+              <div class="form-group m-3 col-12">
+                {{ form.description.errors }}
+                  <textarea class="form-control" id="id_description" name="description" placeholder="Описание заявки" rows="5">{{task.description|default_if_none:"" }}</textarea>
+                {% if form.description.help_text %}
+                <p class="help font-italic small">*{{ form.description.help_text|safe }}</p>
+                {% endif %}
+              </div>
+
+              <div class="form-group m-3 col-12">
+                <span class="text-danger">{{ form.dead_line.errors }}</span>
+                <input id="datepicker" width="276" class="form-control" name="dead_line" placeholder="Срок до" value="{{ order.dead_line.value|default_if_none:"" }}" required>
+                {% if form.dead_line.help_text %}
+                <p class="help font-italic small">*{{ form.dead_line.help_text|safe }}</p>
+                {% endif %}
+              </div>
+
+              <div class="form-group m-3 col-12">
+                <span class="text-danger">{{ form.attach.errors }}</span>
+                {{ form.attach }}
+                {% if form.attach.help_text %}
+                <div class="help font-italic small">*{{ form.attach.help_text|safe }}</div>
+                {% endif %}
+              </div>
+
+                <a href="javascript:;" onclick="document.getElementById('main_form').submit();" class="btn btn-primary btn-user btn-block">
+                  Создать
+                </a>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+    {% include 'generators/script_generator.html' %}
+    <script>
+        $('#datepicker').datepicker({
+            uiLibrary: 'bootstrap4',
+            format: 'dd.mm.yyyy'
+        });
+    </script>
+
+{% endblock content %}

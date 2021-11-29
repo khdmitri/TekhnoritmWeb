@@ -1,0 +1,78 @@
+
+              <div class="row text-center">
+                  <h4 class="text-center">Родительский договор - <span class="text-info">{{ contract.doc_no }}</span></h4>
+              </div>
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert {{ message.alert_class }} shadow" role="alert">
+                          {{ message.text }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+              <div class="row">
+               <div class="col-12">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-sm" id="dataTable">
+                      <thead>
+                        <tr>
+                          <th>Даты</th>
+                          <th>Номер</th>
+                          <th>Статус</th>
+                          <th>Скан-документ</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for instance in sub_contracts %}
+                        <tr>
+                            <td>
+                                <div class="d-block row text-nowrap">
+                                    <div class="row ml-2">
+                                        <div class="col text-info">Создан:</div>
+                                        <div class="col text-secondary">{{ instance.create_date|date:"d.m.Y" }}</div>
+                                    </div>
+                                </div>
+                                <div class="d-block row text-nowrap">
+                                    <div class="row ml-2">
+                                        <div class="col text-info">Подписан:</div>
+                                        <div class="col text-secondary">{{ instance.contract_date|date:"d.m.Y" }}</div>
+                                    </div>
+                                </div>
+                                <div class="d-block row text-nowrap">
+                                    <div class="row ml-2">
+                                        <div class="col text-info">Срок исполнения:</div>
+                                        <div class="col text-secondary">{{ instance.expired_date|date:"d.m.Y" }}</div>
+                                    </div>
+                                </div>
+                                <div class="d-block row text-nowrap">
+                                    <div class="row ml-2">
+                                        <div class="col text-info">Закрыт:</div>
+                                        <div class="col text-secondary">{{ instance.closed_date|date:"d.m.Y" }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="align-middle text-center">
+                                <a href="{{ instance.get_absolute_url }}" target="_new"><strong>{{ instance.doc_no }}</strong></a>
+                            </td>
+                            <td class="{{ instance.get_status.class }} align-middle text-center">
+                                <span class="text-uppercase font-weight-bold small">{{  instance.get_status.text }}</span>
+                                <div class="d-block"><a href="{% url 'references:contract-delete' contract_id=instance.id %}" class="small text-muted text-danger">*-удалить соглашение</a></div>
+                            </td>
+                            <td class="align-middle text-center">
+                                {% if instance.scan_file %}
+                                    <a href="{{ instance.scan_file.url }}" download>скачать</a>
+                                {% else %}
+                                    не доступно
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                  <div class="col-12">
+                    <a href="{% url 'references:create-contract-param' client_id=client.id contract_id=contract.id %}" class="btn btn-primary btn-user btn-block mt-2">Новое дополнение</a>
+                  </div>
+              </div>

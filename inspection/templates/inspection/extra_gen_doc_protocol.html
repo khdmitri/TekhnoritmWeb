@@ -1,0 +1,33 @@
+{% load static %}
+
+{% if success %}
+    <h6 class="text-success font-weight-bold">{{ success }}</h6>
+    <hr />
+{% elif error %}
+    <h6 class="text-danger font-weight-bold">{{ error }}</h6>
+    <hr />
+{% endif %}
+
+<ul>
+    {% if res_doc_protocol.attach_word %}
+    <li>
+        <a href="{{ res_doc_protocol.attach_word.url }}" target="_new" class="small text-uppercase font-weight-bold">
+            <i class="fas fa-file-word fa-lg text-primary"></i>
+            WORD-документ</a>
+    </li>
+    {% endif %}
+    {% if res_doc_protocol.attach_pdf %}
+    <li>
+        <a href="{{ res_doc_protocol.attach_pdf.url }}" target="_new" class="small text-uppercase font-weight-bold">
+            <i class="fas fa-file-pdf fa-lg text-primary"></i>
+            PDF-документ</a>
+    </li>
+    {% endif %}
+    {% if res_doc_protocol.pdf_signed %}
+    <li>
+        <a href="{{ res_doc_protocol.pdf_signed.url }}" target="_new" class="small text-uppercase font-weight-bold">
+            <i class="fas fa-certificate fa-lg text-primary"></i>
+            SIG-документ</a>
+    </li>
+    {% endif %}
+</ul>

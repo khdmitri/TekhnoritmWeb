@@ -1,0 +1,23 @@
+{% load static %}
+
+        {% if show_progress %}
+        <h4 class="mt-2">Прогресс загрузки файлов</h4>
+        <div>
+            {% include 'display_progress.html' %}
+        </div>
+        {% endif %}
+        <div>
+            <div class="row">
+                <div class="col"><hr /></div>
+            </div>
+            <div class="row mt-2">
+                <div class="col">
+                    <a href="{% url 'rpn_searcher:search-rpn' %}" class="text-info m-2"><strong>Начать поиск документов</strong></a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <a href="{% url 'rpn_searcher:upload-page' %}" class="text-info m-2"><strong>Загрузить еще файлы</strong></a>
+                </div>
+            </div>
+        </div>

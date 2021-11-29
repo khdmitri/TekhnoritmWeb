@@ -1,0 +1,76 @@
+<!-- pribor_list.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <h1 class="h3 mb-2 text-gray-800">Предупредительный список приборов и оборудования ИЛ</h1>
+          {% if success %}
+          <p class="mb-4 text-primary">{{ success }}</p>
+          {% endif %}
+          <!-- DataTales Example -->
+          <div class="card shadow mb-4">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered small" id="dataTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>Наименование</th>
+                      <th>Назначение</th>
+                      <th>
+                          Дата выпуска<br/>
+                          Номера:<br/>
+                          Заводской<br/>
+                          Госреестр<br/>
+                          Инвентарный
+                      </th>
+                      <th>
+                          Номер поверки<br/>
+                          Дата
+                      </th>
+                      <th>Место поверки</th>
+                      <th>Дата следующей поверки</th>
+                      <th>Примечание</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% regroup pribors by get_category_name as pribor_by_category %}
+                    {% for pribor in pribor_by_category %}
+                      <TR>
+                          <td class="font-weight-bold text-center" colspan="7">{{ pribor.grouper.item_long }}</td>
+                      </TR>
+                        {% for instance in pribor.list %}
+                        <tr>
+                            <td><a href="{{ instance.get_absolute_url }}"><strong>{{ instance.name }}</strong></a></td>
+                            <td>{{ instance.purpose }}</td>
+                            <td>
+                                {{ instance.produce_date }}<br/>
+                                {{ instance.facility_no }}<br/>
+                                {{ instance.reestr_no }}<br/>
+                                {{ instance.inv_no }}
+                            </td>
+                            <td>
+                                {{ instance.certificate_no }}<br/>
+                                {{ instance.certificate_date }}
+                            </td>
+                            <td>{{ instance.certificate_place }}</td>
+                            <td class="{{ instance.get_date_class }}">{{ instance.expire_date }}</td>
+                            <td>{{ instance.comment }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!-- /.container-fluid -->
+
+{% endblock content %}

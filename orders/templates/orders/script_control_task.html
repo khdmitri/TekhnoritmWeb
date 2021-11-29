@@ -1,0 +1,30 @@
+{% load static %}
+
+<script type="text/javascript">
+  var search_input_task = $("#task_search_input");
+  var delay_by_in_ms = 700;
+  var scheduled_function_task = false;
+
+  function call_search_task(request_parameter) {
+    $.ajax({
+      url: "{% url 'orders:ajax-control-task-search' %}",
+      data: {'search_line': request_parameter},
+      success: function(data) {
+          $('#id_task').html(data);
+      },
+      error: function(data) {
+          $('#id_task').html(data);
+      }
+    });
+  }
+
+  search_input_task.on('keyup', function () {
+    var request_parameter = $(this).val(); // value of user_input: the HTML element with ID user-input
+
+    if (scheduled_function_task) {
+        clearTimeout(scheduled_function_task)
+    }
+
+    scheduled_function_task = setTimeout(call_search_task, delay_by_in_ms, request_parameter)
+  })
+</script>

@@ -1,0 +1,317 @@
+<!-- doc_generation.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Генерация документов для объекта инспекции</h1>
+            <a href="{% url 'int_messages:message-create' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Написать сообщение</a>
+          </div>
+<!-- End of Page Heading -->
+
+<div class="container">
+  <div class="row">
+    <div class="col-xl-6 col-md-9 mb-4">
+      <div class="card border-left-primary shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                  Объект экспертизы: {{ object.name }}
+              </div>
+              <div class="h6 mb-0 font-weight-bold text-gray-600">Адрес: {{ object.address }}</div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-calendar fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Наименование</th>
+          <th>Генерация</th>
+          <th>Word-документ</th>
+          <th>Скачивание</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+             <form class="user" name="gen_form_see" id="id_gen_form_see" method="POST">
+                 {% csrf_token %}
+                 <input type="hidden" name="id" id="id_id" value="{{ gen_form_see.initial.id }}">
+                 <input type="hidden" name="document_type" id="id_document_type" value="see">
+                 <input type="hidden" name="ref_object" id="id_ref_object" value="{{ object.id }}">
+
+                 <tr>
+                    <td>
+                        <span class="text-primary text-center">Санитарно-эпидемиологическая экспертиза</span>
+                    </td>
+                    <td>
+                        <a href="{% url 'inspection:generate-doc' doc_type='see' ref_object=object.id %}" class="btn btn-primary btn-user" target="_new">
+                            Генерировать
+                        </a>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <span class="text-danger">{{ gen_form_see.attach_word.errors }}</span>
+                            {{ gen_form_see.attach_word }}
+                            {% if gen_form_see.attach_word.help_text %}
+                            <div class="help font-italic small">*{{ gen_form_see.attach_word.help_text|safe }}</div>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td id="gen_extra">
+                        {% include 'inspection/extra_gen_doc.html' %}
+                    </td>
+                 </tr>
+                 <tr>
+                     <td colspan="4">
+                         <input class="btn btn-primary btn-user btn-block" type="submit" value="Сохранить и Подписать" />
+                     </td>
+                 </tr>
+             </form>
+        </tr>
+        <tr>
+             <form class="user" name="gen_form_oos" id="id_gen_form_oos" method="POST">
+                 {% csrf_token %}
+                 <input type="hidden" name="id" id="id_id" value="{{ gen_form_oos.initial.id }}">
+                 <input type="hidden" name="document_type" id="id_document_type" value="oos">
+                 <input type="hidden" name="ref_object" id="id_ref_object" value="{{ object.id }}">
+
+                 <tr>
+                    <td>
+                        <span class="text-primary text-center">Приложения к СЭЗ</span>
+                    </td>
+                    <td>
+                        <a href="{% url 'inspection:generate-doc' doc_type='oos' ref_object=object.id %}" class="btn btn-primary btn-user" target="_new">
+                            Генерировать
+                        </a>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <span class="text-danger">{{ gen_form_oos.attach_word.errors }}</span>
+                            {{ gen_form_oos.attach_word }}
+                            {% if gen_form_oos.attach_word.help_text %}
+                            <div class="help font-italic small">*{{ gen_form_oos.attach_word.help_text|safe }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <span class="text-danger">{{ gen_form_oos.pdf_signed.errors }}</span>
+                            {{ gen_form_oos.pdf_signed }}
+                            {% if gen_form_oos.pdf_signed.help_text %}
+                            <div class="help font-italic small">*{{ gen_form_oos.pdf_signed.help_text|safe }}</div>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td id="gen_extra_oos">
+                        {% include 'inspection/extra_gen_doc_oos.html' %}
+                    </td>
+                 </tr>
+                 <tr>
+                     <td colspan="4">
+                         <input class="btn btn-primary btn-user btn-block" type="submit" value="Сохранить и Подписать" />
+                     </td>
+                 </tr>
+             </form>
+        </tr>
+        <tr>
+             <form class="user" name="gen_form_protocol" id="id_gen_form_protocol" method="POST">
+                 {% csrf_token %}
+                 <input type="hidden" name="id" id="id_id_protocol" value="{{ gen_form_protocol.initial.id }}">
+                 <input type="hidden" name="document_type" id="id_document_type_protocol" value="protocol">
+                 <input type="hidden" name="ref_object" id="id_ref_object_protocol" value="{{ object.id }}">
+
+                 <tr>
+                    <td>
+                        <span class="text-primary text-center">Протокол измерений уровней ЭМП</span>
+                    </td>
+                    <td>
+                        <a href="{% url 'inspection:generate-doc' doc_type='protocol' ref_object=object.id %}" class="btn btn-primary btn-user" target="_new">
+                            Генерировать
+                        </a>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <span class="text-danger">{{ gen_form_protocol.attach_word.errors }}</span>
+                            {{ gen_form_protocol.attach_word }}
+                            {% if gen_form_protocol.attach_word.help_text %}
+                            <div class="help font-italic small">*{{ gen_form_protocol.attach_word.help_text|safe }}</div>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td id="gen_extra_protocol">
+                        {% include 'inspection/extra_gen_doc_protocol.html' %}
+                    </td>
+                 </tr>
+                 <tr>
+                     <td colspan="4">
+                         <input class="btn btn-primary btn-user btn-block" type="submit" value="Сохранить и Подписать" />
+                     </td>
+                 </tr>
+             </form>
+        </tr>
+        <tr>
+             <form class="user" name="gen_form_ez" id="id_gen_form_ez" method="POST">
+                 {% csrf_token %}
+                 <input type="hidden" name="id" id="id_id_ez" value="{{ gen_form_ez.initial.id }}">
+                 <input type="hidden" name="document_type" id="id_document_type_ez" value="ez">
+                 <input type="hidden" name="ref_object" id="id_ref_object_ez" value="{{ object.id }}">
+
+                 <tr>
+                    <td>
+                        <span class="text-primary text-center">Экспертное заключение по измерениям</span>
+                    </td>
+                    <td>
+                        <a href="{% url 'inspection:generate-doc' doc_type='ez' ref_object=object.id %}" class="btn btn-primary btn-user" target="_new">
+                            Генерировать
+                        </a>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <span class="text-danger">{{ gen_form_ez.attach_word.errors }}</span>
+                            {{ gen_form_ez.attach_word }}
+                            {% if gen_form_ez.attach_word.help_text %}
+                            <div class="help font-italic small">*{{ gen_form_ez.attach_word.help_text|safe }}</div>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td id="gen_extra_ez">
+                        {% include 'inspection/extra_gen_doc_ez.html' %}
+                    </td>
+                 </tr>
+                 <tr>
+                     <td colspan="4">
+                         <input class="btn btn-primary btn-user btn-block" type="submit" value="Сохранить и Подписать" />
+                     </td>
+                 </tr>
+             </form>
+        </tr>
+      </tbody>
+  </table>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+        $('#id_gen_form_see').on('submit', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const my_data = new FormData(this);
+
+            $.ajax({
+                url: "{% url 'inspection:gen-see-post' %}", // the endpoint
+                type: "POST", // http method
+                dataType: 'html',
+                processData: false,
+                contentType: false,
+                data: my_data, // data sent with the post request
+
+                // handle a successful response
+                success: function (data) {
+                    $('#gen_extra').html(data); // remove the value from the input
+                },
+                error: function (data) {
+                    const res = JSON.stringify(data);
+                    $('#gen_extra').html(res);
+                }
+            });
+        });
+
+        $('#id_gen_form_oos').on('submit', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const my_data = new FormData(this);
+
+            $.ajax({
+                url: "{% url 'inspection:gen-oos-post' %}", // the endpoint
+                type: "POST", // http method
+                dataType: 'html',
+                processData: false,
+                contentType: false,
+                data: my_data, // data sent with the post request
+
+                // handle a successful response
+                success: function (data) {
+                    $('#gen_extra_oos').html(data); // remove the value from the input
+                },
+                error: function (data) {
+                    const res = JSON.stringify(data);
+                    $('#gen_extra_oos').html(res);
+                }
+            });
+        });
+
+        $('#id_gen_form_protocol').on('submit', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const my_data = new FormData(this);
+
+            $.ajax({
+                url: "{% url 'inspection:gen-protocol-post' %}", // the endpoint
+                type: "POST", // http method
+                dataType: 'html',
+                processData: false,
+                contentType: false,
+                data: my_data, // data sent with the post request
+
+                // handle a successful response
+                success: function (data) {
+                    $('#gen_extra_protocol').html(data); // remove the value from the input
+                },
+                error: function (data) {
+                    const res = JSON.stringify(data);
+                    $('#gen_extra_protocol').html(res);
+                }
+            });
+        });
+
+        $('#id_gen_form_ez').on('submit', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const my_data = new FormData(this);
+
+            $.ajax({
+                url: "{% url 'inspection:gen-ez-post' %}", // the endpoint
+                type: "POST", // http method
+                dataType: 'html',
+                processData: false,
+                contentType: false,
+                data: my_data, // data sent with the post request
+
+                // handle a successful response
+                success: function (data) {
+                    $('#gen_extra_ez').html(data); // remove the value from the input
+                },
+                error: function (data) {
+                    const res = JSON.stringify(data);
+                    $('#gen_extra_ez').html(res);
+                }
+            });
+        });
+    })
+</script>
+
+{% endblock content %}

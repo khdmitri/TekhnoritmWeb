@@ -1,0 +1,54 @@
+<!-- generator_config.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <h1 class="h3 mb-2 text-gray-800">Управление генераторами номеров</h1>
+          <p class="mb-4">Для редактирования записей необходимо иметь права "Site_Administrator"</p>
+          {% if success %}
+          <p class="mb-4 text-primary">{{ success }}</p>
+          {% endif %}
+          <!-- DataTales Example -->
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">Полная выборка генераторов</h6>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>Область примененения</th>
+                      <th>Текущий номер</th>
+                      <th>Профекс (Код)</th>
+                      <th>Префикс (Год)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for instance in generators %}
+                    <tr>
+                        <td><a href="{{ instance.get_absolute_url }}"><strong>{{ instance.use_area }}</strong></a></td>
+                        <td>{{ instance.no }}</td>
+                        <td>{{ instance.gen_type }}</td>
+                        <td>{{ instance.year }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <a href="{% url 'generators:generator-create' %}" class="btn btn-primary btn-user btn-block">
+            Добавить новый
+          </a>
+
+        </div>
+        <!-- /.container-fluid -->
+
+{% endblock content %}

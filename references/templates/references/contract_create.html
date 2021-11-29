@@ -1,0 +1,251 @@
+<!-- contract_create.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+  <div class="container">
+
+    <div class="card o-hidden border-0 shadow-lg my-5">
+      <div class="card-body p-0">
+        <!-- Nested Row within Card Body -->
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="p-5">
+              <div class="text-center">
+                <h1 class="h4 text-gray-900 mb-4">Создание договора/заказа/соглашения</h1>
+                  <p>Создание договора/заказа/соглашения проходит в несколько шагов</p>
+              </div>
+
+              <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link active" id="pills-client-tab" data-toggle="pill" href="#pills-client" role="tab" aria-controls="pills-client" aria-selected="true">
+                        <span>ШАГ 1. Заказчик</span>
+                         <i class="fas fa-envelope-open-text fa-sm"></i>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="pills-contract-tab" data-toggle="pill" href="#pills-contract" role="tab" aria-controls="pills-contract" aria-selected="false">
+                        <span>ШАГ 2. Детали документа</span>
+                         <i class="fas fa-user-tie fa-sm"></i>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="pills-final-tab" data-toggle="pill" href="#pills-final" role="tab" aria-controls="pills-final" aria-selected="false">
+                        <span>ШАГ 3. Завершить</span>
+                         <i class="fas fa-stamp fa-sm"></i>
+                    </a>
+                  </li>
+              </ul>
+                <form class="user" name="form" id="main_form" method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <input type="hidden" id="id_client_id" name="client_id" value="{{ form.client_id.value }}" />
+                  <div class="tab-content" id="pills-tabContent">
+                    <div class="tab-pane fade" id="pills-contract" role="tabpanel" aria-labelledby="pills-contract-tab">
+
+                        <div class="input-group m-1">
+                          <div class="input-group-prepend">
+                            <div class="input-group-text">
+                            {% if form.initial.is_parent.value %}
+                                <input type="radio" aria-label="Родительский договор (Корень)" name="is_parent" value=True checked>
+                            {% else %}
+                                <input type="radio" aria-label="Родительский договор (Корень)" name="is_parent" value=True>
+                            {% endif %}
+                            </div>
+                          </div>
+                          <span class="text-primary m-2">Родительский договор</span>
+                        </div>
+                        <div class="input-group m-1">
+                          <div class="input-group-prepend">
+                            <div class="input-group-text">
+                            {% if not form.initial.is_parent.value %}
+                                <input type="radio" aria-label="Дополнительное соглашение" name="is_parent" value=False checked>
+                            {% else %}
+                                <input type="radio" aria-label="Дополнительное соглашение" name="is_parent" value=False>
+                            {% endif %}
+                            </div>
+                          </div>
+                          <div class="m-1" id="available_contracts">
+                            <label class="m-2 text-primary" for="id_ref_parent">Дополнителнение к договору</label>
+                            <select class="custom-select mr-sm-2" id="id_ref_parent" name="ref_parent">
+                                <option value="{{ form.initial.ref_parent.id }}" selected>{{ form.initial.ref_parent.doc_no|default_if_none:"" }}</option>
+                                {% for item in contracts %}
+                                    <option value="{{ item.id }}">{{ item.doc_no }}</option>
+                                {% endfor %}
+                            </select>
+                          </div>
+                        </div>
+
+                          <div class="form-group m-3 col-12">
+                              <div class="form-row">
+                                  <label for="id_contract_type" class="text-primary m-1">Тип соглашения</label>
+                                  {{ form.contract_type }}
+                              </div>
+                          </div>
+
+                          <div class="form-group m-3 col-12">
+                            {{ form.doc_no.errors }}
+                              <label class="text-primary" for="id_doc_no">Номер договора</label>
+                              <input type="text" class="form-control" id="id_doc_no" name="doc_no" value="{{ form.doc_no.value|default_if_none:"" }}" />
+                            {% if form.comment.help_text %}
+                            <p class="help font-italic small">*{{ form.comment.help_text|safe }}</p>
+                            {% endif %}
+                          </div>
+
+                          <div class="form-group m-3 col-12">
+                            <div class="form-row">
+                              <label for="id_contract_date" class="text-primary m-1" style="width: 140px">Дата соглашения</label>
+                              <span class="text-danger">{{ form.contract_date.errors }}</span>
+                                <input id="id_contract_date" width="276" class="form-control" name="contract_date" placeholder="дд.мм.гггг" value="{{ form.contract_date.value|default_if_none:"" }}" required>
+                                {% if form.contract_date.help_text %}
+                                <p class="help font-italic small">*{{ form.contract_date.help_text|safe }}</p>
+                                {% endif %}
+                            </div>
+                          </div>
+
+                          <div class="form-group m-3 col-12">
+                            <div class="form-row">
+                              <label for="id_expired_date" class="text-primary m-1" style="width: 140px">Дата окончания</label>
+                              <span class="text-danger">{{ form.expired_date.errors }}</span>
+                                <input id="id_expired_date" width="276" class="form-control" name="expired_date" placeholder="дд.мм.гггг" value="{{ form.expired_date.value|default_if_none:"" }}" required>
+                                {% if form.expired_date.help_text %}
+                                <p class="help font-italic small">*{{ form.expired_date.help_text|safe }}</p>
+                                {% endif %}
+                            </div>
+                          </div>
+
+                          <div class="form-group m-3 col-12">
+                            <div class="form-row">
+                              <label for="id_closed_date" class="text-primary m-1" style="width: 140px">Исполнен</label>
+                              <span class="text-danger">{{ form.closed_date.errors }}</span>
+                                <input id="id_closed_date" width="276" class="form-control" name="closed_date" placeholder="дд.мм.гггг" value="{{ form.closed_date.value|default_if_none:"" }}" required>
+                                {% if form.closed_date.help_text %}
+                                <p class="help font-italic small">*{{ form.closed_date.help_text|safe }}</p>
+                                {% endif %}
+                            </div>
+                          </div>
+
+                          <div class="form-group m-3 col-12">
+                            {{ form.comment.errors }}
+                              <textarea class="form-control" id="id_comment" name="comment" placeholder="Описание договора" rows="3">{{ form.comment.value|default_if_none:"" }}</textarea>
+                            {% if form.comment.help_text %}
+                            <p class="help font-italic small">*{{ form.comment.help_text|safe }}</p>
+                            {% endif %}
+                          </div>
+
+                          <div class="form-group m-3 col-12">
+                            {{ form.scan_file.errors }}
+                              {{ form.scan_file }}
+                            {% if form.scan_file.help_text %}
+                            <p class="help font-italic small">*{{ form.scan_file.help_text|safe }}</p>
+                            {% endif %}
+                          </div>
+
+                    </div>
+                    <div class="tab-pane fade show active" id="pills-client" role="tabpanel" aria-labelledby="pills-client-tab">
+                          <h6>Начните поиск для обновления списка клиентов</h6>
+                          <div class="form-group m-3 col-12">
+                            <input type="text" class="form-control" id="id_client_name" name="client_name" placeholder="Наименование клиента" readonly required value="{{ form.client_name.value|default_if_none:"" }}">
+                            {% if form.client_name.help_text %}
+                            <p class="help font-italic small">*{{ form.client_name.help_text|safe }}</p>
+                            {% endif %}
+                          </div>
+
+                          <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                              <!-- Topbar Search -->
+                              <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                                <div class="input-group">
+                                  <input type="text" id="search_input" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+                                  <div class="input-group-append">
+                                    <button class="btn btn-primary" type="button">
+                                      <i class="fas fa-search fa-sm"></i>
+                                    </button>
+                                  </div>
+                                </div>
+                              </form>
+                            </div>
+                            <div id="list_content">
+                            </div>
+                          </div>
+                          <a href="{% url 'references:client-create' %}" class="btn btn-primary btn-user btn-block" target="_new">
+                            Добавить нового клиента
+                          </a>
+                    </div>
+                    <div class="tab-pane fade" id="pills-final" role="tabpanel" aria-labelledby="pills-final-tab">
+                        <div id="validation">
+                            <!-- JavaScript would validate form's fields and report -->
+                        </div>
+                    </div>
+                  </div>
+                </form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+        $(function () {
+            $('#id_contract_date').datepicker({
+                uiLibrary: 'bootstrap4',
+                format: 'dd.mm.yyyy'
+            });
+
+            $('#id_expired_date').datepicker({
+                uiLibrary: 'bootstrap4',
+                format: 'dd.mm.yyyy'
+            });
+
+            $('#id_closed_date').datepicker({
+                uiLibrary: 'bootstrap4',
+                format: 'dd.mm.yyyy'
+            });
+        });
+    </script>
+
+  </div>
+
+    {% include 'references/include/script_client_search.html' %}
+
+    <script type="text/javascript">
+        const el = $("#validation");
+
+        function validate_form() {
+            const doc_no = document.forms["form"]["doc_no"].value;
+            const contract_date = document.forms["form"]["contract_date"].value;
+            const client_name = document.forms["form"]["client_name"].value;
+            const scan_file = document.forms["form"]["scan_file"].value;
+
+            if (doc_no.length > 0 && contract_date.length > 0 && client_name.length > 0 && scan_file.length > 0) {
+                str_html = "<p class='text-success'>Все поля заполнены корректно, вы можете сохранить запись о договоре</p>";
+                str_html += "<a href=\"javascript:;\" onclick=\"document.getElementById('main_form').submit();\" class=\"btn btn-primary btn-user btn-block\">Создать контракт</a>";
+                el.html(str_html)
+            }
+            else {
+                str_html = "<p class='text-warning'>Не все поля были заполнены корректно:</p><ul>";
+                if (doc_no.length === 0) {
+                    str_html += "<li class='text-danger'>Отсутсвует номер договора</li>"
+                }
+                if (contract_date.length === 0) {
+                    str_html += "<li class='text-danger'>Не указана дата договора</li>";
+                }
+                if (client_name.length === 0) {
+                    str_html += "<li class='text-danger'>Не выбран клиент</li>";
+                }
+                if (scan_file.length === 0) {
+                    str_html += "<li class='text-danger'>Не выбран скан-документ</li>";
+                }
+                str_html += "</ul>";
+                el.html(str_html)
+            }
+        }
+
+        $('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+            console.log('Tab show event fire!');
+            validate_form()
+        })
+    </script>
+{% endblock content %}

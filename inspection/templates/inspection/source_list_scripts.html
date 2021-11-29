@@ -1,0 +1,96 @@
+{% load static %}
+
+<script>
+
+        $('#datepicker').datepicker({
+            uiLibrary: 'bootstrap4',
+            format: 'dd.mm.yyyy'
+        });
+
+        function createNewSource(kind) {
+            $.ajax({
+              url: "{% url 'inspection:source-post' %}",
+              data: {'ref_object': '{{ object.id }}',
+                     'kind': kind},
+              success: function(data) {
+                  $('#id_source_form').html(data);
+                  $('#pills-detail-tab').click()
+              }
+            });
+        }
+
+        function editSource(param) {
+            $.ajax({
+              url: "{% url 'inspection:source-post' %}",
+              data: {'ref_object': '{{ object.id }}',
+                     'id': param},
+              success: function(data) {
+                  $('#id_success').empty();
+                  $('#id_source_form').html(data);
+                  $('#pills-detail-tab').click()
+              }
+            });
+        }
+
+        function load_source_table() {
+                $.ajax({
+                  url: "{% url 'inspection:source-list-table' %}",
+                  data: {'object_id': '{{ object.id }}'},
+                  success: function(data) {
+                      $('#id_source_table').html(data);
+                  }
+                });
+                return true
+            }
+
+        $(document).ready(function () {
+
+            const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+            function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+            }
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                }
+            });
+
+            $('a[data-toggle="pill"]').on('show.bs.tab', function (e) {
+                if (e.target.id === 'pills-list-tab') {
+                    load_source_table()
+                }
+            });
+
+            $('#main_form').on('submit', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const my_data = new FormData(this);
+
+                $.ajax({
+                    url: "{% url 'inspection:source-post' %}", // the endpoint
+                    type: "POST", // http method
+                    dataType: 'html',
+                    processData: false,
+                    contentType: false,
+                    data: my_data, // data sent with the post request
+
+                    // handle a successful response
+                    success : function(data) {
+                        $('#id_source_form').html(data); // remove the value from the input
+                        $('#pills-detail-tab').click()
+                    },
+                    error: function(data) {
+                        const res = JSON.stringify(data);
+                        $('#id_source_form').html(res);
+                    }
+                });
+            });
+        });
+
+        window.onload = function () {
+            load_source_table()
+        }
+    </script>
