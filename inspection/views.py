@@ -227,13 +227,10 @@ def object_post(request):
                 context = {
                     'success': 'Объект был успешно создан!'
                 }
-            post = form.save()
-            post.refresh_from_db()
-            print('JSON:', post.address_fias)
-            object_ = get_object_or_404(InspectionObject, id=post.pk)
-            context['order_id'] = form.data['ref_order']
+            object_ = form.save()
+            object_.refresh_from_db()
+            context['order_id'] = object_.ref_order.id
             context['object'] = object_
-            form = InspectionObjectForm(instance=object_)
         context['form'] = form
         context['prto_types'] = PRTOType.get_types()
     else:

@@ -4,14 +4,14 @@ from .models import ArchiveObject
 
 class ArchiveForm(forms.Form):
 
-    from_date = forms.DateField(widget=forms.DateInput(
+    from_date = forms.DateField(required=True, widget=forms.DateInput(
         format='%d.%m.%Y',
         attrs={'placeholder': 'Искать с'}
     ),
         input_formats=['%d.%m.%Y',]
     )
 
-    to_date = forms.DateField(widget=forms.DateInput(
+    to_date = forms.DateField(required=True, widget=forms.DateInput(
         format='%d.%m.%Y',
         attrs={'placeholder': 'Искать до'}
     ),

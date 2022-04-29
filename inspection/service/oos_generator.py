@@ -40,7 +40,8 @@ def generate_oos(ref_object):
         now = datetime.now()
 
         rng = doc.Bookmarks("region").Range
-        rng.InsertAfter(ref_object.ref_order.region)
+        cur_region = ref_object.ref_order.region if isinstance(ref_object.ref_order.region, str) else ""
+        rng.InsertAfter(cur_region)
 
         rng = doc.Bookmarks("cur_yyyy").Range
         rng.InsertAfter(now.strftime('%Y'))

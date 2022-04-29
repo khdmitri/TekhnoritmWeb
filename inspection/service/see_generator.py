@@ -30,8 +30,11 @@ def generate(ref_object):
     prto_name = ref_object.prto_type_ref.name_visible+' '+ref_object.name
     sharing = ''
     if ref_object.is_shared:
-        sharing = ' совместно с (sharing) '+ref_object.shared_name+\
-                     ' по стандартам '+ref_object.shared_standard+' '+ref_object.shared_owner
+        sharing_name = ref_object.shared_name if isinstance(ref_object.shared_name, str) else ""
+        sharing_standart = ref_object.shared_standard if isinstance(ref_object.shared_standard, str) else ""
+        sharing_owner = ref_object.shared_owner if isinstance(ref_object.shared_owner, str) else ""
+        sharing = ' совместно с (sharing) '+sharing_name+\
+                     ' по стандартам '+sharing_standart+' '+sharing_owner
 
     ts = calendar.timegm(time.gmtime())
     file_name = str(ts)+'_see.docx'
